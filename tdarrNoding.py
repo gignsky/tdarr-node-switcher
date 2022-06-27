@@ -126,7 +126,7 @@ def nodeLogic(get_nodes_output_in_json):
                 return "stopped"
 
             elif ganos == "Online":
-                touch.touch(["running"])
+                touch.touch(["/root/tdarr-node-switcher/running"])
                 return "starting"
 
 
