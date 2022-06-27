@@ -15,6 +15,10 @@ def start_node():
     subprocess.run(["systemctl", "start", "tdarr-node.service"])
 
 
+def del_running():
+    subprocess.run(["rm", "/root/tdarr-node-switcher/running"])
+
+
 # mod workers darr-node
 def darrWorkerMod(url, runs, increaseOrDecrease, worker):
 

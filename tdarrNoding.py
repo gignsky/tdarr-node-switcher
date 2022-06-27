@@ -7,6 +7,7 @@ import touch
 from pprint import pprint
 from os.path import exists
 from orders import (
+    del_running,
     start_node,
     stop_node,
     darrWorkerMod,
@@ -34,6 +35,7 @@ def main():
     # stopped or running initiates a do nothing
     if situation == "stopped":
         print("stopped")
+        del_running()
         return
     if situation == "running":
         print("running")
@@ -55,6 +57,7 @@ def main():
     # run if ganoslal has stopped being a node
     elif situation == "stopping":
         print("stopping")
+        del_running()
         mod_darr_node("up")
         update_successful_transcodes()
 
@@ -90,7 +93,7 @@ def discoverSituation():
 
     # load into json format
     jsonVar = json.loads(var.text)
-    #pprint(jsonVar)
+    # pprint(jsonVar)
 
     # figures out the situation
     situation = nodeLogic(jsonVar)
@@ -117,10 +120,13 @@ def nodeLogic(get_nodes_output_in_json):
             return "running"
 
         elif ganos == "Offline":
-            return "stopping"
+            if darr == "Online":
+                return "stopped"
+            else:
+                return "stopping"
 
         elif darr == "Online":
-            # turn off tdarr XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            mod_darr_node("down")
             return "broken"
 
     elif file_check == False:
@@ -160,12 +166,8 @@ def mod_darr_node(upOrDown):
         start_node
         sleep(100)
     # Startup Darr Node
-    darrWorkerMod(
-        MOD_WORKER_LIMIT, DARR_NODE_HEALTH_NODES, upOrDown, "healthCPU", "darr"
-    )
-    darrWorkerMod(
-        MOD_WORKER_LIMIT, DARR_NODE_TRANSCODE_NODES, upOrDown, "healthCPU", "darr"
-    )
+    darrWorkerMod(MOD_WORKER_LIMIT, DARR_NODE_HEALTH_NODES, upOrDown, "healthCPU")
+    darrWorkerMod(MOD_WORKER_LIMIT, DARR_NODE_TRANSCODE_NODES, upOrDown, "transcodeCPU")
     if upOrDown == "down":
         stop_node
 
