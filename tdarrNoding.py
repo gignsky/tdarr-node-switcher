@@ -28,6 +28,7 @@ def main():
     # check tdarr-server status
     status_of_tdarr = status()
     if status_of_tdarr == "stop":
+        print("Server Not Running")
         return
 
     situation = discoverSituation()
