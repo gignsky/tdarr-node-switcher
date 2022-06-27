@@ -35,7 +35,6 @@ def main():
     # stopped or running initiates a do nothing
     if situation == "stopped":
         print("stopped")
-        del_running()
         return
     if situation == "running":
         print("running")
