@@ -11,6 +11,7 @@ from orders import (
     start_node,
     stop_node,
     darrWorkerMod,
+    update_currently_processing,
     update_failed_transcodes,
     update_health_checks,
     update_successful_transcodes,
@@ -169,6 +170,7 @@ def mod_darr_node(upOrDown):
     darrWorkerMod(MOD_WORKER_LIMIT, DARR_NODE_HEALTH_NODES, upOrDown, "healthCPU")
     darrWorkerMod(MOD_WORKER_LIMIT, DARR_NODE_TRANSCODE_NODES, upOrDown, "transcodeCPU")
     if upOrDown == "down":
+        update_currently_processing()
         stop_node
 
 

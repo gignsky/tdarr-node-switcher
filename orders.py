@@ -190,7 +190,55 @@ def search_for_successful_transcodes_checks():
     return transcodeSuccesses
 
 
+def update_currently_processing():
+    ids = search_for_successful_transcodes_checks()
+
+    i = 0
+
+    for i in ids:
+        payload = {
+            "data": {
+                "collection": "FileJSONDB",
+                "mode": "update",
+                "docID": i,
+                "obj": {"TranscodeDecisionMaker": "Queued"},
+            }
+        }
+        headers = {"Content-Type": "application/json"}
+
+        requests.post(UPDATE_URL, json=payload, headers=headers)
+
+        # pprint(response)
+
+
+def search_for_currently_processing():
+    payload = {
+        "data": {
+            "string": "Firebird",
+            "lessThanGB": 100,
+            "greaterThanGB": 0,
+        }
+    }
+    headers = {"Content-Type": "application/json"}
+
+    response = requests.post(SEARCH, json=payload, headers=headers)
+
+    response = json.loads(response.text)
+
+    # print(len(response))
+    processing = ""
+    for i in response:
+        id = i.get("_id")
+
+        isProcessing = i.get("processingStatus")
+        # print(healthCheckStatus)
+        if isProcessing == True:
+            processing = id
+            # print(i)
+
+    return processing
+
+
 # def requeue_failed_health_checks():
 #
 # def requeue_failed_transcodes():
-update_successful_transcodes()
