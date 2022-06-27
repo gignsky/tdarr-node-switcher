@@ -1,5 +1,6 @@
 # logic for tdarr switching
 
+from datetime import datetime
 import json
 import requests
 import touch
@@ -120,10 +121,7 @@ def nodeLogic(get_nodes_output_in_json):
             return "running"
 
         elif ganos == "Offline":
-            if darr == "Online":
-                return "stopped"
-            else:
-                return "stopping"
+            return "stopping"
 
         elif darr == "Online":
             mod_darr_node("down")
@@ -173,3 +171,9 @@ def mod_darr_node(upOrDown):
 
 
 main()
+PRINTLINE="=============================="
+print(PRINTLINE)
+now = datetime.now()
+print("Finished at: ")
+print(now)
+print(PRINTLINE)
