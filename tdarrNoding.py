@@ -33,16 +33,20 @@ def main():
 
     # stopped or running initiates a do nothing
     if situation == "stopped":
+        print("stopped")
         return
     if situation == "running":
+        print("running")
         return
 
     # fix start tdarr-node if broken
     if situation == "broken":
         mod_darr_node("up")
+        print("broken")
 
     # run if ganoslal just started
     if situation == "starting":
+        print("starting")
         mod_darr_node("down")
         update_health_checks()
         update_failed_transcodes()
@@ -50,6 +54,7 @@ def main():
 
     # run if ganoslal has stopped being a node
     elif situation == "stopping":
+        print("stopping")
         mod_darr_node("up")
         update_successful_transcodes()
 
@@ -85,7 +90,7 @@ def discoverSituation():
 
     # load into json format
     jsonVar = json.loads(var.text)
-    pprint(jsonVar)
+    #pprint(jsonVar)
 
     # figures out the situation
     situation = nodeLogic(jsonVar)
@@ -165,4 +170,4 @@ def mod_darr_node(upOrDown):
         stop_node
 
 
-# main()
+main()
