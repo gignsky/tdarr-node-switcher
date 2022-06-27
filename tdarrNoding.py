@@ -1,7 +1,6 @@
 # logic for tdarr switching
 
 import json
-from time import sleep
 import requests
 import touch
 from pprint import pprint
@@ -165,7 +164,6 @@ def ganoslalTest(var):
 def mod_darr_node(upOrDown):
     if upOrDown == "up":
         start_node
-        sleep(100)
     # Startup Darr Node
     darrWorkerMod(MOD_WORKER_LIMIT, DARR_NODE_HEALTH_NODES, upOrDown, "healthCPU")
     darrWorkerMod(MOD_WORKER_LIMIT, DARR_NODE_TRANSCODE_NODES, upOrDown, "transcodeCPU")

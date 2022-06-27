@@ -8,11 +8,13 @@ from constants import DARR_NODE_TRANSCODE_NODES, MOD_WORKER_LIMIT, SEARCH, UPDAT
 
 
 def stop_node():
-    subprocess.run(["systemctl", "stop", "tdarr-node.service"])
+    # subprocess.run(["systemctl", "stop", "tdarr-node.service"])
+    print("Should STOP here")
 
 
 def start_node():
-    subprocess.run(["systemctl", "start", "tdarr-node.service"])
+    # subprocess.run(["systemctl", "start", "tdarr-node.service"])
+    print("should START here")
 
 
 def del_running():
