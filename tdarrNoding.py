@@ -1,6 +1,7 @@
 # logic for tdarr switching
 
 import sys
+from datetime import datetime
 import json
 import requests
 import touch
@@ -123,7 +124,7 @@ def nodeLogic(get_nodes_output_in_json):
     # find if both are working and online
     darr = darrTest(var)
     ganos = ganoslalTest(var)
-    file_check = exists("running")
+    file_check = exists("/root/tdarr-node-switcher/running")
 
     # testing of output for test modules
     # pprint("darr: " + darr)
@@ -135,25 +136,19 @@ def nodeLogic(get_nodes_output_in_json):
             return "running"
 
         elif ganos == "Offline":
-            if darr == "Online":
-                return "stopped"
-            else:
-                return "stopping"
+            return "stopping"
 
         elif darr == "Online":
             mod_darr_node("down")
             return "broken"
 
     elif file_check == False:
+        if ganos == "Offline":
+            return "stopped"
 
-        if darr == "Online":
-
-            if ganos == "Offline":
-                return "stopped"
-
-            elif ganos == "Online":
-                touch.touch(["/root/tdarr-node-switcher/running"])
-                return "starting"
+        elif ganos == "Online":
+            touch.touch(["/root/tdarr-node-switcher/running"])
+            return "starting"
 
 
 def darrTest(var):
@@ -188,3 +183,9 @@ def mod_darr_node(upOrDown):
 
 
 main()
+PRINTLINE = "=============================="
+print(PRINTLINE)
+now = datetime.now()
+print("Finished at: ")
+print(now)
+print(PRINTLINE)
