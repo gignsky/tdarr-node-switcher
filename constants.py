@@ -1,7 +1,7 @@
 # CONSTANTS
 
 ##SET THESE
-TDARR_URL = "https://tdarr.gignsky.com"
+TDARR_URL = "http://192.168.51.3:8265"
 
 DARR_NODE_HEALTH_NODES = 1
 DARR_NODE_TRANSCODE_NODES = 1
