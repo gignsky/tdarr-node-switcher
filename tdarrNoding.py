@@ -1,5 +1,6 @@
 # logic for tdarr switching
 
+import sys
 import json
 import requests
 import touch
@@ -23,43 +24,57 @@ from constants import (
     STATUS,
 )
 
+# get argument if added
+try:
+    arg = sys.argv[1]
+    arg = "refresh"
+except IndexError:
+    arg = "normal"
+
 
 def main():
-    # check tdarr-server status
-    status_of_tdarr = status()
-    if status_of_tdarr == "stop":
-        print("Server Not Running")
-        return
-
-    situation = discoverSituation()
-
-    # stopped or running initiates a do nothing
-    if situation == "stopped":
-        print("stopped")
-        return
-    if situation == "running":
-        print("running")
-        return
-
-    # fix start tdarr-node if broken
-    if situation == "broken":
-        mod_darr_node("up")
-        print("broken")
-
-    # run if ganoslal just started
-    if situation == "starting":
-        print("starting")
-        mod_darr_node("down")
+    if arg == "refresh":
         update_health_checks()
         update_failed_transcodes()
         update_successful_transcodes()
+    elif arg == "normal":
+        # check tdarr-server status
+        status_of_tdarr = status()
+        if status_of_tdarr == "stop":
+            print("Server Not Running")
+            return
 
-    # run if ganoslal has stopped being a node
-    elif situation == "stopping":
-        print("stopping")
-        del_running()
-        mod_darr_node("up")
-        update_successful_transcodes()
+        situation = discoverSituation()
+
+        # stopped or running initiates a do nothing
+        if situation == "stopped":
+            print("stopped")
+            return
+        if situation == "running":
+            print("running")
+            return
+
+        # fix start tdarr-node if broken
+        if situation == "broken":
+            mod_darr_node("up")
+            print("broken")
+
+        # run if ganoslal just started
+        if situation == "starting":
+            print("starting")
+            mod_darr_node("down")
+            update_health_checks()
+            update_failed_transcodes()
+            update_successful_transcodes()
+
+        # run if ganoslal has stopped being a node
+        elif situation == "stopping":
+            print("stopping")
+            del_running()
+            mod_darr_node("up")
+            update_successful_transcodes()
+    else:
+        print("ARGV ERROR")
 
 
 def status():
