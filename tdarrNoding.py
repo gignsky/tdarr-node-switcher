@@ -35,6 +35,7 @@ except IndexError:
 
 def main():
     if arg == "refresh":
+        print("Refreshing...")
         update_health_checks()
         update_failed_transcodes()
         update_successful_transcodes()
@@ -62,7 +63,7 @@ def main():
 
         # run if ganoslal just started
         if situation == "starting":
-            print("starting")
+            print("starting...")
             mod_darr_node("down")
             update_health_checks()
             update_failed_transcodes()
@@ -70,7 +71,7 @@ def main():
 
         # run if ganoslal has stopped being a node
         elif situation == "stopping":
-            print("stopping")
+            print("stopping...")
             del_running()
             mod_darr_node("up")
             update_successful_transcodes()
