@@ -132,7 +132,6 @@ def nodeLogic(get_nodes_output_in_json):
     # pprint("GanosLal: " + ganos)
 
     if file_check == True:
-
         if ganos == "Online":
             return "running"
 
@@ -148,7 +147,9 @@ def nodeLogic(get_nodes_output_in_json):
             return "stopped"
 
         elif ganos == "Online":
-            touch.touch(["/root/tdarr-node-switcher/running"])
+            touch.touch(
+                "/home/gig/local_repos/tdarr-node-switcher/tdarr-node-switcher/running"
+            )  # TODO Make changeable to current system and have file be placed in current directory
             return "starting"
 
 
