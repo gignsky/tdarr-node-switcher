@@ -1,4 +1,5 @@
-from . import requests, json
+import requests
+import json
 
 
 class Tdarr_Logic:
@@ -13,7 +14,9 @@ class Tdarr_Logic:
         }
         headers = {"Content-Type": "application/json"}
 
-        response = requests.post(constants.SEARCH, json=payload, headers=headers, timeout=1.5)
+        response = requests.post(
+            constants.SEARCH, json=payload, headers=headers, timeout=1.5
+        )
 
         response = json.loads(response.text)
 
@@ -41,7 +44,9 @@ class Tdarr_Logic:
         }
         headers = {"Content-Type": "application/json"}
 
-        response = requests.post(constants.SEARCH, json=payload, headers=headers, timeout=1.5)
+        response = requests.post(
+            constants.SEARCH, json=payload, headers=headers, timeout=1.5
+        )
 
         response = json.loads(response.text)
 
@@ -66,7 +71,9 @@ class Tdarr_Logic:
         }
         headers = {"Content-Type": "application/json"}
 
-        response = requests.post(constants.SEARCH, json=payload, headers=headers, timeout=1.5)
+        response = requests.post(
+            constants.SEARCH, json=payload, headers=headers, timeout=1.5
+        )
 
         response = json.loads(response.text)
 

@@ -1,4 +1,4 @@
-from . import requests
+import requests
 from . import Tdarr_Logic
 
 
@@ -21,7 +21,9 @@ class Tdarr_Orders:
             }
             headers = {"Content-Type": "application/json"}
 
-            requests.post(constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5)
+            requests.post(
+                constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5
+            )
 
             # pprint(response)
 
@@ -42,7 +44,9 @@ class Tdarr_Orders:
             }
             headers = {"Content-Type": "application/json"}
 
-            requests.post(constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5)
+            requests.post(
+                constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5
+            )
 
             # pprint(response)
 
@@ -63,6 +67,8 @@ class Tdarr_Orders:
             }
             headers = {"Content-Type": "application/json"}
 
-            requests.post(constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5)
+            requests.post(
+                constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5
+            )
 
             # pprint(response)
