@@ -7,7 +7,7 @@ with open(
 ) as file:
     configuration = yaml.safe_load(file)
 
-Constants = src.Constants(configuration)
+constants = src.Constants(configuration)
 
 try:
     entered_argument = sys.argv[1]
@@ -17,4 +17,4 @@ except IndexError:
     ARGUMENT = "normal"
 
 if ARGUMENT == "refresh":
-    src.Logic.refresh_all(Constants)
+    src.Logic.refresh_all(constants)
