@@ -1,4 +1,5 @@
 import requests
+import yaml
 from pathlib import Path
 from . import tdarr
 
@@ -24,4 +25,9 @@ class Logic:
     def script_status(constants):
         path = Path(f"{constants.program_folder_path}/running.yml")
 
-        print(path.is_file())
+        if path.is_file():
+            with open(path, "r") as file:
+                status = yaml.safe_load(file)
+                return status
+        else:
+            return "Stopped"

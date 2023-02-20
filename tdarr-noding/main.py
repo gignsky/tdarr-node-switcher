@@ -31,7 +31,11 @@ def main():
 
 
 def normal(constants):
-    status_of_script = src.Logic.script_status(constants)
+    script_status_file = src.Logic.script_status(constants)
+
+    if script_status_file == "Stopped":
+        # initate start up
+        currently_alive_nodes = src.tdarr.Tdarr_Logic.alive_node_search(constants)
 
 
 main()
