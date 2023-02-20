@@ -1,0 +1,60 @@
+tdarr_server:
+  url: "http://192.168.51.30:8265"
+  api_string: "/api/v2"
+tdarr_nodes:
+  ganosLal:
+    primary_node: true
+    heathcheck_worker_limits:
+      min_cpu: 0
+      max_cpu: 5
+      min_gpu: 0
+      max_gpu: 3
+    transcode_worker_limits:
+      min_cpu: 0
+      max_cpu: 2
+      min_gpu: 0
+      max_gpu: 3
+  server-node:
+    heathcheck_worker_limits:
+      min_cpu: 0
+      max_cpu: 6
+      min_gpu: 0
+      max_gpu: 0
+    transcode_worker_limits:
+      min_cpu: 0
+      max_cpu: 3
+      min_gpu: 0
+      max_gpu: 0
+  node-a:
+    heathcheck_worker_limits:
+      min_cpu: 0
+      max_cpu: 6
+      min_gpu: 0
+      max_gpu: 0
+    transcode_worker_limits:
+      min_cpu: 0
+      max_cpu: 3
+      min_gpu: 0
+      max_gpu: 0
+  node-b:
+    heathcheck_worker_limits:
+      min_cpu: 0
+      max_cpu: 6
+      min_gpu: 0
+      max_gpu: 0
+    transcode_worker_limits:
+      min_cpu: 0
+      max_cpu: 3
+      min_gpu: 0
+      max_gpu: 0
+  node-c:
+    heathcheck_worker_limits:
+      min_cpu: 0
+      max_cpu: 6
+      min_gpu: 0
+      max_gpu: 0
+    transcode_worker_limits:
+      min_cpu: 0
+      max_cpu: 3
+      min_gpu: 0
+      max_gpu: 0
