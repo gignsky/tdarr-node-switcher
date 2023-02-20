@@ -18,3 +18,5 @@ except IndexError:
 
 if ARGUMENT == "refresh":
     src.Logic.refresh_all(constants)
+elif ARGUMENT =="normal":
+    main()
