@@ -20,6 +20,7 @@ def main():
         argument_status_indicator = "normal"
 
     tdarr_server_status = src.Logic.server_status_check(constants)
+
     if tdarr_server_status != "stop":
         if argument_status_indicator == "refresh":
             src.Logic.refresh_all(constants)
@@ -28,4 +29,6 @@ def main():
     else:
         print("Tdarr Server is DOWN :(")
 
-def normal(constants):
+
+# def normal(constants):
+main()

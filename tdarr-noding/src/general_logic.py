@@ -1,3 +1,4 @@
+from . import requests
 from . import tdarr
 
 
@@ -15,3 +16,5 @@ class Logic:
 
         if var.status_code != 200:
             return "stop"
+        else:
+            return "alive"
