@@ -1,3 +1,5 @@
+program:
+  folder_path: "/home/gig/local_repos/tdarr-node-switcher/tdarr-noding"
 tdarr_server:
   url: "http://192.168.51.30:8265"
   api_string: "/api/v2"

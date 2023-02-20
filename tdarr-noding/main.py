@@ -30,5 +30,8 @@ def main():
         print("Tdarr Server is DOWN :(")
 
 
-# def normal(constants):
+def normal(constants):
+    status_of_script = src.Logic.script_status(constants)
+
+
 main()

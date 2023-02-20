@@ -3,9 +3,11 @@ class Constants:
         tdarr_url = configuration["tdarr_server"]["url"]
         api_string = configuration["tdarr_server"]["api_string"]
 
-        self.set_up_selfs(tdarr_url, api_string)
+        self.program_folder_path = configuration["program"]["folder_path"]
 
-    def set_up_selfs(self, TDARR_URL, api_string):
+        self.set_up_urls(tdarr_url, api_string)
+
+    def set_up_urls(self, TDARR_URL, api_string):
         ######################################
         self.TDARR_USEABLE_URL = f"{TDARR_URL}{api_string}"
         ######################################

@@ -1,4 +1,5 @@
 import requests
+from pathlib import Path
 from . import tdarr
 
 
@@ -18,3 +19,9 @@ class Logic:
             return "stop"
         else:
             return "alive"
+
+    @staticmethod
+    def script_status(constants):
+        path = Path(f"{constants.program_folder_path}/running.yml")
+
+        print(path.is_file())
