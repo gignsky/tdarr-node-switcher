@@ -7,16 +7,25 @@ with open(
 ) as file:
     configuration = yaml.safe_load(file)
 
-constants = src.Constants(configuration)
 
-try:
-    entered_argument = sys.argv[1]
-    if entered_argument == "refresh":
-        ARGUMENT = "refresh"
-except IndexError:
-    ARGUMENT = "normal"
+def main():
+    # establish constants
+    constants = src.Constants(configuration)
 
-if ARGUMENT == "refresh":
-    src.Logic.refresh_all(constants)
-elif ARGUMENT =="normal":
-    main()
+    try:
+        entered_argument = sys.argv[1]
+        if entered_argument == "refresh":
+            argument_status_indicator = "refresh"
+    except IndexError:
+        argument_status_indicator = "normal"
+
+    tdarr_server_status = src.Logic.server_status_check(constants)
+    if tdarr_server_status != "stop":
+        if argument_status_indicator == "refresh":
+            src.Logic.refresh_all(constants)
+        elif argument_status_indicator == "normal":
+            normal(constants)
+    else:
+        print("Tdarr Server is DOWN :(")
+
+def normal(constants):
