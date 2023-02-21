@@ -34,24 +34,32 @@ def normal(constants):
     script_status_file = src.Logic.script_status(constants)
 
     if script_status_file == "Stopped":
-        # initate start up
-        expected_node_status = src.tdarr.Tdarr_Logic.alive_node_search(constants)
-        quantity_of_living_nodes = 0
+        startup(constants)
+    else:
+        print("PLACEHOLDER")
+        #TODO Write info in for reading yaml status file
 
-        for node in expected_node_status:
-            print(f"NODE: `{node}` is {expected_node_status[node]}")
-            if expected_node_status[node]=="Online":
-                quantity_of_living_nodes += 1
+def startup(constants):
+    # initate start up
+    expected_node_status = src.tdarr.Tdarr_Logic.alive_node_search(constants)
+    quantity_of_living_nodes = 0
 
-        if quantity_of_living_nodes > constants.max_nodes:
-            print("WARNING: Too many nodes alive; killing last node on the priority list")
-            #TODO write script to shutdown single worst priority node
+    for node in expected_node_status:
+        print(f"NODE: `{node}` is {expected_node_status[node]}")
+        if expected_node_status[node] == "Online":
+            quantity_of_living_nodes += 1
 
-        primary_node = constants.primary_node_name
+    if quantity_of_living_nodes > constants.max_nodes:
+        print(
+            "WARNING: Too many nodes alive; killing last node on the priority list"
+        )
+        # TODO write script to shutdown single worst priority node
 
-        if expected_node_status[primary_node] == "Online":
-            print(f"Primary NODE: `{primary_node}` is ONLINE")
-            # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
+    primary_node = constants.primary_node_name
+
+    if expected_node_status[primary_node] == "Online":
+        print(f"Primary NODE: `{primary_node}` is ONLINE")
+        # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
 
 
 main()
