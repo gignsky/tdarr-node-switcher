@@ -17,10 +17,6 @@ class Tdarr_Logic:
         # loads response into json beautifier
         json_response = json.loads(response.text)
 
-        # establish empty lists
-        expected_node_status = (
-            []
-        )  # TODO work on a way of getting all nodes names out of the config file in the constant creator section to apply to this function
 
         # find node dict ids
         node_ids = []
@@ -30,13 +26,26 @@ class Tdarr_Logic:
         # find node names per id
         all_alive_node_names = []
         all_alive_node_dicts = []
+        expected_node_status = {}
         for id in node_ids:
             inner_dictionary = json_response[id]
             name = inner_dictionary["nodeName"]
             all_alive_node_names.append(name)
             all_alive_node_dicts.append(inner_dictionary)
+            if name in constants.list_of_tdarr_node_names:
+                expected_node_status[name] = "Online"
+            else:
+                expected_node_status[name] = "Unexpected"
+                # WARN UNEXPECTED NODE
+                print(
+                    f"WARNING: Node named: `{name}` was not expected in the configuration file!"
+                )
 
-        return all_alive_node_names, all_alive_node_dicts
+        for name in constants.list_of_tdarr_node_names:
+            if name not in all_alive_node_names:
+                expected_node_status[name] = "Offline"
+
+        return expected_node_status
 
     @staticmethod
     def nodeTest(node_name, dictionary):

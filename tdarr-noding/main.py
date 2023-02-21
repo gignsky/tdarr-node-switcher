@@ -35,7 +35,13 @@ def normal(constants):
 
     if script_status_file == "Stopped":
         # initate start up
-        currently_alive_nodes = src.tdarr.Tdarr_Logic.alive_node_search(constants)
+        expected_node_status = src.tdarr.Tdarr_Logic.alive_node_search(constants)
+
+        primary_node = constants.primary_node_name
+
+        if expected_node_status[primary_node] == "Online":
+            print(f"{primary_node} is ONLINE")
+            # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
 
 
 main()
