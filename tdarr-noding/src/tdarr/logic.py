@@ -17,7 +17,6 @@ class Tdarr_Logic:
         # loads response into json beautifier
         json_response = json.loads(response.text)
 
-
         # find node dict ids
         node_ids = []
         for id in json_response:
@@ -56,6 +55,29 @@ class Tdarr_Logic:
             tdarr_node_online_status = "Offline"
 
         return tdarr_node_online_status
+
+    # find nodes with ongoing work
+    @staticmethod
+    def find_nodes_with_work(constants):
+        response = requests.get(constants.GET_NODES)
+
+        json_response = json.loads(response.text)
+
+        list_of_nodes_with_work = []
+
+        for node_id in json_response:
+            node_id_inner_dictionary = json_response[node_id]
+
+            worker_dict = node_id_inner_dictionary["workers"]
+            legnth = len(worker_dict)
+
+            if legnth == 0:
+                # TODO add pause node function
+                print("PLACEHOLDER")
+            else:
+                list_of_nodes_with_work.append(node_id_inner_dictionary["nodeName"])
+
+        return list_of_nodes_with_work
 
     # searching...
     @staticmethod
