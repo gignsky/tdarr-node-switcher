@@ -36,11 +36,21 @@ def normal(constants):
     if script_status_file == "Stopped":
         # initate start up
         expected_node_status = src.tdarr.Tdarr_Logic.alive_node_search(constants)
+        quantity_of_living_nodes = 0
+
+        for node in expected_node_status:
+            print(f"NODE: `{node}` is {expected_node_status[node]}")
+            if expected_node_status[node]=="Online":
+                quantity_of_living_nodes += 1
+
+        if quantity_of_living_nodes > constants.max_nodes:
+            print("WARNING: Too many nodes alive; killing last node on the priority list")
+            #TODO write script to shutdown single worst priority node
 
         primary_node = constants.primary_node_name
 
         if expected_node_status[primary_node] == "Online":
-            print(f"{primary_node} is ONLINE")
+            print(f"Primary NODE: `{primary_node}` is ONLINE")
             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
 
 

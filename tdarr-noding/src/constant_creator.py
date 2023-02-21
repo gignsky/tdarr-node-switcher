@@ -4,6 +4,7 @@ class Constants:
         api_string = configuration["tdarr_server"]["api_string"]
 
         self.program_folder_path = configuration["program"]["folder_path"]
+        self.max_nodes = configuration["tdarr_server"]["max_nodes"]
         self.set_up_urls(tdarr_url, api_string)
         self.setup_list_of_node_names(configuration)
 

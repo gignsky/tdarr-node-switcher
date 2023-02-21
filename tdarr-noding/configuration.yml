@@ -3,9 +3,11 @@ program:
 tdarr_server:
   url: "http://192.168.51.30:8265"
   api_string: "/api/v2"
+  max_nodes: 4
 tdarr_nodes:
   ganosLal:
     primary_node: true
+    priority: 0
     heathcheck_worker_limits:
       min_cpu: 0
       max_cpu: 5
@@ -17,6 +19,7 @@ tdarr_nodes:
       min_gpu: 0
       max_gpu: 3
   server-node:
+    priority: 1
     heathcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -28,6 +31,7 @@ tdarr_nodes:
       min_gpu: 0
       max_gpu: 0
   node-a:
+    priority: 2
     heathcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -39,6 +43,7 @@ tdarr_nodes:
       min_gpu: 0
       max_gpu: 0
   node-b:
+    priority: 3
     heathcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -50,6 +55,7 @@ tdarr_nodes:
       min_gpu: 0
       max_gpu: 0
   node-c:
+    priority: 4
     heathcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
