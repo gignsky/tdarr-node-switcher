@@ -3,6 +3,15 @@ import json
 
 
 class Tdarr_Logic:
+    @staticmethod
+    def generic_get_nodes(constants):
+        response = requests.get(constants.GET_NODES)
+
+        # loads response into json beautifier
+        json_response = json.loads(response.text)
+
+        return json_response
+
     # find alive nodes
     @staticmethod
     def alive_node_search(constants):
@@ -11,11 +20,7 @@ class Tdarr_Logic:
         Returns:
             thing: unformatted json
         """
-
-        response = requests.get(constants.GET_NODES)
-
-        # loads response into json beautifier
-        json_response = json.loads(response.text)
+        json_response = Tdarr_Logic.generic_get_nodes(constants)
 
         # find node dict ids
         node_ids = []
@@ -59,9 +64,7 @@ class Tdarr_Logic:
     # find nodes with ongoing work
     @staticmethod
     def find_nodes_with_work(constants):
-        response = requests.get(constants.GET_NODES)
-
-        json_response = json.loads(response.text)
+        json_response = Tdarr_Logic.generic_get_nodes(constants)
 
         list_of_nodes_with_work = []
 
