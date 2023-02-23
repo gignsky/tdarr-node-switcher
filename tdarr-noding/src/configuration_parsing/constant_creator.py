@@ -1,46 +1,18 @@
-class Constants:
-    def __init__(self, configuration):
-        tdarr_url = configuration["tdarr_server"]["url"]
-        api_string = configuration["tdarr_server"]["api_string"]
+from . import Server, Node
 
-        self.program_folder_path = configuration["program"]["folder_path"]
-        self.max_nodes = configuration["tdarr_server"]["max_nodes"]
-        self.set_up_urls(tdarr_url, api_string)
-        self.setup_list_of_node_names(configuration)
+class Constants_Setup:
+    def __init__(self, configuration_file):
+        self.program_folder_path = configuration_file["program"]["folder_path"]
 
-    def set_up_urls(self, TDARR_URL, api_string):
-        ######################################
-        self.TDARR_USEABLE_URL = f"{TDARR_URL}{api_string}"
-        ######################################
+        self.setup_server_class(configuration_file)
 
-        self.GET_NODES = f"{self.TDARR_USEABLE_URL}/get-nodes"
+        self.setup_list_of_node_names(configuration_file)
 
-        self.STATUS = f"{self.TDARR_USEABLE_URL}/status"
+    def setup_server_class(self,configuration_file):
+        server_inner_dict=configuration_file["tdarr_server"]
+        self.Server=Server(server_inner_dict)
 
-        self.MOD_WORKER_LIMIT = f"{self.TDARR_USEABLE_URL}/alter-worker-limit"
+    def setup_node_class(self.Server.determine_expected_nodes):
+        node_inner_dict=
+        self.set_primary_node(configuration_file)
 
-        self.SEARCH = f"{self.TDARR_USEABLE_URL}/search-db"
-
-        self.UPDATE_URL = f"{self.TDARR_USEABLE_URL}/cruddb"
-
-    def setup_list_of_node_names(self, configuration):
-        tdarr_nodes_dictionary = configuration["tdarr_nodes"]
-
-        self.list_of_tdarr_node_names = []
-        self.list_of_tdarr_node_inner_dicts = []
-
-        for name in tdarr_nodes_dictionary:
-            self.list_of_tdarr_node_names.append(name)
-            self.list_of_tdarr_node_inner_dicts.append(
-                tdarr_nodes_dictionary[f"{name}"]
-            )
-
-        self.set_primary_node(configuration)
-
-    def set_primary_node(self, configuration):
-        for name, dict in zip(
-            self.list_of_tdarr_node_names, self.list_of_tdarr_node_inner_dicts
-        ):
-            if "primary_node" in dict:
-                if dict["primary_node"] == True:
-                    self.primary_node_name = name
