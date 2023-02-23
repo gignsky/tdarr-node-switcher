@@ -21,18 +21,18 @@ class Node:
     def line_state(self, online_or_offline):
         if online_or_offline == "Online":
             self.online = True
-            print(f"INFO: `{self.node_name}` is Online")
+            print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Online")
         elif online_or_offline == "Offline":
-            print(f"INFO: `{self.node_name}` is Offline")
+            print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Offline")
             self.online = False
 
     def expected_or_not(self, expected_or_not):
         if expected_or_not == "Expected":
             self.expected = True
-            print(f"INFO: `{self.node_name}` is Expected")
+            print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Expected")
         elif expected_or_not == "Unexpected":
             self.expected = False
-            print(f"WARN: `{self.node_name}` is Unexpected")
+            print(f"WARN: FROM NODE CLASS: `{self.node_name}` is Unexpected")
 
     def set_healthcheck_limits(self):
         self.healthcheck_min_cpu = self.config_node_inner_dictionary[
