@@ -22,7 +22,7 @@ class Tdarr_Orders:
             headers = {"Content-Type": "application/json"}
 
             requests.post(
-                constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5
+                constants.Server.update_url, json=payload, headers=headers, timeout=1.5
             )
 
             # pprint(response)
@@ -45,7 +45,7 @@ class Tdarr_Orders:
             headers = {"Content-Type": "application/json"}
 
             requests.post(
-                constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5
+                constants.Server.update_url, json=payload, headers=headers, timeout=1.5
             )
 
             # pprint(response)
@@ -68,7 +68,7 @@ class Tdarr_Orders:
             headers = {"Content-Type": "application/json"}
 
             requests.post(
-                constants.UPDATE_URL, json=payload, headers=headers, timeout=1.5
+                constants.Server.update_url, json=payload, headers=headers, timeout=1.5
             )
 
             # pprint(response)

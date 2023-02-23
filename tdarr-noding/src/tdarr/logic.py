@@ -5,7 +5,7 @@ import json
 class Tdarr_Logic:
     @staticmethod
     def generic_get_nodes(constants):
-        response = requests.get(constants.GET_NODES)
+        response = requests.get(constants.Server.get_nodes)
 
         # loads response into json beautifier
         json_response = json.loads(response.text)
@@ -95,7 +95,7 @@ class Tdarr_Logic:
         headers = {"Content-Type": "application/json"}
 
         response = requests.post(
-            constants.SEARCH, json=payload, headers=headers, timeout=1.5
+            constants.Server.search, json=payload, headers=headers, timeout=1.5
         )
 
         response = json.loads(response.text)
@@ -125,7 +125,7 @@ class Tdarr_Logic:
         headers = {"Content-Type": "application/json"}
 
         response = requests.post(
-            constants.SEARCH, json=payload, headers=headers, timeout=1.5
+            constants.Server.search, json=payload, headers=headers, timeout=1.5
         )
 
         response = json.loads(response.text)
@@ -152,7 +152,7 @@ class Tdarr_Logic:
         headers = {"Content-Type": "application/json"}
 
         response = requests.post(
-            constants.SEARCH, json=payload, headers=headers, timeout=1.5
+            constants.Server.search, json=payload, headers=headers, timeout=1.5
         )
 
         response = json.loads(response.text)
