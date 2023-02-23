@@ -1,3 +1,3 @@
-from .constant_creator import Constants
+from . import configuration_parsing
 from . import tdarr
 from .general_logic import Logic
