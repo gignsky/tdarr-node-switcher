@@ -1,7 +1,13 @@
+from . import configuration_parsing
 
-def refresh(constants):
-    src.Logic.refresh_all(constants)
-
+class Workhorse:
+    @staticmethod
+    def setup_constants(configuration_file):
+        constants = configuration_parsing.Constants_Setup(configuration_file)
+        # constants.Server.determine_tdarr_nodes(
+        #     tdarr.Tdarr_Logic.generic_get_nodes(constants)
+        # )
+        constants.get_nodes_check(tdarr.Tdarr_Logic.generic_get_nodes(constants))
 
 def normal(constants):
     script_status_file = src.Logic.script_status(constants)
