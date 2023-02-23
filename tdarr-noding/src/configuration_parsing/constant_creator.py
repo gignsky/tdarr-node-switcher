@@ -7,12 +7,9 @@ class Constants_Setup:
 
         self.program_folder_path = configuration_file["program"]["folder_path"]
 
-        self.setup_server_class(configuration_file)
-
-        self.setup_node_class()
-
-    def setup_server_class(self, configuration_file):
-        server_inner_dictionary = configuration_file["tdarr_server"]
+        """
+        setup_server_class configures server class and returns it
+        """
         self.Server = Server(server_inner_dictionary)
 
     def setup_node_class(self):

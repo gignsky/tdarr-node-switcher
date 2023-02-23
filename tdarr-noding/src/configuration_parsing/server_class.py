@@ -10,7 +10,12 @@ class Server:
 
     # node class list creator
     def expected_nodes_creator(self, node_dictionary):
-        self.expected_nodes_dictionary = {}
+        """
+        expected_nodes_creator gathers expected nodes from config yaml file and creates node classes in a dictionary to return
+
+        Args:
+            node_dictionary (dictionary): keys are names of nodes, values are node classes
+        """
         for name in node_dictionary:
             node_inner_dictionary = node_dictionary[name]
             self.expected_nodes_dictionary[name] = Node(
