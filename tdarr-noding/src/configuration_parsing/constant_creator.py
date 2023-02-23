@@ -9,6 +9,8 @@ class Constants_Setup:
 
         """
         setup_server_class configures server class and returns it
+
+        < Document Guardian | Protect >
         """
         self.Server = Server(server_inner_dictionary)
 

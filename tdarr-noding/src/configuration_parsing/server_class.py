@@ -15,6 +15,7 @@ class Server:
 
         Args:
             node_dictionary (dictionary): keys are names of nodes, values are node classes
+        < Document Guardian | Protect >
         """
         for name in node_dictionary:
             node_inner_dictionary = node_dictionary[name]

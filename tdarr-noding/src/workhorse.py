@@ -6,6 +6,17 @@ from . import tdarr
 class Workhorse:
     @staticmethod
     def setup_constants(configuration_file):
+        """
+        setup_constants configures the constants class and returns that class as well as server class and a dictionary with keys being the node names and value being node's class
+
+        Args:
+            configuration_file (yaml to json): configuration file from root directory after converted to json via the yaml import
+
+        Returns:
+            Classes: Constants, Server, (dictionary of classes) node_dictionary
+
+        < Document Guardian | Protect >
+        """
         Constants = configuration_parsing.Constants_Setup(configuration_file)
         # Constants.Server.determine_tdarr_nodes(
         #     tdarr.Tdarr_Logic.generic_get_nodes(Constants)
