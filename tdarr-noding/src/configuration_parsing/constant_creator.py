@@ -47,15 +47,17 @@ class Constants_Setup:
             if expected_node_class.online is None:
                 expected_node_class.line_state("Offline")
 
-        for tdarr_node in self.all_tdarr_nodes:
-            for expected_node in self.Server.expected_nodes_dictionary:
-                expected_node_class = self.Server.expected_nodes_dictionary[
-                    expected_node_name
-                ]
-                # if expected_node_class.expected is None:
-                #     expected_node_class.expected_or_not("Unexpected")
-                #     pass
 
-            print(
-                f"ERROR: `{tdarr_node}` was NOT Expected and is outside of this programs control"
-            )  # Eventual TODO fix this up so that new nodes can be added and controlled
+# TODO Reenable the use of notification for unexpected node
+#         for tdarr_node in self.all_tdarr_nodes:
+#             for expected_node in self.Server.expected_nodes_dictionary:
+#                 expected_node_class = self.Server.expected_nodes_dictionary[
+#                     expected_node_name
+#                 ]
+#                 # if expected_node_class.expected is None:
+#                 #     expected_node_class.expected_or_not("Unexpected")
+#                 #     pass
+#
+#             print(
+#                 f"ERROR: `{tdarr_node}` was NOT Expected and is outside of this programs control"
+#             )  # Eventual TODO fix this up so that new nodes can be added and controlled
