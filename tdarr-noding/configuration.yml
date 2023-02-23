@@ -21,7 +21,7 @@ tdarr_nodes:
       max_gpu: 3
   server-node:
     priority: 1
-    heathcheck_worker_limits:
+    healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
       min_gpu: 0
