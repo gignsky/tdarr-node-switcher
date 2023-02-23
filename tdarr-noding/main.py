@@ -10,7 +10,7 @@ with open(
 
 def main():
     # establish constants
-    constants = src.Workhorse.setup_constants(configuration_file)
+    Constants = src.Workhorse.setup_constants(configuration_file)
 
     # establish if run with refresh command on purpose
     try:
@@ -21,13 +21,13 @@ def main():
         argument_status_indicator = "normal"
 
     # check if tdarr server is running
-    tdarr_server_status = src.Logic.server_status_check(constants)
+    tdarr_server_status = src.Logic.server_status_check(Constants)
 
     if tdarr_server_status != "stop":
         if argument_status_indicator == "refresh":
-            src.workhorse.refresh(constants)
+            src.Workhorse.refresh(Constants)
         elif argument_status_indicator == "normal":
-            src.workhorse.normal(constants)
+            src.Workhorse.normal(Constants)
     else:
         print("Tdarr Server is DOWN :(")
 

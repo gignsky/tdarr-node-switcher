@@ -14,11 +14,12 @@ class Logic:
 
     @staticmethod
     def server_status_check(constants):
-        var = requests.get(constants.STATUS)
+        var = requests.get(constants.Server.status)
 
         if var.status_code != 200:
             return "stop"
         else:
+            print("INFO: Server is ALIVE!")
             return "alive"
 
     @staticmethod

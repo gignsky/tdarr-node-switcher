@@ -6,30 +6,32 @@ from . import tdarr
 class Workhorse:
     @staticmethod
     def setup_constants(configuration_file):
-        constants = configuration_parsing.Constants_Setup(configuration_file)
-        # constants.Server.determine_tdarr_nodes(
-        #     tdarr.Tdarr_Logic.generic_get_nodes(constants)
+        Constants = configuration_parsing.Constants_Setup(configuration_file)
+        # Constants.Server.determine_tdarr_nodes(
+        #     tdarr.Tdarr_Logic.generic_get_nodes(Constants)
         # )
-        constants.get_nodes_check(tdarr.Tdarr_Logic.generic_get_nodes(constants))
+        Constants.get_nodes_check(tdarr.Tdarr_Logic.generic_get_nodes(Constants))
+
+        return Constants
 
     @staticmethod
-    def refresh(constants):
-        Logic.refresh_all(constants)
+    def refresh(Constants):
+        Logic.refresh_all(Constants)
 
     @staticmethod
-    def normal(constants):
-        script_status_file = Logic.script_status(constants)
+    def normal(Constants):
+        script_status_file = Logic.script_status(Constants)
 
         if script_status_file == "Stopped":
-            startup(constants)
+            Workhorse.startup(Constants)
         else:
             print("PLACEHOLDER")
             # TODO Write info in for reading yaml status file
 
     @staticmethod
-    def startup(constants):
+    def startup(Constants):
         # initate start up
-        expected_node_status = tdarr.Tdarr_Logic.alive_node_search(constants)
+        expected_node_status = tdarr.Tdarr_Logic.alive_node_search(Constants)
         quantity_of_living_nodes = 0
 
         for node in expected_node_status:
@@ -37,18 +39,18 @@ class Workhorse:
             if expected_node_status[node] == "Online":
                 quantity_of_living_nodes += 1
 
-        if quantity_of_living_nodes > constants.max_nodes:
+        if quantity_of_living_nodes > Constants.max_nodes:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
             # TODO write script to shutdown single worst priority node
 
-        primary_node = constants.primary_node_name
+        primary_node = Constants.primary_node_name
 
         if expected_node_status[primary_node] == "Online":
             print(f"Primary NODE: `{primary_node}` is ONLINE")
             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
-            nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(constants)
+            nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Constants)
 
             number_of_working_nodes = len(nodes_with_work_list)
 
@@ -58,7 +60,7 @@ class Workhorse:
                     print("INFO: Shutting/Pausing down all nodes except primary")
                     # TODO shutdown all online nodes except primary
                 else:
-                    refresh(constants)
+                    refresh(Constants)
             else:
                 # TODO Same function as above on line 59 looping
                 print("PLACEHOLDER")
