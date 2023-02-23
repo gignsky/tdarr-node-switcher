@@ -8,7 +8,7 @@ tdarr_nodes:
   ganosLal:
     primary_node: true
     priority: 0
-    heathcheck_worker_limits:
+    healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 5
       min_gpu: 0
@@ -32,7 +32,7 @@ tdarr_nodes:
       max_gpu: 0
   node-a:
     priority: 2
-    heathcheck_worker_limits:
+    healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
       min_gpu: 0
@@ -44,7 +44,7 @@ tdarr_nodes:
       max_gpu: 0
   node-b:
     priority: 3
-    heathcheck_worker_limits:
+    healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
       min_gpu: 0
@@ -56,7 +56,7 @@ tdarr_nodes:
       max_gpu: 0
   node-c:
     priority: 4
-    heathcheck_worker_limits:
+    healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
       min_gpu: 0
