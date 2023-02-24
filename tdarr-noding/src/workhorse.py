@@ -26,23 +26,23 @@ class Workhorse:
         return Constants
 
     @staticmethod
-    def refresh(Constants):
-        Logic.refresh_all(Constants)
+    def refresh():
+        Logic.refresh_all(self.Constants)
 
     @staticmethod
-    def normal(Constants):
-        script_status_file = Logic.script_status(Constants)
+    def normal():
+        script_status_file = Logic.script_status(self.Constants)
 
         if script_status_file == "Stopped":
-            Workhorse.startup(Constants)
+            Workhorse.startup(self.Constants)
         else:
             print("PLACEHOLDER")
             # TODO Write info in for reading yaml status file
 
     @staticmethod
-    def startup(Constants):
+    def startup():
         # initate start up
-        expected_node_status = tdarr.Tdarr_Logic.alive_node_search(Constants)
+        expected_node_status = tdarr.Tdarr_Logic.alive_node_search(self.Constants)
         quantity_of_living_nodes = 0
 
         for node in expected_node_status:
@@ -50,18 +50,20 @@ class Workhorse:
             if expected_node_status[node] == "Online":
                 quantity_of_living_nodes += 1
 
-        if quantity_of_living_nodes > Constants.max_nodes:
+        if quantity_of_living_nodes > self.Constants.max_nodes:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
             # TODO write script to shutdown single worst priority node
 
-        primary_node = Constants.primary_node_name
+        primary_node = self.Constants.primary_node_name
 
         if expected_node_status[primary_node] == "Online":
             print(f"Primary NODE: `{primary_node}` is ONLINE")
             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
-            nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Constants)
+            nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(
+                self.Constants
+            )
 
             number_of_working_nodes = len(nodes_with_work_list)
 
@@ -71,7 +73,7 @@ class Workhorse:
                     print("INFO: Shutting/Pausing down all nodes except primary")
                     # TODO shutdown all online nodes except primary
                 else:
-                    refresh(Constants)
+                    refresh(self.Constants)
             else:
                 # TODO Same function as above on line 59 looping
                 print("PLACEHOLDER")
