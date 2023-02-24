@@ -38,7 +38,7 @@ class Workhorse:
         script_status_file = Logic.script_status(self.Constants)
 
         if script_status_file == "Stopped":
-            Workhorse.startup()
+            self.startup()
         else:
             print("PLACEHOLDER")
             # TODO Write info in for reading yaml status file
