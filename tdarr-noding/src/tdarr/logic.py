@@ -161,9 +161,9 @@ class Tdarr_Logic:
         # print(len(response))
         transcodeSuccesses = []
         for i in response:
-            id = i.get("_id")
+            node_id = i.get("_id")
 
-            transcodeSuccesses.append(id)
+            transcodeSuccesses.append(node_id)
             # print(i)
 
         return transcodeSuccesses
