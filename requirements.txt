@@ -1,5 +1,5 @@
 pip==23.0
-pipdeptree==2.3.3
+pipdeptree==2.5.0
 setuptools==65.5.1
 touch==2020.12.3
   values==2020.12.3
