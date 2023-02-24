@@ -86,14 +86,7 @@ class Tdarr_Logic:
     # searching...
     @staticmethod
     def search_for_failed_health_checks(constants):
-        payload = {
-            "data": {
-                "string": "Error",
-                "lessThanGB": 100,
-                "greaterThanGB": 0,
-            }
-        }
-        headers = {"Content-Type": "application/json"}
+        payload, headers = Tdarr_Logic.payload_and_headers("error")
 
         response = requests.post(
             constants.Server.search, json=payload, headers=headers, timeout=1.5
@@ -116,14 +109,7 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_failed_transcodes(constants):
-        payload = {
-            "data": {
-                "string": "Transcode error",
-                "lessThanGB": 100,
-                "greaterThanGB": 0,
-            }
-        }
-        headers = {"Content-Type": "application/json"}
+        payload, headers = Tdarr_Logic.payload_and_headers("Transcode error")
 
         response = requests.post(
             constants.Server.search, json=payload, headers=headers, timeout=1.5
@@ -143,14 +129,7 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_successful_transcodes(constants):
-        payload = {
-            "data": {
-                "string": "Transcode success",
-                "lessThanGB": 100,
-                "greaterThanGB": 0,
-            }
-        }
-        headers = {"Content-Type": "application/json"}
+        payload, headers = Tdarr_Logic.payload_and_headers("Transcode success")
 
         response = requests.post(
             constants.Server.search, json=payload, headers=headers, timeout=1.5
@@ -167,3 +146,15 @@ class Tdarr_Logic:
             # print(i)
 
         return transcodeSuccesses
+
+    @staticmethod
+    def payload_and_headers(string):
+        payload = {
+            "data": {
+                "string": string,
+                "lessThanGB": 100,
+                "greaterThanGB": 0,
+            }
+        }
+        headers = {"Content-Type": "application/json"}
+        return payload, headers
