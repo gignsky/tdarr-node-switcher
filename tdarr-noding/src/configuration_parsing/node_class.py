@@ -1,8 +1,9 @@
 class Node:
     """
-        class for individual nodes
-        < Document Guardian | Protect >
+    class for individual nodes
+    < Document Guardian | Protect >
     """
+
     def __init__(self, node_name, config_node_inner_dictionary, expected_or_not):
         """
         __init__ basic node setup
@@ -16,8 +17,7 @@ class Node:
         self.node_name = node_name
         self.config_node_inner_dictionary = config_node_inner_dictionary
 
-        if config_node_inner_dictionary not None:
-
+        if config_node_inner_dictionary is not None:
             self.priority = self.config_node_inner_dictionary["priority"]
             try:
                 self.primary_node = bool(config_node_inner_dictionary["primary_node"])
@@ -29,14 +29,13 @@ class Node:
             self.set_transcode_limits()
 
         else:
-            self.primary_node=False
+            self.primary_node = False
 
         self.online = None
         self.expected = None
 
         # expected determination
         self.expected_or_not(expected_or_not)
-
 
     def line_state(self, online_or_offline):
         """
@@ -58,7 +57,6 @@ class Node:
     #     self.current_cpu_healthcheck = "PLACEHOLDER"
     #     self.current_gpu_healthcheck = "PLACEHOLDER"
 
-
     def set_healthcheck_limits(self):
         """
         set_healthcheck_limits sets worker limits based of yaml config
@@ -78,10 +76,10 @@ class Node:
                 "healthcheck_worker_limits"
             ]["max_gpu"]
         else:
-            self.healthcheck_min_cpu=None
-            self.healthcheck_max_cpu=None
-            self.healthcheck_min_gpu=None
-            self.healthcheck_max_gpu=None
+            self.healthcheck_min_cpu = None
+            self.healthcheck_max_cpu = None
+            self.healthcheck_min_gpu = None
+            self.healthcheck_max_gpu = None
 
     def set_transcode_limits(self):
         """
@@ -102,10 +100,10 @@ class Node:
                 "transcode_worker_limits"
             ]["max_gpu"]
         else:
-            self.transcode_min_cpu=None
-            self.transcode_max_cpu=None
-            self.transcode_min_gpu=None
-            self.transcode_max_gpu=None
+            self.transcode_min_cpu = None
+            self.transcode_max_cpu = None
+            self.transcode_min_gpu = None
+            self.transcode_max_gpu = None
 
     def update_with_tdarr_dictionary(
         self, tdarr_node_inner_id_dictionary, expected_or_not

@@ -4,9 +4,14 @@ from . import tdarr
 
 
 class Workhorse:
+    """
+    general workhorse for the entireprogram where the large amount of overall processing is handled
+
+    < Document Guardian | Protect >
+    """
+
     # setup constants
-    @staticmethod
-    def setup_constants(configuration_file):
+    def setup_constants(self, configuration_file):
         """
         setup_constants configures the constants class and returns that class as well as server class and a dictionary with keys being the node names and value being node's class
 
@@ -18,7 +23,7 @@ class Workhorse:
 
         < Document Guardian | Protect >
         """
-        self.Constants = configuration_parsing.Constants_Setup(configuration_file)
+        self.Constants = configuration_parsing.ConstantsSetup(configuration_file)
 
         # setup server
         Server = self.Constants.setup_server_class()
@@ -30,22 +35,21 @@ class Workhorse:
         return Server, node_dictionary
 
     # main methods
-    @staticmethod
-    def refresh():
+    def refresh(self):
         Logic.refresh_all(self.Constants)
 
-    @staticmethod
-    def normal():
+    def normal(
+        self,
+    ):
         script_status_file = Logic.script_status(self.Constants)
 
         if script_status_file == "Stopped":
-            Workhorse.startup(self.Constants)
+            self.startup()
         else:
             print("PLACEHOLDER")
             # TODO Write info in for reading yaml status file
 
-    @staticmethod
-    def startup():
+    def startup(self):
         # initate start up
         expected_node_status = tdarr.Tdarr_Logic.alive_node_search(self.Constants)
         quantity_of_living_nodes = 0
@@ -78,7 +82,7 @@ class Workhorse:
                     print("INFO: Shutting/Pausing down all nodes except primary")
                     # TODO shutdown all online nodes except primary
                 else:
-                    refresh(self.Constants)
+                    self.refresh()
             else:
                 # TODO Same function as above on line 59 looping
                 print("PLACEHOLDER")

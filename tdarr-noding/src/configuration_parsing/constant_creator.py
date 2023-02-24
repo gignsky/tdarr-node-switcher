@@ -1,7 +1,7 @@
 from . import Server, Node
 
 
-class Constants_Setup:
+class ConstantsSetup:
     """
         class to setup constants for server and node
     < Document Guardian | Protect >
@@ -65,7 +65,7 @@ class Constants_Setup:
             if get_node_name in preexisting_node_dictionary_keys:
                 self.node_dictionary[get_node_name].line_state("Online")
                 for node_id in get_nodes_output:
-                    node_id_inner_dictionary = get_nodes_output[get_node_id]
+                    node_id_inner_dictionary = get_nodes_output[node_id]
                 self.node_dictionary[get_node_name].update_with_tdarr_dictionary(
                     node_id_inner_dictionary, "Expected"
                 )
