@@ -1,4 +1,2 @@
-__pycache__/
+__pycache__/*
 .venv/*
-.vscode/*
-files_to_remove/*
