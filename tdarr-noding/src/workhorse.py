@@ -4,6 +4,12 @@ from . import tdarr
 
 
 class Workhorse:
+    """
+    general workhorse for the entireprogram where the large amount of overall processing is handled
+
+    < Document Guardian | Protect >
+    """
+
     # setup constants
     def setup_constants(self, configuration_file):
         """
