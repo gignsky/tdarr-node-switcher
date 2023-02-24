@@ -12,7 +12,6 @@ black==23.1.0
   pathspec==0.11.0
   platformdirs==3.0.0
   tomli==2.0.1
-coverage==7.2.0
 pip-autoremove==0.10.0
   pip==23.0.1
   setuptools==65.5.1
@@ -28,6 +27,15 @@ pylint==2.16.2
   platformdirs==3.0.0
   tomli==2.0.1
   tomlkit==0.11.6
+pytest-cov==4.0.0
+  coverage==7.2.0
+  pytest==7.2.1
+    attrs==22.2.0
+    exceptiongroup==1.1.0
+    iniconfig==2.0.0
+    packaging==23.0
+    pluggy==1.0.0
+    tomli==2.0.1
 requests==2.28.2
   certifi==2022.12.7
   charset-normalizer==3.0.1
