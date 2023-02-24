@@ -82,7 +82,7 @@ class Workhorse:
                     print("INFO: Shutting/Pausing down all nodes except primary")
                     # TODO shutdown all online nodes except primary
                 else:
-                    self.refresh(self.Constants)
+                    self.refresh()
             else:
                 # TODO Same function as above on line 59 looping
                 print("PLACEHOLDER")
