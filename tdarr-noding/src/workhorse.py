@@ -5,8 +5,7 @@ from . import tdarr
 
 class Workhorse:
     # setup constants
-    @staticmethod
-    def setup_constants(configuration_file):
+    def setup_constants(self, configuration_file):
         """
         setup_constants configures the constants class and returns that class as well as server class and a dictionary with keys being the node names and value being node's class
 
@@ -30,12 +29,14 @@ class Workhorse:
         return Server, node_dictionary
 
     # main methods
-    @staticmethod
-    def refresh():
+    def refresh(
+        self,
+    ):
         Logic.refresh_all(self.Constants)
 
-    @staticmethod
-    def normal():
+    def normal(
+        self,
+    ):
         script_status_file = Logic.script_status(self.Constants)
 
         if script_status_file == "Stopped":
@@ -44,8 +45,9 @@ class Workhorse:
             print("PLACEHOLDER")
             # TODO Write info in for reading yaml status file
 
-    @staticmethod
-    def startup():
+    def startup(
+        self,
+    ):
         # initate start up
         expected_node_status = tdarr.Tdarr_Logic.alive_node_search(self.Constants)
         quantity_of_living_nodes = 0
