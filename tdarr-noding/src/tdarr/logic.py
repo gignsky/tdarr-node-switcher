@@ -52,15 +52,15 @@ class Tdarr_Logic:
     #
     #         return expected_node_status
 
-    @staticmethod
-    def nodeTest(node_name, dictionary):
-        node_names_list = Logic.list_of_node_names(dictionary)
-        if node_name in node_names_list:
-            tdarr_node_online_status = "Online"
-        else:
-            tdarr_node_online_status = "Offline"
-
-        return tdarr_node_online_status
+#     @staticmethod
+#     def nodeTest(node_name, dictionary):
+#         node_names_list = Logic.list_of_node_names(dictionary)
+#         if node_name in node_names_list:
+#             tdarr_node_online_status = "Online"
+#         else:
+#             tdarr_node_online_status = "Offline"
+#
+#         return tdarr_node_online_status
 
     # find nodes with ongoing work
     @staticmethod
