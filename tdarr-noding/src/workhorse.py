@@ -29,10 +29,10 @@ class Workhorse:
         self.Server = self.Constants.setup_server_class()
 
         # setup nodes
-        get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(Server)
+        get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
         self.node_dictionary = self.Constants.setup_node_class(get_nodes_output)
 
-        return Server, node_dictionary
+        return self.Server, self.node_dictionary
 
     # main methods
     def refresh(self):
