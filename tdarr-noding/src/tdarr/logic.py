@@ -134,9 +134,9 @@ class Tdarr_Logic:
         # print(len(response))
         transcodeErrors = []
         for i in response:
-            id = i.get("_id")
+            node_id = i.get("_id")
 
-            transcodeErrors.append(id)
+            transcodeErrors.append(node_id)
             # print(i)
 
         return transcodeErrors
