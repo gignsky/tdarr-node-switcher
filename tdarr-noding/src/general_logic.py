@@ -9,8 +9,7 @@ class Logic:
     def refresh_all(constants):
         print("Refreshing...")
         tdarr.Tdarr_Orders.refresh_health_checks(constants)
-        tdarr.Tdarr_Orders.update_failed_transcodes(constants)
-        tdarr.Tdarr_Orders.update_successful_transcodes(constants)
+        tdarr.Tdarr_Orders.update_transcodes(constants)
 
     @staticmethod
     def server_status_check(constants):
