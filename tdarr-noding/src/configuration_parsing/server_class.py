@@ -51,6 +51,10 @@ class Server:
         self.priority_level = self.server_inner_dict["default_priority_level"]
 
     def set_up_urls(self):
+        """
+        set_up_urls configure url endpoints
+        < Document Guardian | Protect >
+        """
         url = self.server_inner_dict["url"]
         api_string = self.server_inner_dict["api_string"]
 
