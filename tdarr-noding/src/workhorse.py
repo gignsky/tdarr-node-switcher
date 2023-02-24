@@ -29,9 +29,7 @@ class Workhorse:
         return Server, node_dictionary
 
     # main methods
-    def refresh(
-        self,
-    ):
+    def refresh(self):
         Logic.refresh_all(self.Constants)
 
     def normal(
@@ -40,14 +38,12 @@ class Workhorse:
         script_status_file = Logic.script_status(self.Constants)
 
         if script_status_file == "Stopped":
-            Workhorse.startup(self.Constants)
+            Workhorse.startup()
         else:
             print("PLACEHOLDER")
             # TODO Write info in for reading yaml status file
 
-    def startup(
-        self,
-    ):
+    def startup(self):
         # initate start up
         expected_node_status = tdarr.Tdarr_Logic.alive_node_search(self.Constants)
         quantity_of_living_nodes = 0
