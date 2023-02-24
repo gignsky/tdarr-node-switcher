@@ -1,7 +1,7 @@
 from . import Server, Node
 
 
-class Constants_Setup:
+class ConstantsSetup:
     """
         class to setup constants for server and node
     < Document Guardian | Protect >

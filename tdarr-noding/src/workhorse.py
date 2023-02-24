@@ -18,7 +18,7 @@ class Workhorse:
 
         < Document Guardian | Protect >
         """
-        self.Constants = configuration_parsing.Constants_Setup(configuration_file)
+        self.Constants = configuration_parsing.ConstantsSetup(configuration_file)
 
         # setup server
         Server = self.Constants.setup_server_class()
