@@ -52,15 +52,15 @@ class Tdarr_Logic:
     #
     #         return expected_node_status
 
-#     @staticmethod
-#     def nodeTest(node_name, dictionary):
-#         node_names_list = Logic.list_of_node_names(dictionary)
-#         if node_name in node_names_list:
-#             tdarr_node_online_status = "Online"
-#         else:
-#             tdarr_node_online_status = "Offline"
-#
-#         return tdarr_node_online_status
+    #     @staticmethod
+    #     def nodeTest(node_name, dictionary):
+    #         node_names_list = Logic.list_of_node_names(dictionary)
+    #         if node_name in node_names_list:
+    #             tdarr_node_online_status = "Online"
+    #         else:
+    #             tdarr_node_online_status = "Offline"
+    #
+    #         return tdarr_node_online_status
 
     # find nodes with ongoing work
     @staticmethod
@@ -104,12 +104,12 @@ class Tdarr_Logic:
         # print(len(response))
         fails = []
         for i in response:
-            id = i.get("_id")
+            node_id = i.get("_id")
 
             healthCheckStatus = i.get("HealthCheck")
             # print(healthCheckStatus)
             if healthCheckStatus == "Error":
-                fails.append(id)
+                fails.append(node_id)
                 # print(i)
 
         return fails
