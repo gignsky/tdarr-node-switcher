@@ -1,0 +1,21 @@
+program:
+  folder_path: "/example/path/to/folder"
+tdarr_server:
+  url: "http://192.168.51.30:8265"
+  api_string: "/api/v2"
+  max_nodes: 4
+  default_priority_level: 2
+tdarr_nodes:
+  test-node1:
+    primary_node: true
+    priority: 0
+    healthcheck_worker_limits:
+      min_cpu: 0
+      max_cpu: 5
+      min_gpu: 0
+      max_gpu: 3
+    transcode_worker_limits:
+      min_cpu: 0
+      max_cpu: 2
+      min_gpu: 0
+      max_gpu: 3

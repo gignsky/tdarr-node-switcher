@@ -12,8 +12,8 @@ class Logic:
         tdarr.Tdarr_Orders.update_transcodes(constants)
 
     @staticmethod
-    def server_status_check(constants):
-        var = requests.get(constants.Server.status)
+    def server_status_check(Server):
+        var = requests.get(Server.status)
 
         if var.status_code != 200:
             return "stop"
