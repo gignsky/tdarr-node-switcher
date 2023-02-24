@@ -29,11 +29,14 @@ class Server:
             node_dictionary (dictionary): keys are names of nodes, values are node classes
         < Document Guardian | Protect >
         """
+        expected_nodes_dictionary = {}
         for name in node_dictionary:
             node_inner_dictionary = node_dictionary[name]
-            self.expected_nodes_dictionary[name] = Node(
+            expected_nodes_dictionary[name] = Node(
                 name, node_inner_dictionary, "Expected"
             )
+
+        return expected_nodes_dictionary
 
     # configure default server information
     def default_server_configuration(self):
@@ -64,12 +67,3 @@ class Server:
         self.search = f"{tdarr_useable_url}/search-db"
 
         self.update_url = f"{tdarr_useable_url}/cruddb"
-
-
-#     def determine_tdarr_nodes(self, node_inner_dictionary):
-#         self.list_of_tdarr_nodes = {}
-#
-#         for id_string in node_inner_dictionary:
-#             sub_inner_id_dictionary = node_inner_dictionary[id_string]
-#             name = sub_inner_id_dictionary["nodeName"]
-#             self.list_of_tdarr_nodes[name] = sub_inner_id_dictionary

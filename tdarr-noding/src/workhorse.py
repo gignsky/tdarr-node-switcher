@@ -4,6 +4,7 @@ from . import tdarr
 
 
 class Workhorse:
+    # setup constants
     @staticmethod
     def setup_constants(configuration_file):
         """
@@ -17,14 +18,18 @@ class Workhorse:
 
         < Document Guardian | Protect >
         """
-        Constants = configuration_parsing.Constants_Setup(configuration_file)
-        # Constants.Server.determine_tdarr_nodes(
-        #     tdarr.Tdarr_Logic.generic_get_nodes(Constants)
-        # )
-        Constants.get_nodes_check(tdarr.Tdarr_Logic.generic_get_nodes(Constants))
+        self.Constants = configuration_parsing.Constants_Setup(configuration_file)
 
-        return Constants
+        # setup server
+        Server = self.Constants.setup_server_class()
 
+        # setup nodes
+        get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(Server)
+        node_dictionary = self.Constants.setup_node_class(get_nodes_output)
+
+        return Server, node_dictionary
+
+    # main methods
     @staticmethod
     def refresh():
         Logic.refresh_all(self.Constants)

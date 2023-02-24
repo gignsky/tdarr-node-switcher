@@ -20,13 +20,18 @@ class Constants_Setup:
 
         self.program_folder_path = configuration_file["program"]["folder_path"]
 
+    def setup_server_class(self):
         """
         setup_server_class configures server class and returns it
 
         < Document Guardian | Protect >
         """
+        server_inner_dictionary = self.configuration_file["tdarr_server"]
         self.Server = Server(server_inner_dictionary)
 
+        return self.Server
+
+    def setup_node_class(self, get_nodes_output):
         """
         setup_node_class setup node classes and return dictionary of said classes with names in the keys
 
@@ -38,47 +43,46 @@ class Constants_Setup:
         < Document Guardian | Protect >
         """
         config_node_inner_dictionary = self.configuration_file["tdarr_nodes"]
-        Server.expected_nodes_creator(Server, config_node_inner_dictionary)
-        print(Server.expected_nodes_dictionary)
-        # self.Server.set_primary_node()
-        # print(Server.primary_node)
-        # find additional nodes (unexpected)
 
-    def get_nodes_check(self, get_nodes_dictionary):
-        self.all_tdarr_nodes = {}
-        for node_id in get_nodes_dictionary:
-            node_id_inner_dictionary = get_nodes_dictionary[node_id]
-            name = node_id_inner_dictionary["nodeName"]
-            self.all_tdarr_nodes[name] = node_id_inner_dictionary
+        # get nodes from yaml config
+        self.node_dictionary = Server.expected_nodes_creator(
+            Server, config_node_inner_dictionary
+        )
 
-        for expected_node_name in self.Server.expected_nodes_dictionary:
-            expected_node_class = self.Server.expected_nodes_dictionary[
-                expected_node_name
-            ]
-            for tdarr_node in self.all_tdarr_nodes:
-                if expected_node_name == tdarr_node:
-                    expected_node_class.update_with_tdarr_dictionary(
-                        self.all_tdarr_nodes[tdarr_node], "Expected"
-                    )
-                    expected_node_class.line_state("Online")
-                # else:
-                #     expected_node.update_with_tdarr_dictionary(
-                #         self.all_tdarr_nodes[tdarr_node], "Unexpected"
-                #     )
-            if expected_node_class.online is None:
-                expected_node_class.line_state("Offline")
+        # get nodes from tdarr and compare
+        get_nodes_output_keys = list(get_nodes_output.keys())
+        get_nodes_output_names = []
+        preexisting_node_dictionary_keys = list(self.node_dictionary.keys())
 
+        ## make list of node names from get_nodes output
+        for get_node_id in get_nodes_output_keys:
+            keys_dictionary = get_nodes_output[get_node_id]
+            name = keys_dictionary["nodeName"]
+            get_nodes_output_names.append(name)
 
-# TODO Reenable the use of notification for unexpected node
-#         for tdarr_node in self.all_tdarr_nodes:
-#             for expected_node in self.Server.expected_nodes_dictionary:
-#                 expected_node_class = self.Server.expected_nodes_dictionary[
-#                     expected_node_name
-#                 ]
-#                 # if expected_node_class.expected is None:
-#                 #     expected_node_class.expected_or_not("Unexpected")
-#                 #     pass
-#
-#             print(
-#                 f"ERROR: `{tdarr_node}` was NOT Expected and is outside of this programs control"
-#             )  # Eventual TODO fix this up so that new nodes can be added and controlled
+        ## search for expected and unexpected nodes from tdarr get_nodes with online and offline setting
+        for get_node_name in get_nodes_output_names:
+            if get_node_name in preexisting_node_dictionary_keys:
+                self.node_dictionary[get_node_name].line_state("Online")
+                for node_id in get_nodes_output:
+                    node_id_inner_dictionary = get_nodes_output[get_node_id]
+                self.node_dictionary[get_node_name].update_with_tdarr_dictionary(
+                    node_id_inner_dictionary, "Expected"
+                )
+            else:
+                new_node_class = Node(get_node_name, None, "Unexpected")
+                new_node_class.line_state("Online")
+                for node_id in get_nodes_output:
+                    node_id_inner_dictionary = get_nodes_output[get_node_id]
+                new_node_class.update_with_tdarr_dictionary(
+                    node_id_inner_dictionary, "Unexpected"
+                )
+                self.node_dictionary[get_node_name] = new_node_class
+
+        ##check for dead nodes
+        for node_name in self.node_dictionary:
+            node_class = self.node_dictionary[node_name]
+            if node_class.online is None:
+                node_class.line_state("Offline")
+
+        return self.node_dictionary
