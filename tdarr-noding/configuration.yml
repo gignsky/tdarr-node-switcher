@@ -20,7 +20,7 @@ tdarr_nodes:
       min_gpu: 0
       max_gpu: 3
   server-node:
-    priority: 1
+    priority: 3
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -32,7 +32,7 @@ tdarr_nodes:
       min_gpu: 0
       max_gpu: 0
   node-a:
-    priority: 2
+    priority: 1
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -44,7 +44,7 @@ tdarr_nodes:
       min_gpu: 0
       max_gpu: 0
   node-b:
-    priority: 3
+    priority: 2
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
