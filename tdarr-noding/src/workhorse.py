@@ -32,6 +32,11 @@ class Workhorse:
         get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
         self.node_dictionary = self.Constants.setup_node_class(get_nodes_output)
 
+        for node in self.node_dictionary:
+            NodeClass = self.node_dictionary[node]
+            if NodeClass.primary_node:
+                self.Server.add_primary_node(node)
+
         return self.Server, self.node_dictionary
 
     # main methods
@@ -68,9 +73,10 @@ class Workhorse:
             )
             # TODO write script to shutdown single worst priority node
 
-        primary_node = self.Constants.primary_node_name
+        primary_node = self.Server.primary_node
+        primary_node_class = self.node_dictionary[primary_node]
 
-        if expected_node_status[primary_node] == "Online":
+        if primary_node_class.online:
             print(f"Primary NODE: `{primary_node}` is ONLINE")
             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
             nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(

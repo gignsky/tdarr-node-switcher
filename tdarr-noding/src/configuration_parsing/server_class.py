@@ -20,6 +20,16 @@ class Server:
         # configure default server information
         self.default_server_configuration()
 
+    def add_primary_node(self, node_name):
+        """
+        add_primary_node add primary node name to server config
+
+        Args:
+            node_name (string): node_name
+        < Document Guardian | Protect >
+        """
+        self.primary_node = node_name
+
     # node class list creator
     def expected_nodes_creator(self, node_dictionary):
         """
