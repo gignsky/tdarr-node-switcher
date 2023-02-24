@@ -28,31 +28,8 @@ class Tdarr_Orders:
             # pprint(response)
 
     @staticmethod
-    def update_failed_transcodes(constants):
+    def update_transcodes(constants):
         ids = Tdarr_Logic.search_for_failed_transcodes(constants)
-
-        i = 0
-
-        for i in ids:
-            payload = {
-                "data": {
-                    "collection": "FileJSONDB",
-                    "mode": "update",
-                    "docID": i,
-                    "obj": {"TranscodeDecisionMaker": "Queued"},
-                }
-            }
-            headers = {"Content-Type": "application/json"}
-
-            requests.post(
-                constants.Server.update_url, json=payload, headers=headers, timeout=1.5
-            )
-
-            # pprint(response)
-
-    @staticmethod
-    def update_successful_transcodes(constants):
-        ids = Tdarr_Logic.search_for_successful_transcodes(constants)
 
         i = 0
 
