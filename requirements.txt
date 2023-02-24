@@ -1,4 +1,4 @@
-pip==23.0
+pip==23.0.1
 pipdeptree==2.3.3
 setuptools==67.4.0
 touch==2020.12.3
