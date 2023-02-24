@@ -26,11 +26,11 @@ class Workhorse:
         self.Constants = configuration_parsing.ConstantsSetup(configuration_file)
 
         # setup server
-        Server = self.Constants.setup_server_class()
+        self.Server = self.Constants.setup_server_class()
 
         # setup nodes
         get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(Server)
-        node_dictionary = self.Constants.setup_node_class(get_nodes_output)
+        self.node_dictionary = self.Constants.setup_node_class(get_nodes_output)
 
         return Server, node_dictionary
 
@@ -38,9 +38,7 @@ class Workhorse:
     def refresh(self):
         Logic.refresh_all(self.Constants)
 
-    def normal(
-        self,
-    ):
+    def normal(self):
         script_status_file = Logic.script_status(self.Constants)
 
         if script_status_file == "Stopped":
@@ -51,13 +49,18 @@ class Workhorse:
 
     def startup(self):
         # initate start up
-        expected_node_status = tdarr.Tdarr_Logic.alive_node_search(self.Constants)
-        quantity_of_living_nodes = 0
 
-        for node in expected_node_status:
-            print(f"NODE: `{node}` is {expected_node_status[node]}")
-            if expected_node_status[node] == "Online":
+        # find quanitity of online nodes
+        quantity_of_living_nodes = 0
+        current_priority_level = 0
+        for node in self.node_dictionary:
+            NodeClass = self.node_dictionary[node]
+            line_state = NodeClass.line_state
+            priority_level = NodeClass.priority
+            if line_state:
                 quantity_of_living_nodes += 1
+                if priority_level >= current_priority_level:
+                    current_priority_level = priority_level
 
         if quantity_of_living_nodes > self.Constants.max_nodes:
             print(
