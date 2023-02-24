@@ -19,3 +19,15 @@ tdarr_nodes:
       max_cpu: 2
       min_gpu: 0
       max_gpu: 3
+  test-node2:
+    priority: 0
+    healthcheck_worker_limits:
+      min_cpu: 0
+      max_cpu: 3
+      min_gpu: 0
+      max_gpu: 2
+    transcode_worker_limits:
+      min_cpu: 0
+      max_cpu: 3
+      min_gpu: 0
+      max_gpu: 1

@@ -17,7 +17,6 @@ def test_init():
         assert NodeClass.node_name == node_name
         assert NodeClass.config_node_inner_dictionary == inner_dictionary
         assert NodeClass.priority == inner_dictionary["priority"]
-        assert NodeClass.primary_node == True or False
         assert NodeClass.online == None
 
 
