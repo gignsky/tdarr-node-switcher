@@ -55,14 +55,14 @@ class Workhorse:
         current_priority_level = 0
         for node in self.node_dictionary:
             NodeClass = self.node_dictionary[node]
-            line_state = NodeClass.line_state
+            line_state = NodeClass.online
             priority_level = NodeClass.priority
             if line_state:
                 quantity_of_living_nodes += 1
                 if priority_level >= current_priority_level:
                     current_priority_level = priority_level
 
-        if quantity_of_living_nodes > self.Constants.max_nodes:
+        if quantity_of_living_nodes > self.Server.max_nodes:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
