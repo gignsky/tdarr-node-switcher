@@ -2,7 +2,19 @@ from . import Node
 
 
 class Server:
+    """
+        class to setup information important to the tdarr server
+    < Document Guardian | Protect >
+    """
+
     def __init__(self, server_inner_dict):
+        """
+        __init__ basic server setup
+
+        Args:
+            server_inner_dict (json dictionary from config yaml): configuration yaml config section regarding tdarr_server
+        < Document Guardian | Protect >
+        """
         self.server_inner_dict = server_inner_dict
 
         # configure default server information
@@ -25,6 +37,10 @@ class Server:
 
     # configure default server information
     def default_server_configuration(self):
+        """
+        default_server_configuration default server endpoint configuration
+        < Document Guardian | Protect >
+        """
         self.set_up_urls()
 
         self.max_nodes = self.server_inner_dict["max_nodes"]

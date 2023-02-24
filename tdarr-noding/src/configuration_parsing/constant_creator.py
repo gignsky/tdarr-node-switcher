@@ -2,7 +2,20 @@ from . import Server, Node
 
 
 class Constants_Setup:
+    """
+        class to setup constants for server and node
+    < Document Guardian | Protect >
+    """
+
     def __init__(self, configuration_file):
+        """
+        __init__ setup basic configuration file information
+
+        Args:
+            configuration_file (pyyaml to json): configuration file brought in to json from pyyaml import
+
+        < Document Guardian | Protect >
+        """
         self.configuration_file = configuration_file
 
         self.program_folder_path = configuration_file["program"]["folder_path"]
@@ -14,7 +27,16 @@ class Constants_Setup:
         """
         self.Server = Server(server_inner_dictionary)
 
-    def setup_node_class(self):
+        """
+        setup_node_class setup node classes and return dictionary of said classes with names in the keys
+
+        Args:
+            get_nodes_output (json): json from tdarr/get_nodes endpoint
+
+        Returns:
+            dictionary: dictionary of nodes classes with keys being the name of the node
+        < Document Guardian | Protect >
+        """
         config_node_inner_dictionary = self.configuration_file["tdarr_nodes"]
         Server.expected_nodes_creator(Server, config_node_inner_dictionary)
         print(Server.expected_nodes_dictionary)
