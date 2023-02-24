@@ -12,7 +12,7 @@ def main():
     # establish constants
     Workhorse = src.Workhorse()
 
-    Server, node_dictionary = Workhorse.setup_constants(configuration_file)
+    Server, _ = Workhorse.setup_constants(configuration_file)
 
     # establish if run with refresh command on purpose
     try:
