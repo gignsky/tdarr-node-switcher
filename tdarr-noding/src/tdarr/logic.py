@@ -64,8 +64,8 @@ class Tdarr_Logic:
 
     # find nodes with ongoing work
     @staticmethod
-    def find_nodes_with_work(constants):
-        json_response = Tdarr_Logic.generic_get_nodes(constants)
+    def find_nodes_with_work(Server):
+        json_response = Tdarr_Logic.generic_get_nodes(Server)
 
         list_of_nodes_with_work = []
 
@@ -85,11 +85,11 @@ class Tdarr_Logic:
 
     # searching...
     @staticmethod
-    def search_for_failed_health_checks(constants):
+    def search_for_failed_health_checks(Server):
         payload, headers = Tdarr_Logic.payload_and_headers("error")
 
         response = requests.post(
-            constants.Server.search, json=payload, headers=headers, timeout=1.5
+            Server.search, json=payload, headers=headers, timeout=1.5
         )
 
         response = json.loads(response.text)
@@ -108,11 +108,11 @@ class Tdarr_Logic:
         return fails
 
     @staticmethod
-    def search_for_failed_transcodes(constants):
+    def search_for_failed_transcodes(Server):
         payload, headers = Tdarr_Logic.payload_and_headers("Transcode error")
 
         response = requests.post(
-            constants.Server.search, json=payload, headers=headers, timeout=1.5
+            Server.search, json=payload, headers=headers, timeout=1.5
         )
 
         response = json.loads(response.text)
@@ -128,11 +128,11 @@ class Tdarr_Logic:
         return transcodeErrors
 
     @staticmethod
-    def search_for_successful_transcodes(constants):
+    def search_for_successful_transcodes(Server):
         payload, headers = Tdarr_Logic.payload_and_headers("Transcode success")
 
         response = requests.post(
-            constants.Server.search, json=payload, headers=headers, timeout=1.5
+            Server.search, json=payload, headers=headers, timeout=1.5
         )
 
         response = json.loads(response.text)
