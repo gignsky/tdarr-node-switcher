@@ -31,3 +31,7 @@ class Logic:
                 return status
         else:
             return "Stopped"
+
+    @staticmethod
+    def setup_status_class(status_file):
+        print("PLACEHOLDER")

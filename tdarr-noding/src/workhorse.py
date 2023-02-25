@@ -43,14 +43,14 @@ class Workhorse:
     def refresh(self):
         Logic.refresh_all(self.Constants)
 
-    def normal(self):
+    def normal(self, StatusClass):
         script_status_file = Logic.script_status(self.Constants)
 
         if script_status_file == "Stopped":
             self.startup()
         else:
             print("PLACEHOLDER")
-            # TODO Write info in for reading yaml status file
+            # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
 
     def startup(self):
         # initate start up
