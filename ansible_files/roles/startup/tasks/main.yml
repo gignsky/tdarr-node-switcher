@@ -1,0 +1,20 @@
+---
+# tasks file for roles/startup
+
+- name: Signal Containers to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Start_Node_A
+
+- name: Signal Containers to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Start_Node_B
+
+- name: Signal Containers to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Start_Node_C
