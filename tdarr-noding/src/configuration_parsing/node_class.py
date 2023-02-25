@@ -43,7 +43,8 @@ class Node:
 
     def find_startup_shutdown_cmd(self):
         """
-        find_startup_shutdown_cmd extracts startup shell statements from the config file for each individual node; these were written in ansible in the original implementation.
+        find_startup_shutdown_cmd extracts startup shell statements from the config file
+            for each individual node; these were written in ansible in the original implementation.
 
         < Document Guardian | Protect >
         """
