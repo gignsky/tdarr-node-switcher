@@ -2,7 +2,7 @@ import requests
 import yaml
 from pathlib import Path
 from . import tdarr
-
+from . import status_tracking
 
 class Logic:
     @staticmethod
@@ -34,4 +34,4 @@ class Logic:
 
     @staticmethod
     def setup_status_class(status_file):
-        print("PLACEHOLDER")
+        StatusClass = status_tracking.
