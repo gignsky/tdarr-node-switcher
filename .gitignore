@@ -2,3 +2,6 @@ __pycache__/
 .venv/*
 .vscode/*
 files_to_remove/*
+ansible_files/ansible.cfg
+ansible_files/become_pass
+ansible_files/inventory
