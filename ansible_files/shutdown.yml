@@ -1,7 +1,8 @@
 - name: Shutdown selected node on promox host
   hosts: proxmox-host
   become: true
-
+  tags:
+    - always
   pre_tasks:
     - name: Install Apt Packages.
       apt:
