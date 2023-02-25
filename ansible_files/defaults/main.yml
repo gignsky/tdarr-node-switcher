@@ -1,0 +1,15 @@
+---
+# vars file for roles/startup
+# API INFO
+api_user: ######
+api_password: ######
+
+# Hosts INFO
+node_a_host: memory-alpha
+node_b_host: memory-alpha
+node_c_host: memory-alpha
+
+# VMIDs
+node_a_vmid: 110
+node_b_vmid: 111
+node_c_vmid: 112
