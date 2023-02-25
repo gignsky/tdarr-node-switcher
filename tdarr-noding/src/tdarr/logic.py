@@ -36,7 +36,7 @@ class Tdarr_Logic:
     #             inner_dictionary = json_response[id]
     #             name = inner_dictionary["nodeName"]
     #             all_alive_node_names.append(name)
-    #             all_alive_node_dicts.append(inner_dictionary) #TODO START HERE WHEN GETTING BACK AT IT
+    #             all_alive_node_dicts.append(inner_dictionary) #TODO START HERE WHEN GETTING BACK AT IT - OLD
     #             if name in Constants.all_tdarr_nodes:
     #                 expected_node_status[name] = "Online"
     #             else:
@@ -86,7 +86,7 @@ class Tdarr_Logic:
     # searching...
     @staticmethod
     def search_for_failed_health_checks(Server):
-        payload, headers = Tdarr_Logic.payload_and_headers("error")
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("error")
 
         response = requests.post(
             Server.search, json=payload, headers=headers, timeout=1.5
@@ -109,7 +109,7 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_failed_transcodes(Server):
-        payload, headers = Tdarr_Logic.payload_and_headers("Transcode error")
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Transcode error")
 
         response = requests.post(
             Server.search, json=payload, headers=headers, timeout=1.5
@@ -129,7 +129,7 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_successful_transcodes(Server):
-        payload, headers = Tdarr_Logic.payload_and_headers("Transcode success")
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Transcode success")
 
         response = requests.post(
             Server.search, json=payload, headers=headers, timeout=1.5
@@ -148,7 +148,7 @@ class Tdarr_Logic:
         return transcodeSuccesses
 
     @staticmethod
-    def payload_and_headers(string):
+    def payload_and_headers_file_modification(string):
         payload = {
             "data": {
                 "string": string,
@@ -158,3 +158,89 @@ class Tdarr_Logic:
         }
         headers = {"Content-Type": "application/json"}
         return payload, headers
+
+    @staticmethod
+    def payload_and_headers_worker_modification(node_name,increase_or_decrease,worker_type):
+        payload = {
+            "nodeID": node_name,
+            "process": increase_or_decrease,
+            "workerType": worker_type
+        }}
+        headers = {"Content-Type": "application/json"}
+        return payload, headers
+
+    @staticmethod
+    def reset_workers_to_zero(node_dictionary):
+        #iterate through nodes
+        for name in node_dictionary:
+            NodeClass=node_dictionary[name]
+            Tdarr_Logic.set_worker_level(NodeClass,0,"All")
+
+    @staticmethod
+    def set_worker_level(NodeClass,set_to_level,workerType):
+        #get node info
+        node_name=NodeClass.nodeName
+
+
+        ##set worker type
+        if workerType =="All":
+            list_of_worker_types=["healthcheckcpu","healthcheckgpu","transcodecpu","transcodegpu"]
+            direction=Tdarr_Logic.get_direction(set_to_level,workerType,list_of_worker_types)
+        else:
+            direction=Tdarr_Logic.get_direction(set_to_level,workerType)
+
+        if direction != "Hold":
+            if workerType=="All":
+                payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(NodeClass.node_name,direction,list_of_worker_types)
+            else:
+                payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(NodeClass.node_name,direction,workerType)
+
+
+    ##discover up or down by set to level
+    @staticmethod
+    def get_direction(set_to_level, workerType, list_of_worker_types=None):
+        if set_to_level == 0:
+            increase_or_decrease = "decrease"
+        else:
+            if workerType == "All":
+                if list_of_worker_types is not None:
+                    list_of_up_downs = []
+                    for worker_type in list_of_worker_types:
+                        if worker_type == "healthcheckcpu":
+                            current_level = NodeClass.current_cpu_healthcheck
+                        elif worker_type == "healthcheckgpu":
+                            current_level = NodeClass.current_gpu_healthcheck
+                        elif worker_type == "transcodecpu":
+                            current_level = NodeClass.current_cpu_transcode
+                        elif worker_type == "transcodegpu":
+                            current_level = NodeClass.current_gpu_transcode
+                        if current_level > set_to_level:
+                            direction = "decrease"
+                        elif current_level == set_to_level:
+                            direction = "Hold"
+                        elif current_level < set_to_level:
+                            direction = "increase"
+                        list_of_up_downs.append(direction)
+                increase_or_decrease = list_of_up_downs
+            else:
+                if worker_type == "healthcheckcpu":
+                    current_level = NodeClass.current_cpu_healthcheck
+                elif worker_type == "healthcheckgpu":
+                    current_level = NodeClass.current_gpu_healthcheck
+                elif worker_type == "transcodecpu":
+                    current_level = NodeClass.current_cpu_transcode
+                elif worker_type == "transcodegpu":
+                    current_level = NodeClass.current_gpu_transcode
+                if current_level > set_to_level:
+                    direction = "decrease"
+                elif current_level==set_to_level:
+                    direction="Hold"
+                elif current_level < set_to_level:
+                    direction="increase"
+
+                if workerType=="All":
+                    increase_or_decrease=list_of_up_downs
+                else:
+                    increase_or_decrease=direction
+
+        return increase_or_decrease
