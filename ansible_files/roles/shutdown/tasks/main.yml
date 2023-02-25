@@ -1,0 +1,27 @@
+---
+# tasks file for roles/shutdown
+
+- name: Signal Node-A to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Stop_Node_A
+  tags:
+    - node-a
+
+- name: Signal Node-B to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Stop_Node_B
+  tags:
+    - node-b
+
+
+- name: Signal Node-C to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Stop_Node_C
+  tags:
+    - node-c

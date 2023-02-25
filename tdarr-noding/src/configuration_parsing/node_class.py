@@ -33,9 +33,34 @@ class Node:
 
         self.online = None
         self.expected = None
+        self.startup = None
+        self.shutdown = None
 
         # expected determination
         self.expected_or_not(expected_or_not)
+
+        self.find_startup_shutdown_cmd()
+
+    def find_startup_shutdown_cmd(self):
+        """
+        find_startup_shutdown_cmd extracts startup shell statements from the config file
+            for each individual node; these were written in ansible in the original implementation.
+
+        < Document Guardian | Protect >
+        """
+        try:
+            startup_command = self.config_node_inner_dictionary["startup_command"]
+        except KeyError:
+            startup_command = None
+        try:
+            shutdown_command = self.config_node_inner_dictionary["shutdown_command"]
+        except KeyError:
+            shutdown_command = None
+
+        print(f"Startup CMD:{startup_command}")
+        print(f"Shutdown CMD:{shutdown_command}")
+        self.startup = startup_command
+        self.shutdown = shutdown_command
 
     def line_state(self, online_or_offline):
         """
@@ -43,6 +68,7 @@ class Node:
 
         Args:
             online_or_offline (string): "Online" or "Offline" setting the state of this nodes bool
+        < Document Guardian | Protect >
         """
         if online_or_offline == "Online":
             self.online = True
