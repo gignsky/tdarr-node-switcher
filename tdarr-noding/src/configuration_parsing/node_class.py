@@ -43,6 +43,7 @@ class Node:
 
         Args:
             online_or_offline (string): "Online" or "Offline" setting the state of this nodes bool
+        < Document Guardian | Protect >
         """
         if online_or_offline == "Online":
             self.online = True
