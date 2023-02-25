@@ -20,6 +20,9 @@ def test_init():
         assert NodeClass.online == None
 
 
+# def test_find_startup_shutdown_cmd():
+
+
 # def test_set_healthcheck_limits():
 #     nodes_dictionary = configuration_file["tdarr_nodes"]
 #     list_of_node_classes=[]
