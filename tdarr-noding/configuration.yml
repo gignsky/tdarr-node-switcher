@@ -21,6 +21,8 @@ tdarr_nodes:
       max_gpu: 3
   server-node:
     priority: 3
+    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/server_node_startup.yml"
+    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/server_node_shutdown.yml"
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -33,8 +35,8 @@ tdarr_nodes:
       max_gpu: 0
   node-a:
     priority: 1
-    startup_cmd: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/startup.yml --skip-tags \"node-b\",\"node-c\""
-    shutdown_cmd: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/shutdown.yml --skip-tags \"node-b\",\"node-c\""
+    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/startup.yml --skip-tags \"node-b\",\"node-c\""
+    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/shutdown.yml --skip-tags \"node-b\",\"node-c\""
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -47,8 +49,8 @@ tdarr_nodes:
       max_gpu: 0
   node-b:
     priority: 2
-    startup_cmd: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/startup.yml --skip-tags \"node-a\",\"node-c\""
-    shutdown_cmd: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/shutdown.yml --skip-tags \"node-a\",\"node-c\""
+    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/startup.yml --skip-tags \"node-a\",\"node-c\""
+    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/shutdown.yml --skip-tags \"node-a\",\"node-c\""
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
@@ -61,8 +63,8 @@ tdarr_nodes:
       max_gpu: 0
   node-c:
     priority: 4
-    startup_cmd: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/startup.yml --skip-tags \"node-a\",\"node-b\""
-    shutdown_cmd: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/shutdown.yml --skip-tags \"node-a\",\"node-b\""
+    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/startup.yml --skip-tags \"node-a\",\"node-b\""
+    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible playbook /home/gig/local_repos/tdarr-node-switcher/ansible_files/shutdown.yml --skip-tags \"node-a\",\"node-b\""
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 6
