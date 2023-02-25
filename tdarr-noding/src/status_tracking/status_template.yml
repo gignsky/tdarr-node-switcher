@@ -1,5 +1,6 @@
 #Status file template
 state: "running"
+timestamp: "PLACEHOLDER"
 tdarr_server:
   state: "online"
   tdarr_nodes:
