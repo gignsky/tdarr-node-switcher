@@ -7,20 +7,14 @@ with open(
 ) as file:
     configuration_file = yaml.safe_load(file)
 
-with open(
-    "/home/gig/local_repos/tdarr-node-switcher/tdarr-noding/src/status_tracking/status_template.yml",
-    "r",
-) as file:
-    status_file = yaml.safe_load(file)
-
 
 def main():
     # establish constants
     Workhorse = src.Workhorse()
 
-    Server, _ = Workhorse.setup_constants(configuration_file)
+    Server, _, status_file = Workhorse.setup_constants(configuration_file)
 
-    Status = src.Logic.setup_status_class(status_file)
+    # Status = src.Logic.setup_status_class(status_file)
 
     # establish if run with refresh command on purpose
     try:

@@ -1,6 +1,7 @@
 from . import configuration_parsing
 from . import Logic
 from . import tdarr
+from . import node_interactions
 
 
 class Workhorse:
@@ -34,19 +35,23 @@ class Workhorse:
 
         for node in self.node_dictionary:
             NodeClass = self.node_dictionary[node]
+            # set primary node
             if NodeClass.primary_node:
                 self.Server.add_primary_node(node)
+            # node worker set to limits
+            tdarr.Tdarr_Logic.reset_workers_to_zero(self.node_dictionary)
 
-        return self.Server, self.node_dictionary
+        # setup status check
+        self.script_status_file = Logic.script_status(self.Constants)
+
+        return self.Server, self.node_dictionary, self.script_status_file
 
     # main methods
     def refresh(self):
         Logic.refresh_all(self.Constants)
 
-    def normal(self, StatusClass):
-        script_status_file = Logic.script_status(self.Constants)
-
-        if script_status_file == "Stopped":
+    def normal(self):
+        if self.script_status_file == "Stopped":
             self.startup()
         else:
             print("PLACEHOLDER")
@@ -71,6 +76,7 @@ class Workhorse:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
+            Logic.kill_smallest_priority_node(self.Server)
             # TODO write script to shutdown single worst priority node
 
         primary_node = self.Server.primary_node

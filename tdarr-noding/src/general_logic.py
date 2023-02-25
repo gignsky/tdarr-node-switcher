@@ -4,6 +4,7 @@ from pathlib import Path
 from . import tdarr
 from . import status_tracking
 
+
 class Logic:
     @staticmethod
     def refresh_all(constants):
@@ -22,8 +23,8 @@ class Logic:
             return "alive"
 
     @staticmethod
-    def script_status(constants):
-        path = Path(f"{constants.program_folder_path}/running.yml")
+    def script_status(ConstantsClass):
+        path = Path(f"{ConstantsClass.program_folder_path}/status.yml")
 
         if path.is_file():
             with open(path, "r") as file:
@@ -34,4 +35,4 @@ class Logic:
 
     @staticmethod
     def setup_status_class(status_file):
-        StatusClass = status_tracking.
+        StatusClass = status_tracking.StatusClass(status_file)
