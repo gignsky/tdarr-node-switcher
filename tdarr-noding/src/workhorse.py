@@ -56,15 +56,19 @@ class Workhorse:
             # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
 
     def startup(self):
-        # initate start up
+        """
+        startup function: this will run at the inital start of the script when no status file exists
+        < Document Guardian | Protect >
+        """
+        # initiate start up
 
-        # find quanitity of online nodes
+        # find quantity of online nodes
         quantity_of_living_nodes = 0
         current_priority_level = 0
         for node in self.node_dictionary:
-            NodeClass = self.node_dictionary[node]
-            line_state = NodeClass.online
-            priority_level = NodeClass.priority
+            node_class = self.node_dictionary[node]
+            line_state = node_class.online
+            priority_level = node_class.priority
             if line_state:
                 quantity_of_living_nodes += 1
                 if priority_level >= current_priority_level:
