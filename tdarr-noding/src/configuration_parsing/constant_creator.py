@@ -66,9 +66,11 @@ class ConstantsSetup:
                 self.node_dictionary[get_node_name].line_state("Online")
                 for node_id in get_nodes_output:
                     node_id_inner_dictionary = get_nodes_output[node_id]
-                self.node_dictionary[get_node_name].update_with_tdarr_dictionary(
-                    node_id_inner_dictionary, "Expected"
-                )
+                    node_name=node_id_inner_dictionary["nodeName"]
+                    if node_name==self.node_dictionary[get_node_name].node_name:
+                        self.node_dictionary[get_node_name].update_with_tdarr_dictionary(
+                            node_id_inner_dictionary, "Expected"
+                        )
             else:
                 new_node_class = Node(get_node_name, None, "Unexpected")
                 new_node_class.line_state("Online")
