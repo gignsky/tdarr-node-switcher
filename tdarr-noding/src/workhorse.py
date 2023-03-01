@@ -33,6 +33,7 @@ class Workhorse:
         get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
         self.node_dictionary = self.Constants.setup_node_class(get_nodes_output)
 
+        #reset nodes to zero workers
         for node in self.node_dictionary:
             NodeClass = self.node_dictionary[node]
             # set primary node

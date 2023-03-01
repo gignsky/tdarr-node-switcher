@@ -1,6 +1,6 @@
 import requests
 import json
-
+from . import Tdarr_Orders
 
 class Tdarr_Logic:
     @staticmethod
@@ -161,6 +161,18 @@ class Tdarr_Logic:
 
     @staticmethod
     def payload_and_headers_worker_modification(node_id,increase_or_decrease,worker_type):
+        """
+        payload_and_headers_worker_modification payload creator for worker modification
+
+        Args:
+            node_id (string): id string of node
+            increase_or_decrease (string): increase or decrease the amount of workers
+            worker_type (string/list): if string it will execute on that node worker alone if a list it will retrun a list of payloads for all items in list
+
+        Returns:
+            json: payload for request.post to be used later
+        < Document Guardian | Protect >
+        """
         headers = {"Content-Type": "application/json"}
         if worker_type == list(worker_type):
             final_payload=[]
@@ -177,45 +189,35 @@ class Tdarr_Logic:
 
     @staticmethod
     def reset_workers_to_zero(Server,node_dictionary):
+        """
+        reset_workers_to_zero resets nodes to zero workers in each category
+
+        Args:
+            Server (class): Server Class with all relevent endpoints
+            node_dictionary (dictionary of classes): dictionary with classes associated with the node names
+        < Document Guardian | Protect >
+        """
         #iterate through nodes
         for name in node_dictionary:
             NodeClass=node_dictionary[name]
             if NodeClass.online:
-                Tdarr_Logic.set_worker_level(Server,NodeClass,0,"All")
-
-    @staticmethod
-    def set_worker_level(Server,NodeClass,set_to_level,workerType):
-        #get node info
-        node_id=NodeClass.id_string
-
-
-        ##set worker type
-        if workerType =="All":
-            list_of_worker_types=["healthcheckcpu","healthcheckgpu","transcodecpu","transcodegpu"]
-            direction=Tdarr_Logic.get_direction(set_to_level,workerType,list_of_worker_types)
-        else:
-            direction=Tdarr_Logic.get_direction(set_to_level,workerType)
-
-        if direction != "Hold":
-            if workerType=="All":
-                list_of_payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,list_of_worker_types)
-            else:
-                payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,workerType)
-
-        if workerType=="All":
-            for payload in list_of_payload:
-                response = requests.post(
-                Server.mod_worker_limit, json=payload, headers=headers, timeout=1.5
-                )
-        else:
-            response = requests.post(
-            Server.mod_worker_limit, json=payload, headers=headers, timeout=1.5
-            )
-
+                Tdarr_Orders.set_worker_level(Server,NodeClass,0,"All")
 
     ##discover up or down by set to level
     @staticmethod
     def get_direction(set_to_level, workerType, list_of_worker_types=None):
+        """
+        get_direction finds the direction to increase or decrease the current value
+
+        Args:
+            set_to_level (int): numeric value of which to set the direction towards
+            workerType (string): string regarding which worker to focus on
+            list_of_worker_types (list, optional): if adjusting all place a list of all worker types or those to be adjusted in this field. Defaults to None.
+
+        Returns:
+            string: 'increase' or 'decrease'
+        < Document Guardian | Protect >
+        """
         if set_to_level == 0:
             increase_or_decrease = "decrease"
         else:
