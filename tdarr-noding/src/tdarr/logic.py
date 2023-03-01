@@ -178,16 +178,6 @@ class Tdarr_Logic:
     @staticmethod
     def reset_workers_to_zero(Server,node_dictionary):
         #iterate through nodes
-        test_payload = {"data": {
-            "nodeID": "S6E0nSlLd",
-            "process": "decrease",
-            "workerType": "transcodecpu"
-        }}
-#         headers = {"content-type": "application/json"}
-#
-#         response = requests.post(Server.mod_worker_limit, json=payload, headers=headers)
-
-
         for name in node_dictionary:
             NodeClass=node_dictionary[name]
             if NodeClass.online:
