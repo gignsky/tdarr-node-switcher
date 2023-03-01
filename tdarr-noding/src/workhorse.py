@@ -39,7 +39,7 @@ class Workhorse:
             if NodeClass.primary_node:
                 self.Server.add_primary_node(node)
             # node worker set to limits
-            tdarr.Tdarr_Logic.reset_workers_to_zero(self.node_dictionary)
+            tdarr.Tdarr_Logic.reset_workers_to_zero(self.Server,self.node_dictionary)
 
         # setup status check
         self.script_status_file = Logic.script_status(self.Constants)

@@ -160,26 +160,43 @@ class Tdarr_Logic:
         return payload, headers
 
     @staticmethod
-    def payload_and_headers_worker_modification(node_name,increase_or_decrease,worker_type):
-        payload = {
-            "nodeID": node_name,
-            "process": increase_or_decrease,
-            "workerType": worker_type
-        }}
+    def payload_and_headers_worker_modification(node_id,increase_or_decrease,worker_type):
         headers = {"Content-Type": "application/json"}
-        return payload, headers
+        if worker_type == list(worker_type):
+            final_payload=[]
+            for item in worker_type:
+                payload = {"data":{"nodeID": node_id,"process": increase_or_decrease,"workerType": item}}
+                final_payload.append(payload)
+        else:
+            final_payload = {
+                "nodeID": node_id,
+                "process": increase_or_decrease,
+                "workerType": worker_type
+            }
+        return final_payload, headers
 
     @staticmethod
-    def reset_workers_to_zero(node_dictionary):
+    def reset_workers_to_zero(Server,node_dictionary):
         #iterate through nodes
+        test_payload = {"data": {
+            "nodeID": "S6E0nSlLd",
+            "process": "decrease",
+            "workerType": "transcodecpu"
+        }}
+#         headers = {"content-type": "application/json"}
+#
+#         response = requests.post(Server.mod_worker_limit, json=payload, headers=headers)
+
+
         for name in node_dictionary:
             NodeClass=node_dictionary[name]
-            Tdarr_Logic.set_worker_level(NodeClass,0,"All")
+            if NodeClass.online:
+                Tdarr_Logic.set_worker_level(Server,NodeClass,0,"All")
 
     @staticmethod
-    def set_worker_level(NodeClass,set_to_level,workerType):
+    def set_worker_level(Server,NodeClass,set_to_level,workerType):
         #get node info
-        node_name=NodeClass.nodeName
+        node_id=NodeClass.id_string
 
 
         ##set worker type
@@ -191,9 +208,19 @@ class Tdarr_Logic:
 
         if direction != "Hold":
             if workerType=="All":
-                payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(NodeClass.node_name,direction,list_of_worker_types)
+                list_of_payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,list_of_worker_types)
             else:
-                payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(NodeClass.node_name,direction,workerType)
+                payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,workerType)
+
+        if workerType=="All":
+            for payload in list_of_payload:
+                response = requests.post(
+                Server.mod_worker_limit, json=payload, headers=headers, timeout=1.5
+                )
+        else:
+            response = requests.post(
+            Server.mod_worker_limit, json=payload, headers=headers, timeout=1.5
+            )
 
 
     ##discover up or down by set to level
