@@ -1,0 +1,66 @@
+"""
+    Basic class for reading configuration file and reading the saved status version from last run
+    < Document Guardian | Protect >
+"""
+
+from . import configuration_parsing as config_setup_folder
+
+class Configuration:
+    """
+        Basic class for reading configuration file and reading the saved status version from last run
+    < Document Guardian | Protect >
+    """
+
+    def __init__(self):
+        """
+        setup_constants configures the constants class and returns that class as well as server class and a dictionary with keys being the node names and value being node's class
+
+        Args:
+            configuration_file (yaml to json): configuration file from root directory after converted to json via the yaml import
+
+        Returns:
+            Classes: Constants, Server, (dictionary of classes) node_dictionary
+
+        < Document Guardian | Protect >
+        """
+
+        #constant path for configuration file
+        self.CONFIGURATION_PATH="../configuration.yml"
+        self.STATUS_PATH="../status.yml"
+
+        #load config file into yaml json dict
+        with open(self.CONFIGURATION_PATH, "r") as file:
+            self.configuration_file=yaml.safe_load(file)
+
+        self.configuration_class = config_setup_folder.ConstantsSetup(configuration_file)
+        return self.configuration_class
+
+    def setup_server_class(self):
+        # setup server
+        self.Server = self.configuration_class.setup_server_class()
+
+        return self.Server
+
+    def setup_configuration_node_dictionary(self):
+        # setup nodes
+        self.expected_node_dictionary = self.configuration_class.setup_node_class()
+
+        return self.expected_node_dictionary
+
+    def startup_tdarr_node_info_update(self):
+        #reset nodes to zero workers
+        for node in self.node_dictionary:
+            node_class = self.node_dictionary[node]
+            # set primary node
+            if node_class.primary_node:
+                self.Server.add_primary_node(node)
+
+
+    def check_if_status_exists(self):
+        # setup status check
+        self.script_status_file = Logic.script_status(self.STATUS_PATH)
+
+        if self.script_status_file == "Empty":
+            return False
+        else:
+            return True
