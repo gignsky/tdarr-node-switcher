@@ -21,7 +21,7 @@
         - proxmoxer
 
   roles:
-    - startup
+    - startup-node-b
 
   post_tasks:
     - name: Remove Pip Packagee

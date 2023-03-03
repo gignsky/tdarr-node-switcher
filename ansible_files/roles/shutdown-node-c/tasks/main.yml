@@ -1,0 +1,9 @@
+---
+# tasks file for roles/shutdown
+- name: Signal Node-C to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Stop_Node_C
+  tags:
+    - node-c

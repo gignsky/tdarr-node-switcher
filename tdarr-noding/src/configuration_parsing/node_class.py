@@ -57,6 +57,12 @@ class Node:
         except KeyError:
             shutdown_command = None
 
+        #fix up startup and shutdown
+        if startup_command is not None:
+            startup_command=startup_command.split()
+        if shutdown_command is not None:
+            shutdown_command=shutdown_command.split()
+
         print(f"Startup CMD:{startup_command}")
         print(f"Shutdown CMD:{shutdown_command}")
         self.startup = startup_command

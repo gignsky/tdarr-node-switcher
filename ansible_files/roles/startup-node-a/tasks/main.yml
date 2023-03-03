@@ -1,0 +1,10 @@
+---
+# tasks file for roles/startup
+
+- name: Signal Node-A to Start
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Start_Node_A
+  tags:
+    - node-a

@@ -1,0 +1,10 @@
+---
+# handlers file for roles/startup
+- name: Stop_Node_C
+  community.general.proxmox:
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    api_host: "{{ node_c_host }}"
+    state: stopped
+    vmid: "{{ node_c_vmid }}"
+  delay: 10
