@@ -8,3 +8,4 @@ ansible_files/inventory
 ansible_files/roles/shutdown/handlers/main.yml
 ansible_files/roles/startup/handlers/main.yml
 ansible_files/defaults/main.yml
+backup-tdarr-noding-pre-minor-restructuring/*
