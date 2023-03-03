@@ -35,8 +35,9 @@ class Workhorse:
 
         #reset nodes to zero workers
         for node in self.node_dictionary:
+            node_class = self.node_dictionary[node]
             # set primary node
-            if NodeClass.primary_node:
+            if node_class.primary_node:
                 self.Server.add_primary_node(node)
 
         # setup status check
@@ -80,7 +81,7 @@ class Workhorse:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
-            Logic.kill_smallest_priority_node(self.Server)
+            node_interactions.HostLogic.kill_smallest_priority_node(self.Constants,self.node_dictionary)
             # TODO write script to shutdown single worst priority node
 
         primary_node = self.Server.primary_node

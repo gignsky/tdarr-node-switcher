@@ -31,7 +31,7 @@ def main():
         if argument_status_indicator == "refresh":
             Workhorse.refresh()
         elif argument_status_indicator == "normal":
-            Workhorse.normal(Status)
+            Workhorse.normal()
     else:
         print("Tdarr Server is DOWN :(")
 
