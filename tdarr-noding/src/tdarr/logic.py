@@ -181,14 +181,15 @@ class Tdarr_Logic:
                 final_payload.append(payload)
         else:
             final_payload = {
-                "nodeID": node_id,
-                "process": increase_or_decrease,
-                "workerType": worker_type
+                "data":
+                    {"nodeID": node_id,
+                    "process": increase_or_decrease,
+                    "workerType": worker_type}
             }
         return final_payload, headers
 
     @staticmethod
-    def reset_workers_to_zero(Server,node_dictionary):
+    def reset_workers_to_zero(Server,node_name,node_dictionary):
         """
         reset_workers_to_zero resets nodes to zero workers in each category
 

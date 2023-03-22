@@ -42,8 +42,9 @@ class Workhorse:
                 quantity_of_living_nodes += 1
                 if priority_level >= current_priority_level:
                     current_priority_level = priority_level
-            #reset nodes to zero workers
-            tdarr.Tdarr_Logic.reset_workers_to_zero(Server,node_dictionary)
+
+            #reset node to zero workers
+            tdarr.Tdarr_Logic.reset_workers_to_zero(Server,node,node_dictionary)
 
         if quantity_of_living_nodes > Server.max_nodes:
             print(
