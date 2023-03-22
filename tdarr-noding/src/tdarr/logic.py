@@ -270,10 +270,10 @@ class Tdarr_Logic:
             elif current_level < set_to_level:
                 direction="increase"
 
-            if worker_type=="All":
-                increase_or_decrease=list_of_up_downs
-            else:
-                increase_or_decrease=direction
+            # if worker_type=="All":
+            #     increase_or_decrease=list_of_up_downs
+            # else:
+            increase_or_decrease=direction
 
         return increase_or_decrease
 
