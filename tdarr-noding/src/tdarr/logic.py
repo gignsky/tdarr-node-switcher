@@ -216,6 +216,21 @@ class Tdarr_Logic:
                         for _ in range(NodeClass.current_gpu_healthcheck):
                             Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckgpu")
 
+    @staticmethod
+    def reset_workers_to_max_limits(Server,node_name,node_dictionary):
+        #iterate through nodes
+        for name in node_dictionary:
+            if node_name==name:
+                NodeClass=node_dictionary[name]
+                if NodeClass.online:
+                    for _ in range(NodeClass.transcode_max_cpu):
+                        Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.transcode_max_cpu,"transcodecpu")
+                    # for _ in range(NodeClass.current_gpu_transcode):
+                    #     Tdarr_Logic.set_worker_level(Server,NodeClass,0,"transcodegpu")
+                    # for _ in range(NodeClass.current_cpu_healthcheck):
+                    #     Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckcpu")
+                    # for _ in range(NodeClass.current_gpu_healthcheck):
+                    #     Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckgpu")
     ##discover up or down by set to level
     @staticmethod
     def get_direction(set_to_level, worker_type, NodeClass=None):

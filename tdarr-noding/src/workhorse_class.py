@@ -46,6 +46,9 @@ class Workhorse:
             #reset node to zero workers
             tdarr.Tdarr_Logic.reset_workers_to_zero(Server,node,node_dictionary)
 
+            #reset node to max worker levels
+            tdarr.Tdarr_Logic.reset_workers_to_max_limits(Server,node,node_dictionary)
+
         if quantity_of_living_nodes > Server.max_nodes:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
