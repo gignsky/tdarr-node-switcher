@@ -59,13 +59,13 @@ class Workhorse:
             line_state = node_class.online
             if line_state:
                 #reset node to zero workers
-                tdarr.Tdarr_Logic.reset_workers_to_zero(Server,node,node_dictionary)
+                tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
 
                 #wait for workers to set to zero
                 time.sleep(2.5)
 
                 #reset node to max worker levels
-                tdarr.Tdarr_Logic.reset_workers_to_max_limits(Server,node,node_dictionary)
+                tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
 
         # primary_node = Server.primary_node
         # primary_node_class = node_dictionary[primary_node]
