@@ -29,7 +29,7 @@ class Workhorse:
         get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(Server)
 
         ## update configuration class with tdarr info
-        configuration_class.startup_configure_expected_nodes(node_dictionary,get_nodes_output)
+        configuration_class.startup_update_nodes_with_tdarr_info(node_dictionary,get_nodes_output)
 
         # find quantity of online nodes
         quantity_of_living_nodes = 0
