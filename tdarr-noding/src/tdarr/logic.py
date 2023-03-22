@@ -199,9 +199,21 @@ class Tdarr_Logic:
         """
         #iterate through nodes
         for name in node_dictionary:
-            NodeClass=node_dictionary[name]
-            if NodeClass.online:
-                Tdarr_Logic.set_worker_level(Server,NodeClass,0,"All")
+            if node_name==name:
+                NodeClass=node_dictionary[name]
+                if NodeClass.online:
+                    if NodeClass.current_cpu_transcode != 0:
+                        for _ in range(NodeClass.current_cpu_transcode):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"transcodecpu")
+                    if NodeClass.current_gpu_transcode != 0:
+                        for _ in range(NodeClass.current_gpu_transcode):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"transcodegpu")
+                    if NodeClass.current_cpu_healthcheck != 0:
+                        for _ in range(NodeClass.current_cpu_healthcheck):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckcpu")
+                    if NodeClass.current_gpu_healthcheck != 0:
+                        for _ in range(NodeClass.current_gpu_healthcheck):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckgpu")
 
     ##discover up or down by set to level
     @staticmethod
@@ -221,46 +233,46 @@ class Tdarr_Logic:
         if set_to_level == 0:
             increase_or_decrease = "decrease"
         else:
-            if workerType == "All":
-                if list_of_worker_types is not None:
-                    list_of_up_downs = []
-                    for worker_type in list_of_worker_types:
-                        if worker_type == "healthcheckcpu":
-                            current_level = NodeClass.current_cpu_healthcheck
-                        elif worker_type == "healthcheckgpu":
-                            current_level = NodeClass.current_gpu_healthcheck
-                        elif worker_type == "transcodecpu":
-                            current_level = NodeClass.current_cpu_transcode
-                        elif worker_type == "transcodegpu":
-                            current_level = NodeClass.current_gpu_transcode
-                        if current_level > set_to_level:
-                            direction = "decrease"
-                        elif current_level == set_to_level:
-                            direction = "Hold"
-                        elif current_level < set_to_level:
-                            direction = "increase"
-                        list_of_up_downs.append(direction)
-                increase_or_decrease = list_of_up_downs
-            else:
-                if worker_type == "healthcheckcpu":
-                    current_level = NodeClass.current_cpu_healthcheck
-                elif worker_type == "healthcheckgpu":
-                    current_level = NodeClass.current_gpu_healthcheck
-                elif worker_type == "transcodecpu":
-                    current_level = NodeClass.current_cpu_transcode
-                elif worker_type == "transcodegpu":
-                    current_level = NodeClass.current_gpu_transcode
-                if current_level > set_to_level:
-                    direction = "decrease"
-                elif current_level==set_to_level:
-                    direction="Hold"
-                elif current_level < set_to_level:
-                    direction="increase"
+            # if workerType == "All":
+            #     if list_of_worker_types is not None:
+            #         list_of_up_downs = []
+            #         for worker_type in list_of_worker_types:
+            #             if worker_type == "healthcheckcpu":
+            #                 current_level = NodeClass.current_cpu_healthcheck
+            #             elif worker_type == "healthcheckgpu":
+            #                 current_level = NodeClass.current_gpu_healthcheck
+            #             elif worker_type == "transcodecpu":
+            #                 current_level = NodeClass.current_cpu_transcode
+            #             elif worker_type == "transcodegpu":
+            #                 current_level = NodeClass.current_gpu_transcode
+            #             if current_level > set_to_level:
+            #                 direction = "decrease"
+            #             elif current_level == set_to_level:
+            #                 direction = "Hold"
+            #             elif current_level < set_to_level:
+            #                 direction = "increase"
+            #             list_of_up_downs.append(direction)
+            #     increase_or_decrease = list_of_up_downs
+            # else:
+            if worker_type == "healthcheckcpu":
+                current_level = NodeClass.current_cpu_healthcheck
+            elif worker_type == "healthcheckgpu":
+                current_level = NodeClass.current_gpu_healthcheck
+            elif worker_type == "transcodecpu":
+                current_level = NodeClass.current_cpu_transcode
+            elif worker_type == "transcodegpu":
+                current_level = NodeClass.current_gpu_transcode
+            if current_level > set_to_level:
+                direction = "decrease"
+            elif current_level==set_to_level:
+                direction="Hold"
+            elif current_level < set_to_level:
+                direction="increase"
 
-                if workerType=="All":
-                    increase_or_decrease=list_of_up_downs
-                else:
-                    increase_or_decrease=direction
+            if workerType=="All":
+                increase_or_decrease=list_of_up_downs
+            else:
+                increase_or_decrease=direction
 
         return increase_or_decrease
 
@@ -281,20 +293,20 @@ class Tdarr_Logic:
 
 
         ##set worker type
-        if workerType =="All":
-            list_of_worker_types=["healthcheckcpu","healthcheckgpu","transcodecpu","transcodegpu"]
-            direction=Tdarr_Logic.get_direction(set_to_level,workerType,list_of_worker_types)
-        else:
-            direction=Tdarr_Logic.get_direction(set_to_level,workerType)
+        # if workerType =="All":
+        #     list_of_worker_types=["healthcheckcpu","healthcheckgpu","transcodecpu","transcodegpu"]
+        #     direction=Tdarr_Logic.get_direction(set_to_level,workerType,list_of_worker_types)
+        # else:
+        direction=Tdarr_Logic.get_direction(set_to_level,workerType)
 
         if direction != "Hold":
-            if workerType=="All":
-                list_of_payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,list_of_worker_types)
-            else:
-                payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,workerType)
+            # if workerType=="All":
+            #     list_of_payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,list_of_worker_types)
+            # else:
+            payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,workerType)
 
-        if workerType=="All":
-            for payload in list_of_payload:
-                response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
-        else:
-            response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
+        # if workerType=="All":
+        #     for payload in list_of_payload:
+        #         response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
+        # else:
+        response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
