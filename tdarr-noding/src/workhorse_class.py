@@ -1,4 +1,5 @@
 from . import tdarr
+from . import node_interactions
 
 class Workhorse:
     """
@@ -53,7 +54,7 @@ class Workhorse:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
-            node_interactions.HostLogic.kill_smallest_priority_node(self.Constants,node_dictionary)
+            node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
             # TODO write script to shutdown single worst priority node
 
         primary_node = Server.primary_node
