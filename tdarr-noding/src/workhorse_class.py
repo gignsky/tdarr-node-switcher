@@ -53,18 +53,7 @@ class Workhorse:
             )
             node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
 
-        for node in node_dictionary:
-            node_class = node_dictionary[node]
-            line_state = node_class.online
-            if line_state:
-                #reset node to zero workers
-                tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
-
-                #wait for workers to set to zero
-                time.sleep(2.5)
-
-                #reset node to max worker levels
-                tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
+        Logic.reset_node_workers(node_dictionary)
 
         # primary_node = Server.primary_node
         # primary_node_class = node_dictionary[primary_node]
