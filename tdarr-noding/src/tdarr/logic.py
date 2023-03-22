@@ -67,6 +67,7 @@ class Tdarr_Logic:
         json_response = Tdarr_Logic.generic_get_nodes(Server)
 
         list_of_nodes_with_work = []
+        list_of_nodes_without_work=[]
 
         for node_id in json_response:
             node_id_inner_dictionary = json_response[node_id]
@@ -75,12 +76,11 @@ class Tdarr_Logic:
             legnth = len(worker_dict)
 
             if legnth == 0:
-                # TODO add pause node function
-                print("PLACEHOLDER")
+                list_of_nodes_without_work.append(node_id_inner_dictionary["nodeName"])
             else:
                 list_of_nodes_with_work.append(node_id_inner_dictionary["nodeName"])
 
-        return list_of_nodes_with_work
+        return list_of_nodes_with_work,list_of_nodes_without_work
 
     # searching...
     @staticmethod

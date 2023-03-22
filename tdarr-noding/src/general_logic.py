@@ -35,8 +35,8 @@ class Logic:
             return "Empty"
 
     @staticmethod
-    def reset_node_workers(node_dictionary,node_name=None):
-        if node_name is not None:
+    def reset_node_workers(Server,node_dictionary,node_name=None):
+        if node_name is None:
             for node in node_dictionary:
                 node_class = node_dictionary[node]
                 line_state = node_class.online

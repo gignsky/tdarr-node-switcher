@@ -25,3 +25,12 @@ class HostLogic:
                     max_priority_online_node_name=node_name
 
         return max_priority_online_node_name
+
+    @staticmethod
+    def kill_node(configuration_class,node_dictionary,name):
+        for node in node_dictionary:
+            if name == node:
+                if node_dictionary[node].online:
+                    #order shutdown
+                    shutdown_command=node_dictionary[node].shutdown
+                    HostCommands.shutdown_node(configuration_class,shutdown_command)

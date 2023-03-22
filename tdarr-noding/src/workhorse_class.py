@@ -53,7 +53,18 @@ class Workhorse:
             )
             node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
 
-        Logic.reset_node_workers(node_dictionary)
+        Logic.reset_node_workers(Server,node_dictionary)
+
+        nodes_with_work_list,nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Server)
+
+        #shutdown nodes without work
+        for node in nodes_without_work_list:
+            for node_dict_name in node_dictionary:
+                if node == node_dict_name:
+                    #set workers to zero
+                    tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
+                    #order shutdown
+                    node_interactions.HostLogic.kill_node(configuration_class,node_dictionary,node)
 
         # primary_node = Server.primary_node
         # primary_node_class = node_dictionary[primary_node]
@@ -61,7 +72,6 @@ class Workhorse:
 #         if primary_node_class.online:
 #             print(f"Primary NODE: `{primary_node}` is ONLINE")
 #             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
-#             nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Server)
 #
 #             number_of_working_nodes = len(nodes_with_work_list)
 #
