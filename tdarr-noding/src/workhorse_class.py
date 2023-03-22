@@ -52,7 +52,6 @@ class Workhorse:
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
             node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
-            # TODO write script to shutdown single worst priority node
 
         for node in node_dictionary:
             node_class = node_dictionary[node]
