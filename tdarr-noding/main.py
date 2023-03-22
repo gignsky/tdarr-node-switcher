@@ -14,15 +14,22 @@ def main():
     configuration_class=src.Configuration(current_directory)
 
     server_class=configuration_class.setup_server_class()
-    expected_node_class_dictionary=configuration_class.setup_configuration_node_dictionary()
 
-    #check if configuration file exists
-    status_exists=configuration_class.check_if_status_exists()
-
-    if status_exists:
-        print("PLACEHOLDER") #TODO Configure here for in status non-startup status
+    # check if server is online
+    server_status=src.Logic.server_status_check(server_status)
+    if server_status=="stop":
+        pass
     else:
-        #TODO configure status file to show that program has begun starting up procedure
-        workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
+        #continue establishing classes
+        expected_node_class_dictionary=configuration_class.setup_configuration_node_dictionary()
+
+        #check if configuration file exists
+        status_exists=configuration_class.check_if_status_exists()
+
+        if status_exists:
+            print("PLACEHOLDER") #TODO Configure here for in status non-startup status
+        else:
+            #TODO configure status file to show that program has begun starting up procedure
+            workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
 
 main()
