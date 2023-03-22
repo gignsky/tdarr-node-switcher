@@ -5,3 +5,66 @@ class Workhorse:
     < Document Guardian | Protect >
     """
 
+    # main methods
+    def refresh(self):
+        Logic.refresh_all(self.Constants)
+
+    def normal(self):
+        if self.script_status_file == "Stopped":
+            self.startup()
+        else:
+            print("PLACEHOLDER")
+            # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
+
+    def startup(self):
+        """
+        startup function: this will run at the inital start of the script when no status file exists
+        < Document Guardian | Protect >
+        """
+        # initiate start up
+
+        ## update configuration class with tdarr info
+        #TODO START HERE
+        # find quantity of online nodes
+        quantity_of_living_nodes = 0
+        current_priority_level = 0
+        for node in self.node_dictionary:
+            node_class = self.node_dictionary[node]
+            line_state = node_class.online
+            priority_level = node_class.priority
+            if line_state:
+                quantity_of_living_nodes += 1
+                if priority_level >= current_priority_level:
+                    current_priority_level = priority_level
+            #reset nodes to zero workers
+            tdarr.Tdarr_Logic.reset_workers_to_zero(self.Server,self.node_dictionary)
+
+        if quantity_of_living_nodes > self.Server.max_nodes:
+            print(
+                "WARNING: Too many nodes alive; killing last node on the priority list"
+            )
+            node_interactions.HostLogic.kill_smallest_priority_node(self.Constants,self.node_dictionary)
+            # TODO write script to shutdown single worst priority node
+
+        primary_node = self.Server.primary_node
+        primary_node_class = self.node_dictionary[primary_node]
+
+        if primary_node_class.online:
+            print(f"Primary NODE: `{primary_node}` is ONLINE")
+            # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
+            nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(
+                self.Constants
+            )
+
+            number_of_working_nodes = len(nodes_with_work_list)
+
+            if number_of_working_nodes == 1:
+                print("PLACEHOLDER")
+                if quantity_of_living_nodes > 1:
+                    print("INFO: Shutting/Pausing down all nodes except primary")
+                    # TODO shutdown all online nodes except primary
+                else:
+                    self.refresh()
+            else:
+                # TODO Same function as above on line 59 looping
+                print("PLACEHOLDER")
