@@ -23,6 +23,6 @@ def main():
         print("PLACEHOLDER") #TODO Configure here for in status non-startup status
     else:
         #TODO configure status file to show that program has begun starting up procedure
-        workhorse_class.startup()
+        workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
 
 main()

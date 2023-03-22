@@ -1,3 +1,5 @@
+from . import tdarr
+
 class Workhorse:
     """
     general workhorse for the entireprogram where the large amount of overall processing is handled
@@ -16,20 +18,24 @@ class Workhorse:
             print("PLACEHOLDER")
             # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
 
-    def startup(self):
+    def startup(self,Server,node_dictionary,configuration_class):
         """
         startup function: this will run at the inital start of the script when no status file exists
         < Document Guardian | Protect >
         """
         # initiate start up
 
+        ## get nodes output
+        get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(Server)
+
         ## update configuration class with tdarr info
-        #TODO START HERE
+        configuration_class.startup_configure_expected_nodes(node_dictionary,get_nodes_output)
+
         # find quantity of online nodes
         quantity_of_living_nodes = 0
         current_priority_level = 0
-        for node in self.node_dictionary:
-            node_class = self.node_dictionary[node]
+        for node in node_dictionary:
+            node_class = node_dictionary[node]
             line_state = node_class.online
             priority_level = node_class.priority
             if line_state:
@@ -37,17 +43,17 @@ class Workhorse:
                 if priority_level >= current_priority_level:
                     current_priority_level = priority_level
             #reset nodes to zero workers
-            tdarr.Tdarr_Logic.reset_workers_to_zero(self.Server,self.node_dictionary)
+            tdarr.Tdarr_Logic.reset_workers_to_zero(Server,node_dictionary)
 
-        if quantity_of_living_nodes > self.Server.max_nodes:
+        if quantity_of_living_nodes > Server.max_nodes:
             print(
                 "WARNING: Too many nodes alive; killing last node on the priority list"
             )
-            node_interactions.HostLogic.kill_smallest_priority_node(self.Constants,self.node_dictionary)
+            node_interactions.HostLogic.kill_smallest_priority_node(self.Constants,node_dictionary)
             # TODO write script to shutdown single worst priority node
 
-        primary_node = self.Server.primary_node
-        primary_node_class = self.node_dictionary[primary_node]
+        primary_node = Server.primary_node
+        primary_node_class = node_dictionary[primary_node]
 
         if primary_node_class.online:
             print(f"Primary NODE: `{primary_node}` is ONLINE")

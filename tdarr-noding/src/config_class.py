@@ -51,13 +51,16 @@ class Configuration:
 
         return self.expected_node_dictionary
 
-    def startup_tdarr_node_info_update(self):
-        #reset nodes to zero workers
-        for node in self.node_dictionary:
-            node_class = self.node_dictionary[node]
+    def startup_configure_expected_nodes(self,node_dictionary,get_nodes_output):
+        #set primary node
+        for node in node_dictionary:
+            node_class = node_dictionary[node]
             # set primary node
             if node_class.primary_node:
                 self.Server.add_primary_node(node)
+
+        #update nodes with tdarr info
+        self.constants_class.update_node_class_with_tdarr(get_nodes_output)
 
     def check_if_status_exists(self):
         # setup status check
