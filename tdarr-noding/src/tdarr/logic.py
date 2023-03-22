@@ -306,7 +306,7 @@ class Tdarr_Logic:
             # else:
             payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,worker_type)
 
-        # if workerType=="All":
+        # if worker_type=="All":
         #     for payload in list_of_payload:
         #         response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
         # else:
