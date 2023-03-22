@@ -21,6 +21,7 @@ class StatusTracking:
     def print_server_status(self):
         with open(self.path,"w") as file:
             server_status_file_output=yaml.dump(self.status_dict, file)
+            
 # class NodeStatus:
 #     def __init__(self, node_status_section):
 #         if node_status_section is not None:

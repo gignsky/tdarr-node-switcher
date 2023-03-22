@@ -65,6 +65,8 @@ class Workhorse:
                     tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
                     #order shutdown
                     node_interactions.HostLogic.kill_node(configuration_class,node_dictionary,node)
+                    #set node status to offline
+                    node_dictionary[node_dict_name].line_state("Offline")
 
         # primary_node = Server.primary_node
         # primary_node_class = node_dictionary[primary_node]
