@@ -69,4 +69,7 @@ class Configuration:
         if self.script_status_file == "Empty":
             return False
         else:
-            return True
+            with open(self.STATUS_PATH, "r") as file:
+            self.status_file=yaml.safe_load(file)
+
+            return True,self.status_file

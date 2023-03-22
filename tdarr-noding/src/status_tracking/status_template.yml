@@ -1,10 +1,11 @@
 #Status file template
-state: "running"
+server: "Online"
+state: "Started"
 timestamp: "PLACEHOLDER"
 tdarr_server:
   state: "online"
   tdarr_nodes:
-    example_node_name:
+    example_node_name: "NODE NAME"
       workers:
         healthcheck_worker_limits:
           min_cpu: 0

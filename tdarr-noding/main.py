@@ -24,10 +24,10 @@ def main():
         expected_node_class_dictionary=configuration_class.setup_configuration_node_dictionary()
 
         #check if configuration file exists
-        status_exists=configuration_class.check_if_status_exists()
+        status_exists,status_file=configuration_class.check_if_status_exists()
 
         if status_exists:
-            print("PLACEHOLDER") #TODO Configure here for in status non-startup status
+            status_class="TEST"
         else:
             #TODO configure status file to show that program has begun starting up procedure
             workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
