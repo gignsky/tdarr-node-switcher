@@ -304,7 +304,7 @@ class Tdarr_Logic:
             # if worker_type=="All":
             #     list_of_payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,list_of_worker_types)
             # else:
-            payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,workerType)
+            payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,worker_type)
 
         # if workerType=="All":
         #     for payload in list_of_payload:
