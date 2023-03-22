@@ -67,8 +67,8 @@ class Workhorse:
                 #reset node to max worker levels
                 tdarr.Tdarr_Logic.reset_workers_to_max_limits(Server,node,node_dictionary)
 
-        primary_node = Server.primary_node
-        primary_node_class = node_dictionary[primary_node]
+        # primary_node = Server.primary_node
+        # primary_node_class = node_dictionary[primary_node]
 
 #         if primary_node_class.online:
 #             print(f"Primary NODE: `{primary_node}` is ONLINE")
