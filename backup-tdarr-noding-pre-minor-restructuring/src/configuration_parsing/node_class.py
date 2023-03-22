@@ -83,11 +83,11 @@ class Node:
             print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Offline")
             self.online = False
 
-    def set_current_worker_levels(self,current_cpu_transcode,current_gpu_transcode,current_cpu_healthcheck,current_gpu_healthcheck):
-        self.current_cpu_transcode = current_cpu_transcode
-        self.current_gpu_transcode = current_gpu_transcode
-        self.current_cpu_healthcheck = current_cpu_healthcheck
-        self.current_gpu_healthcheck = current_gpu_healthcheck
+    # def set_current_worker_levels(self):
+    #     self.current_cpu_transcode = "PLACEHOLDER"
+    #     self.current_gpu_transcode = "PLACEHOLDER"
+    #     self.current_cpu_healthcheck = "PLACEHOLDER"
+    #     self.current_gpu_healthcheck = "PLACEHOLDER"
 
     def set_healthcheck_limits(self):
         """

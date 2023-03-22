@@ -1,39 +1,28 @@
-import sys
-import yaml
+"""
+    main module responsible for sorting where the program should pick up operations
+    < Document Guardian | Protect >
+"""
+import os
 import src
-
-with open(
-    "/home/gig/local_repos/tdarr-node-switcher/tdarr-noding/configuration.yml", "r"
-) as file:
-    configuration_file = yaml.safe_load(file)
 
 
 def main():
-    # establish constants
-    Workhorse = src.Workhorse()
+    #establish classes
+    workhorse_class=src.Workhorse()
 
-    Server, _, status_file = Workhorse.setup_constants(configuration_file)
+    current_directory=os.getcwd()
+    configuration_class=src.Configuration(current_directory)
 
-    # Status = src.Logic.setup_status_class(status_file)
+    server_class=configuration_class.setup_server_class()
+    expected_node_class_dictionary=configuration_class.setup_configuration_node_dictionary()
 
-    # establish if run with refresh command on purpose
-    try:
-        entered_argument = sys.argv[1]
-        if entered_argument == "refresh":
-            argument_status_indicator = "refresh"
-    except IndexError:
-        argument_status_indicator = "normal"
+    #check if configuration file exists
+    status_exists=configuration_class.check_if_status_exists()
 
-    # check if tdarr server is running
-    tdarr_server_status = src.Logic.server_status_check(Server)
-
-    if tdarr_server_status != "stop":
-        if argument_status_indicator == "refresh":
-            Workhorse.refresh()
-        elif argument_status_indicator == "normal":
-            Workhorse.normal()
+    if status_exists:
+        print("PLACEHOLDER") #TODO Configure here for in status non-startup status
     else:
-        print("Tdarr Server is DOWN :(")
-
+        #TODO configure status file to show that program has begun starting up procedure
+        workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
 
 main()
