@@ -174,18 +174,18 @@ class Tdarr_Logic:
         < Document Guardian | Protect >
         """
         headers = {"Content-Type": "application/json"}
-        if worker_type == list(worker_type):
-            final_payload=[]
-            for item in worker_type:
-                payload = {"data":{"nodeID": node_id,"process": increase_or_decrease,"workerType": item}}
-                final_payload.append(payload)
-        else:
-            final_payload = {
-                "data":
-                    {"nodeID": node_id,
-                    "process": increase_or_decrease,
-                    "workerType": worker_type}
-            }
+        # if worker_type == list(worker_type):
+        #     final_payload=[]
+        #     for item in worker_type:
+        #         payload = {"data":{"nodeID": node_id,"process": increase_or_decrease,"workerType": item}}
+        #         final_payload.append(payload)
+        # else:
+        final_payload = {
+            "data":
+                {"nodeID": node_id,
+                "process": increase_or_decrease,
+                "workerType": worker_type}
+        }
         return final_payload, headers
 
     @staticmethod
