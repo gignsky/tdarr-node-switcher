@@ -218,13 +218,13 @@ class Tdarr_Logic:
 
     ##discover up or down by set to level
     @staticmethod
-    def get_direction(set_to_level, workerType, list_of_worker_types=None):
+    def get_direction(set_to_level, worker_type, NodeClass=None):
         """
         get_direction finds the direction to increase or decrease the current value
 
         Args:
             set_to_level (int): numeric value of which to set the direction towards
-            workerType (string): string regarding which worker to focus on
+            worker_type (string): string regarding which worker to focus on
             list_of_worker_types (list, optional): if adjusting all place a list of all worker types or those to be adjusted in this field. Defaults to None.
 
         Returns:
@@ -234,7 +234,7 @@ class Tdarr_Logic:
         if set_to_level == 0:
             increase_or_decrease = "decrease"
         else:
-            # if workerType == "All":
+            # if worker_type == "All":
             #     if list_of_worker_types is not None:
             #         list_of_up_downs = []
             #         for worker_type in list_of_worker_types:
@@ -270,7 +270,7 @@ class Tdarr_Logic:
             elif current_level < set_to_level:
                 direction="increase"
 
-            if workerType=="All":
+            if worker_type=="All":
                 increase_or_decrease=list_of_up_downs
             else:
                 increase_or_decrease=direction
@@ -278,7 +278,7 @@ class Tdarr_Logic:
         return increase_or_decrease
 
     @staticmethod
-    def set_worker_level(Server,NodeClass,set_to_level,workerType):
+    def set_worker_level(Server,NodeClass,set_to_level,worker_type):
         """
         set_worker_level actually sets the worker level of a node to desired amount
 
@@ -286,7 +286,7 @@ class Tdarr_Logic:
             Server (class): Server Class with endpoints
             NodeClass (class): individual node class
             set_to_level (int): the numeric desired to be achieved by this function
-            workerType (string): type of worker to adjust in format of transcode/healthcheck cpu/gpu all in one word
+            worker_type (string): type of worker to adjust in format of transcode/healthcheck cpu/gpu all in one word
         < Document Guardian | Protect >
         """
         #get node info
@@ -294,14 +294,14 @@ class Tdarr_Logic:
 
 
         ##set worker type
-        # if workerType =="All":
+        # if worker_type =="All":
         #     list_of_worker_types=["healthcheckcpu","healthcheckgpu","transcodecpu","transcodegpu"]
-        #     direction=Tdarr_Logic.get_direction(set_to_level,workerType,list_of_worker_types)
+        #     direction=Tdarr_Logic.get_direction(set_to_level,worker_type,list_of_worker_types)
         # else:
-        direction=Tdarr_Logic.get_direction(set_to_level,workerType)
+        direction=Tdarr_Logic.get_direction(set_to_level,worker_type,NodeClass)
 
         if direction != "Hold":
-            # if workerType=="All":
+            # if worker_type=="All":
             #     list_of_payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,list_of_worker_types)
             # else:
             payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,workerType)
