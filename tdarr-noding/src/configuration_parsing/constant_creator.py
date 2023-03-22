@@ -16,6 +16,7 @@ class ConstantsSetup:
 
         < Document Guardian | Protect >
         """
+        self.configuration_file=configuration_file
         self.program_folder_path = configuration_file["program"]["folder_path"]
         self.ansible_folder_path = configuration_file["program"]["ansible_path"]
 
@@ -50,7 +51,7 @@ class ConstantsSetup:
 
         return self.expected_nodes_dictionary
 
-    def update_node_class_with_tdarr(self, get_nodes_output)
+    def update_node_class_with_tdarr(self, get_nodes_output):
         # get nodes from tdarr and compare
         get_nodes_output_keys = list(get_nodes_output.keys())
         get_nodes_output_names = []
