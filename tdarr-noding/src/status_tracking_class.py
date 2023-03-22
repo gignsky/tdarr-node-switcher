@@ -1,10 +1,12 @@
+import yaml
+
 class StatusTracking:
-    def __init__(self, status_file):
+    def __init__(self, status_file,path):
+        self.status_dict={"state": "Initalizing"}
+        self.path=path
         if status_file is None:
             self.status_file = None
-            self.status_dict={}
         else:
-            self.status_dict={}
             self.status_file = status_file
             self.state = status_file["state"]
             self.server_status = status_file["tdarr_server"]["state"]
@@ -12,6 +14,13 @@ class StatusTracking:
     def set_server_status(self,server_status):
         self.status_dict["tdarr_server"]={"state": server_status}
 
+    def change_state(self, state):
+        self.status_dict["state"]=state
+
+    #print output
+    def print_server_status(self):
+        with open(self.path,"w") as file:
+            server_status_file_output=yaml.dump(self.status_dict, file)
 # class NodeStatus:
 #     def __init__(self, node_status_section):
 #         if node_status_section is not None:

@@ -18,7 +18,7 @@ def main():
     #check if configuration file exists
     status_exists,status_file=configuration_class.check_if_status_exists()
 
-    status_class=src.StatusTracking(status_file)
+    status_class=src.StatusTracking(status_file,configuration_class.STATUS_PATH)
 
     # check if server is online
     server_status=src.Logic.server_status_check(server_class)
@@ -36,6 +36,9 @@ def main():
             pass
         else:
             workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
-            status_class.mark_started(configuration_class)
+            status_class.change_state("Started")
+
+    status_class.print_server_status()
+
 
 main()
