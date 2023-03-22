@@ -1,6 +1,7 @@
 import time
 from . import tdarr
 from . import node_interactions
+from . import Logic
 
 class Workhorse:
     """
