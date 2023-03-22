@@ -1,6 +1,5 @@
 import requests
 import json
-from . import Tdarr_Orders
 
 class Tdarr_Logic:
     @staticmethod
@@ -205,16 +204,16 @@ class Tdarr_Logic:
                 if NodeClass.online:
                     if NodeClass.current_cpu_transcode != 0:
                         for _ in range(NodeClass.current_cpu_transcode):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"transcodecpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"transcodecpu")
                     if NodeClass.current_gpu_transcode != 0:
                         for _ in range(NodeClass.current_gpu_transcode):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"transcodegpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"transcodegpu")
                     if NodeClass.current_cpu_healthcheck != 0:
                         for _ in range(NodeClass.current_cpu_healthcheck):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckcpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"healthcheckcpu")
                     if NodeClass.current_gpu_healthcheck != 0:
                         for _ in range(NodeClass.current_gpu_healthcheck):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckgpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"healthcheckgpu")
 
     @staticmethod
     def reset_workers_to_max_limits(Server,node_name,node_dictionary):
@@ -225,16 +224,16 @@ class Tdarr_Logic:
                 if NodeClass.online:
                     if NodeClass.transcode_max_cpu != 0:
                         for _ in range(NodeClass.transcode_max_cpu):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.transcode_max_cpu,"transcodecpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.transcode_max_cpu,"transcodecpu")
                     if NodeClass.transcode_max_gpu != 0:
                         for _ in range(NodeClass.transcode_max_gpu):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.transcode_max_gpu,"transcodegpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.transcode_max_gpu,"transcodegpu")
                     if NodeClass.healthcheck_max_cpu != 0:
                         for _ in range(NodeClass.healthcheck_max_cpu):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_cpu,"healthcheckcpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_cpu,"healthcheckcpu")
                     if NodeClass.healthcheck_max_gpu != 0:
                         for _ in range(NodeClass.healthcheck_max_gpu):
-                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_gpu,"healthcheckgpu")
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_gpu,"healthcheckgpu")
     ##discover up or down by set to level
     @staticmethod
     def get_direction(set_to_level, worker_type, NodeClass=None):
@@ -295,38 +294,3 @@ class Tdarr_Logic:
             increase_or_decrease=direction
 
         return increase_or_decrease
-
-    @staticmethod
-    def set_worker_level(Server,NodeClass,set_to_level,worker_type):
-        """
-        set_worker_level actually sets the worker level of a node to desired amount
-
-        Args:
-            Server (class): Server Class with endpoints
-            NodeClass (class): individual node class
-            set_to_level (int): the numeric desired to be achieved by this function
-            worker_type (string): type of worker to adjust in format of transcode/healthcheck cpu/gpu all in one word
-        < Document Guardian | Protect >
-        """
-        #get node info
-        node_id=NodeClass.id_string
-
-
-        ##set worker type
-        # if worker_type =="All":
-        #     list_of_worker_types=["healthcheckcpu","healthcheckgpu","transcodecpu","transcodegpu"]
-        #     direction=Tdarr_Logic.get_direction(set_to_level,worker_type,list_of_worker_types)
-        # else:
-        direction=Tdarr_Logic.get_direction(set_to_level,worker_type,NodeClass)
-
-        if direction != "Hold":
-            # if worker_type=="All":
-            #     list_of_payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,list_of_worker_types)
-            # else:
-            payload,headers=Tdarr_Logic.payload_and_headers_worker_modification(node_id,direction,worker_type)
-
-        # if worker_type=="All":
-        #     for payload in list_of_payload:
-        #         response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
-        # else:
-            response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)

@@ -16,7 +16,7 @@ def main():
     server_class=configuration_class.setup_server_class()
 
     # check if server is online
-    server_status=src.Logic.server_status_check(server_status)
+    server_status=src.Logic.server_status_check(server_class)
     if server_status=="stop":
         pass
     else:
