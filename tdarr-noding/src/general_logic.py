@@ -1,6 +1,5 @@
 import requests
 import yaml
-from pathlib import Path
 from . import tdarr
 # from . import status_tracking
 
