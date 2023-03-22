@@ -1,6 +1,7 @@
 import time
 from . import tdarr
 from . import node_interactions
+from . import Logic
 
 class Workhorse:
     """
@@ -10,8 +11,8 @@ class Workhorse:
     """
 
     # main methods
-    def refresh(self):
-        Logic.refresh_all(self.Constants)
+    def refresh(self,Server):
+        Logic.refresh_all(Server)
 
     def normal(self):
         if self.script_status_file == "Stopped":

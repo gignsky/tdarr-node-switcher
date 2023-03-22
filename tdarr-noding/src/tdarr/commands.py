@@ -1,11 +1,12 @@
 import requests
+from . import Tdarr_Logic
 
 
 class Tdarr_Orders:
     # refreshing orders
     @staticmethod
-    def refresh_health_checks(constants):
-        ids = Tdarr_Logic.search_for_failed_health_checks(constants)
+    def refresh_health_checks(Server):
+        ids = Tdarr_Logic.search_for_failed_health_checks(Server)
 
         i = 0
 
@@ -21,14 +22,14 @@ class Tdarr_Orders:
             headers = {"Content-Type": "application/json"}
 
             requests.post(
-                constants.Server.update_url, json=payload, headers=headers, timeout=1.5
+                Server.update_url, json=payload, headers=headers, timeout=1.5
             )
 
             # pprint(response)
 
     @staticmethod
-    def update_transcodes(constants):
-        ids = Tdarr_Logic.search_for_failed_transcodes(constants)
+    def update_transcodes(Server):
+        ids = Tdarr_Logic.search_for_failed_transcodes(Server)
 
         i = 0
 
@@ -44,7 +45,7 @@ class Tdarr_Orders:
             headers = {"Content-Type": "application/json"}
 
             requests.post(
-                constants.Server.update_url, json=payload, headers=headers, timeout=1.5
+                Server.update_url, json=payload, headers=headers, timeout=1.5
             )
 
             # pprint(response)
