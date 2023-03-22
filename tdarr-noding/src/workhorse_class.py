@@ -14,12 +14,12 @@ class Workhorse:
     def refresh(self,Server):
         Logic.refresh_all(Server)
 
-    def normal(self):
-        if self.script_status_file == "Stopped":
-            self.startup()
-        else:
-            print("PLACEHOLDER")
-            # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
+    # def normal(self):
+    #     if self.script_status_file == "Stopped":
+    #         self.startup()
+    #     else:
+    #         print("PLACEHOLDER")
+    #         # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
 
     def startup(self,Server,node_dictionary,configuration_class):
         """
