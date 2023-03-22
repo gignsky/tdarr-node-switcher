@@ -223,14 +223,18 @@ class Tdarr_Logic:
             if node_name==name:
                 NodeClass=node_dictionary[name]
                 if NodeClass.online:
-                    for _ in range(NodeClass.transcode_max_cpu):
-                        Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.transcode_max_cpu,"transcodecpu")
-                    # for _ in range(NodeClass.current_gpu_transcode):
-                    #     Tdarr_Logic.set_worker_level(Server,NodeClass,0,"transcodegpu")
-                    # for _ in range(NodeClass.current_cpu_healthcheck):
-                    #     Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckcpu")
-                    # for _ in range(NodeClass.current_gpu_healthcheck):
-                    #     Tdarr_Logic.set_worker_level(Server,NodeClass,0,"healthcheckgpu")
+                    if NodeClass.transcode_max_cpu != 0:
+                        for _ in range(NodeClass.transcode_max_cpu):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.transcode_max_cpu,"transcodecpu")
+                    if NodeClass.transcode_max_gpu != 0:
+                        for _ in range(NodeClass.transcode_max_gpu):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.transcode_max_gpu,"transcodegpu")
+                    if NodeClass.healthcheck_max_cpu != 0:
+                        for _ in range(NodeClass.healthcheck_max_cpu):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_cpu,"healthcheckcpu")
+                    if NodeClass.healthcheck_max_gpu != 0:
+                        for _ in range(NodeClass.healthcheck_max_gpu):
+                            Tdarr_Logic.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_gpu,"healthcheckgpu")
     ##discover up or down by set to level
     @staticmethod
     def get_direction(set_to_level, worker_type, NodeClass=None):
@@ -325,4 +329,4 @@ class Tdarr_Logic:
         #     for payload in list_of_payload:
         #         response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
         # else:
-        response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
+            response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
