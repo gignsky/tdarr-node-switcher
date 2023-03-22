@@ -67,9 +67,9 @@ class Configuration:
         self.script_status_file = Logic.script_status(self.STATUS_PATH)
 
         if self.script_status_file == "Empty":
-            return False
+            return False,None
         else:
             with open(self.STATUS_PATH, "r") as file:
-            self.status_file=yaml.safe_load(file)
+                self.status_file=yaml.safe_load(file)
 
             return True,self.status_file
