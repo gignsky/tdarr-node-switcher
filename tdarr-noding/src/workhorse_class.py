@@ -10,17 +10,6 @@ class Workhorse:
     < Document Guardian | Protect >
     """
 
-    # main methods
-    def refresh(self,Server):
-        Logic.refresh_all(Server)
-
-    # def normal(self):
-    #     if self.script_status_file == "Stopped":
-    #         self.startup()
-    #     else:
-    #         print("PLACEHOLDER")
-    #         # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
-
     def startup(self,Server,node_dictionary,configuration_class):
         """
         startup function: this will run at the inital start of the script when no status file exists
@@ -37,30 +26,25 @@ class Workhorse:
         """
         # initiate start up
 
-        ## get nodes output
+        ## 1
+        ### 1.a get_nodes output
         get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(Server)
 
-        ## update configuration class with tdarr info
+        ### 1.b update configuration class with tdarr info
         configuration_class.startup_update_nodes_with_tdarr_info(node_dictionary,get_nodes_output)
 
-        # find quantity of online nodes
-        quantity_of_living_nodes = 0
-        current_priority_level = 0
-        for node in node_dictionary:
-            node_class = node_dictionary[node]
-            line_state = node_class.online
-            priority_level = node_class.priority
-            if line_state:
-                quantity_of_living_nodes += 1
-                if priority_level >= current_priority_level:
-                    current_priority_level = priority_level
+        ## 2
+        quantity_of_living_nodes=999 # set quantity of living nodes to an absurdly high number to allow for looping on next section
 
+        ### 2.a - begin looping to kill lowest priority nodes
+        while quantity_of_living_nodes > Server.max_nodes:
+            quantity_of_living_nodes = Logic.find_quant_living_nodes(node_dictionary)
 
-        if quantity_of_living_nodes > Server.max_nodes:
-            print(
-                "WARNING: Too many nodes alive; killing last node on the priority list"
-            )
-            node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
+            if quantity_of_living_nodes > Server.max_nodes:
+                print(
+                    "WARNING: Too many nodes alive; killing last node on the priority list"
+                )
+                node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
 
         Logic.reset_node_workers(Server,node_dictionary)
 
@@ -96,3 +80,14 @@ class Workhorse:
 #             else:
 #                 # TODO Same function as above on line 59 looping
 #                 print("PLACEHOLDER")
+
+    # main methods
+    def refresh(self,Server):
+        Logic.refresh_all(Server)
+
+    # def normal(self):
+    #     if self.script_status_file == "Stopped":
+    #         self.startup()
+    #     else:
+    #         print("PLACEHOLDER")
+    #         # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing

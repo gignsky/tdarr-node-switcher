@@ -63,3 +63,29 @@ class Logic:
 
                         #reset node to max worker levels
                         tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
+
+    @staticmethod
+    def find_quant_living_nodes(node_dictionary):
+        """
+        find_quant_living_nodes returns a integer value of total nodes that are alive and connected to the tdarr server
+
+        Args:
+            node_dictionary (dictionary): dictionary containing node names and their respective classes
+
+        Returns:
+            quantity_of_living_nodes (int): integer value with total number of nodes that are alive and connected to the tdarr server
+        < Document Guardian | Protect >
+        """
+        ##  find quantity of online nodes
+
+        quantity_of_living_nodes = 0
+        current_priority_level = 0
+        for node in node_dictionary:
+            node_class = node_dictionary[node]
+            line_state = node_class.online
+            priority_level = node_class.priority
+            if line_state:
+                quantity_of_living_nodes += 1
+                if priority_level >= current_priority_level:
+                    current_priority_level = priority_level
+        return quantity_of_living_nodes
