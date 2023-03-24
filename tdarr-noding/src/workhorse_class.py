@@ -46,7 +46,8 @@ class Workhorse:
                 )
                 node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
 
-        Logic.reset_node_workers(Server,node_dictionary)
+        # commented out for new system of work
+        # Logic.reset_node_workers(Server,node_dictionary)
 
         nodes_with_work_list,nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Server)
 
