@@ -24,6 +24,15 @@ class Workhorse:
     def startup(self,Server,node_dictionary,configuration_class):
         """
         startup function: this will run at the inital start of the script when no status file exists
+
+            The purpose of this function is to reset the nodes and server to a known point in order to begin noding.
+
+            steps to be taken in this function:
+            1. get inital tdarr get_nodes output and update the classes with relevant information
+            2. ensure that more than the max nodes number is not running at once, and if found to be true shutdown nodes with smallest priority
+            3. ensure that all nodes are set to zero workers
+            4. kill nodes without active work
+            5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
         """
         # initiate start up
