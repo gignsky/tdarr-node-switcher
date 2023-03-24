@@ -32,5 +32,6 @@ class HostLogic:
             if name == node:
                 if node_dictionary[node].online:
                     #order shutdown
+                    print(f"Killing Node: '{name}'")
                     shutdown_command=node_dictionary[node].shutdown
                     HostCommands.shutdown_node(configuration_class,shutdown_command)
