@@ -95,22 +95,23 @@ class ConstantsSetup:
 
         return self.expected_nodes_dictionary
 
-    def update_current_transcode_worker_amounts(self,node_dictionary,get_nodes_output):
+    def update_current_transcode_worker_amounts(self,node_dictionary,get_nodes_output,name=None):
         for node_id in get_nodes_output:
             inner_node_dictionary=get_nodes_output[node_id]
             node_name=inner_node_dictionary["nodeName"]
-            worker_limits_dictionary=inner_node_dictionary["workerLimits"]
+            if name is None or node_name:
+                worker_limits_dictionary=inner_node_dictionary["workerLimits"]
 
-            node_class=node_dictionary[node_name]
+                node_class=node_dictionary[node_name]
 
-            # Find current node worker limits
-            current_cpu_transcode = worker_limits_dictionary["transcodecpu"]
-            current_gpu_transcode = worker_limits_dictionary["transcodegpu"]
-            current_cpu_healthcheck = worker_limits_dictionary["healthcheckcpu"]
-            current_gpu_healthcheck = worker_limits_dictionary["healthcheckgpu"]
+                # Find current node worker limits
+                current_cpu_transcode = worker_limits_dictionary["transcodecpu"]
+                current_gpu_transcode = worker_limits_dictionary["transcodegpu"]
+                current_cpu_healthcheck = worker_limits_dictionary["healthcheckcpu"]
+                current_gpu_healthcheck = worker_limits_dictionary["healthcheckgpu"]
 
-            # set node_class current worker limits
-            node_class.set_current_worker_levels(current_cpu_transcode,
-                current_gpu_transcode,
-                current_cpu_healthcheck,
-                current_gpu_healthcheck)
+                # set node_class current worker limits
+                node_class.set_current_worker_levels(current_cpu_transcode,
+                    current_gpu_transcode,
+                    current_cpu_healthcheck,
+                    current_gpu_healthcheck)
