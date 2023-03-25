@@ -32,6 +32,7 @@ class StatusTracking:
 
         self.ServerStatus=ServerStatus(status_server_section)
 
+    def import_node_status(self):
         #set up node status dictionary
         self.node_status_dictionary={}
 
