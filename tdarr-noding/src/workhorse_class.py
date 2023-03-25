@@ -48,8 +48,25 @@ class Workhorse:
         """
         self.update_nodes_output()
 
+        list_of_alive_tdarr_nodes=[]
+
+        for node_id in self.get_nodes_output:
+            inner_tdarr_dictionary=self.get_nodes_output[node_id]
+            node_name=inner_tdarr_dictionary["nodeName"]
+            list_of_alive_tdarr_nodes.append(node_name)
+
         for name, Class in self.node_dictionary.items():
-            print(f"Name: {name}; Class: {Class}")
+
+            #run update in node class
+            if name in list_of_alive_tdarr_nodes:
+                for node_id in self.get_nodes_output:
+                    inner_tdarr_dictionary=self.get_nodes_output[node_id]
+                    Class.update_node("Online",inner_tdarr_dictionary)
+            else:
+                Class.update_node("Offline")
+
+
+
 
     def startup(self):
         """
