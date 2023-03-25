@@ -57,3 +57,9 @@ class NodeStatus:
         self.node_status_section=node_status_section
         self.state=self.node_status_section["state"]
         self.directive=self.node_status_section["directive"]
+
+    def update_line_state(self,current_line_state):
+        if current_line_state:
+            self.state="Online"
+        else:
+            self.state="Offline"
