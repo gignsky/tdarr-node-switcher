@@ -44,7 +44,10 @@ class Workhorse:
                 print(
                     "WARNING: Too many nodes alive; killing last node on the priority list"
                 )
-                node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
+                highest_priority_node_name=node_interactions.HostLogic.kill_smallest_priority_node(configuration_class,node_dictionary)
+
+                # set node state to offline
+                node_dictionary[highest_priority_node_name].line_state("Offline")
 
         # commented out for new system of work
         # Logic.reset_node_workers(Server,node_dictionary)
