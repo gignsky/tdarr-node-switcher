@@ -7,7 +7,7 @@ class Server:
     < Document Guardian | Protect >
     """
 
-    def __init__(self, server_inner_dict):
+    def __init__(self, config_server_inner_dict):
         """
         __init__ basic server setup
 
@@ -15,7 +15,7 @@ class Server:
             server_inner_dict (json dictionary from config yaml): configuration yaml config section regarding tdarr_server
         < Document Guardian | Protect >
         """
-        self.server_inner_dict = server_inner_dict
+        self.config_server_inner_dict = config_server_inner_dict
 
         # configure default server information
         self.default_server_configuration()
@@ -56,17 +56,17 @@ class Server:
         """
         self.set_up_urls()
 
-        self.max_nodes = self.server_inner_dict["max_nodes"]
+        self.max_nodes = self.config_server_inner_dict["max_nodes"]
 
-        self.priority_level = self.server_inner_dict["default_priority_level"]
+        self.priority_level = self.config_server_inner_dict["default_priority_level"]
 
     def set_up_urls(self):
         """
         set_up_urls configure url endpoints
         < Document Guardian | Protect >
         """
-        url = self.server_inner_dict["url"]
-        api_string = self.server_inner_dict["api_string"]
+        url = self.config_server_inner_dict["url"]
+        api_string = self.config_server_inner_dict["api_string"]
 
         ######################################
         tdarr_useable_url = f"{url}{api_string}"
