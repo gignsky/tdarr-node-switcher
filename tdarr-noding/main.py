@@ -38,7 +38,7 @@ def main():
             workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
             status_class.change_state("Started")
 
-    status_class.print_server_status()
+    status_class.print_status_file()
 
 
 main()
