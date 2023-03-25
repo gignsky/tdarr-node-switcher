@@ -25,6 +25,7 @@ def main():
         if Workhorse.status_exists:
             pass
         else:
+            Workhorse.update_classes()
             Workhorse.startup(expected_node_class_dictionary)
             Workhorse.Status.change_state("Started")
 

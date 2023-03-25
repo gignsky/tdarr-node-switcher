@@ -48,7 +48,7 @@ class Workhorse:
         """
         self.update_nodes_output()
 
-        for name, Class in self.node_dictionary:
+        for name, Class in self.node_dictionary.items():
             print(f"Name: {name}; Class: {Class}")
 
     def startup(self):
