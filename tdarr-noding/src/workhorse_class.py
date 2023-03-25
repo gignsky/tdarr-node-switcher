@@ -52,32 +52,32 @@ class Workhorse:
         get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
 
         ### 1.b update configuration class with tdarr info
-        self.Configuration.startup_update_nodes_with_tdarr_info(node_dictionary,get_nodes_output)
+        self.Configuration.startup_update_nodes_with_tdarr_info(self.node_dictionary,get_nodes_output)
 
         ## 2
         quantity_of_living_nodes=999 # set quantity of living nodes to an absurdly high number to allow for looping on next section
 
         ### 2.a - begin looping to kill lowest priority nodes
         while quantity_of_living_nodes > self.Server.max_nodes:
-            quantity_of_living_nodes = Logic.find_quant_living_nodes(node_dictionary)
+            quantity_of_living_nodes = Logic.find_quant_living_nodes(self.node_dictionary)
 
             if quantity_of_living_nodes > self.Server.max_nodes:
                 print(
                     "WARNING: Too many nodes alive; killing last node on the priority list"
                 )
-                highest_priority_node_name=node_interactions.HostLogic.kill_smallest_priority_node(self.Configuration,node_dictionary)
+                highest_priority_node_name=node_interactions.HostLogic.kill_smallest_priority_node(self.Configuration,self.node_dictionary)
 
                 # set node state to offline
-                node_dictionary[highest_priority_node_name].line_state("Offline")
+                self.node_dictionary[highest_priority_node_name].line_state("Offline")
 
         # commented out for new system of work
-        # Logic.reset_node_workers(self.Server,node_dictionary)
+        # Logic.reset_node_workers(self.Server,self.node_dictionary)
 
         ## 3
-        for node_name in node_dictionary:
-            node_class=node_dictionary[node_name]
+        for node_name in self.node_dictionary:
+            node_class=self.node_dictionary[node_name]
             if node_class.online:
-                tdarr.Tdarr_Orders.reset_workers_to_zero(self.Server,node_name,node_dictionary)
+                tdarr.Tdarr_Orders.reset_workers_to_zero(self.Server,node_name,self.node_dictionary)
 
 
         ## 4
@@ -85,17 +85,17 @@ class Workhorse:
 
         #shutdown nodes without work
         for node in nodes_without_work_list:
-            for node_dict_name in node_dictionary:
+            for node_dict_name in self.node_dictionary:
                 if node == node_dict_name:
                     #set workers to zero
-                    tdarr.Tdarr_Orders.reset_workers_to_zero(self.Server,node,node_dictionary)
+                    tdarr.Tdarr_Orders.reset_workers_to_zero(self.Server,node,self.node_dictionary)
                     #order shutdown
-                    node_interactions.HostLogic.kill_node(self.Configuration,node_dictionary,node)
+                    node_interactions.HostLogic.kill_node(self.Configuration,self.node_dictionary,node)
                     #set node status to offline
-                    node_dictionary[node_dict_name].line_state("Offline")
+                    self.node_dictionary[node_dict_name].line_state("Offline")
 
         # primary_node = self.Server.primary_node
-        # primary_node_class = node_dictionary[primary_node]
+        # primary_node_class = self.node_dictionary[primary_node]
 
 #         if primary_node_class.online:
 #             print(f"Primary NODE: `{primary_node}` is ONLINE")
