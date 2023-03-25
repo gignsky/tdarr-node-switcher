@@ -80,8 +80,7 @@ class Logic:
 
         quantity_of_living_nodes = 0
         current_priority_level = 0
-        for node in node_dictionary:
-            node_class = node_dictionary[node]
+        for node,node_class in node_dictionary.items():
             line_state = node_class.online
             priority_level = node_class.priority
             if line_state:

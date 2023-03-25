@@ -53,8 +53,7 @@ class Configuration:
 
     def startup_update_nodes_with_tdarr_info(self,node_dictionary,get_nodes_output):
         #set primary node
-        for node in node_dictionary:
-            node_class = node_dictionary[node]
+        for node,node_class in node_dictionary.items():
             # set primary node
             if node_class.primary_node:
                 self.Server.add_primary_node(node)
