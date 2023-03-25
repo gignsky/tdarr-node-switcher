@@ -72,6 +72,8 @@ class ServerStatus:
         self.status_dict["tdarr_nodes"]=self.tdarr_nodes_section
 
     #update stuff
+    #TODO Maybe
+
 
 class NodeStatusMaster:
     def __init__(self, tdarr_nodes_status_dictionary):

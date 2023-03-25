@@ -34,11 +34,11 @@ class Configuration:
         with open(self.CONFIGURATION_PATH, "r") as file:
             self.configuration_file=yaml.safe_load(file)
 
-        self.constants_class = config_setup_folder.ConstantsSetup(self.configuration_file)
+        self.Constants = config_setup_folder.ConstantsSetup(self.configuration_file)
 
     def setup_server_class(self):
         # setup server
-        self.Server = self.constants_class.setup_server_class()
+        self.Server = self.Constants.setup_server_class()
 
         return self.Server
 
@@ -47,7 +47,7 @@ class Configuration:
         get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
 
         # setup nodes
-        self.expected_node_dictionary = self.constants_class.setup_node_class(get_nodes_output)
+        self.expected_node_dictionary = self.Constants.setup_node_class(get_nodes_output)
 
         return self.expected_node_dictionary
 
@@ -59,7 +59,7 @@ class Configuration:
                 self.Server.add_primary_node(node)
 
         #update nodes with tdarr info
-        self.constants_class.update_node_class_with_tdarr(get_nodes_output)
+        self.Constants.update_node_class_with_tdarr(get_nodes_output)
 
     def check_if_status_exists(self):
         # setup status check
