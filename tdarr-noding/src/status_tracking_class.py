@@ -63,3 +63,6 @@ class NodeStatus:
             self.state="Online"
         else:
             self.state="Offline"
+
+    def update_directive(self,new_directive):
+        self.directive
