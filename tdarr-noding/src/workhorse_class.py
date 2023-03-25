@@ -12,18 +12,26 @@ class Workhorse:
 
     # main methods
     def setup_classes(self,current_directory):
+        """
+        setup_classes setup classes to be used each time the program runs
+
+        Args:
+            current_directory (str): path to current working directory of main.py
+
+        < Document Guardian | Protect >
+        """
         self.Configuration=src.Configuration(current_directory)
 
         self.Server=self.Configuration.setup_server_class()
 
         #check if configuration file exists
-        status_exists,self.status_file=self.Configuration.check_if_status_exists()
+        self.status_exists,self.status_file=self.Configuration.check_if_status_exists()
 
         self.Status=src.StatusTracking(status_file,self.Configuration.STATUS_PATH)
 
-        return status_exists
+        self.node_dictionary=Workhorse.Configuration.setup_configuration_node_dictionary()
 
-    def startup(self,node_dictionary):
+    def startup(self):
         """
         startup function: this will run at the inital start of the script when no status file exists
 
