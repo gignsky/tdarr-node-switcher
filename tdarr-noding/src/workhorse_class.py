@@ -10,6 +10,7 @@ class Workhorse:
     < Document Guardian | Protect >
     """
 
+    # main methods
     def startup(self,Server,node_dictionary,configuration_class):
         """
         startup function: this will run at the inital start of the script when no status file exists
@@ -58,6 +59,8 @@ class Workhorse:
             if node_class.online:
                 tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node_name,node_dictionary)
 
+
+        ## 4
         _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Server)
 
         #shutdown nodes without work
@@ -91,7 +94,6 @@ class Workhorse:
 #                 # TODO Same function as above on line 59 looping
 #                 print("PLACEHOLDER")
 
-    # main methods
     def refresh(self,Server):
         Logic.refresh_all(Server)
 
