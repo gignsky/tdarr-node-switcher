@@ -36,14 +36,18 @@ class StatusTracking:
 
     def import_node_status(self):
         #set up node status dictionary
-        self.node_status_dictionary={}
+        self.NodeStatusMaster=NodeStatusMaster(self.ServerStatus.tdarr_nodes_status_dictionary)
 
-        for name, inner_dictionary in self.ServerStatus.tdarr_nodes_status_dictionary.items():
-            self.node_status_dictionary[name]=NodeStatus(name,inner_dictionary)
+    #updates
+    def status_update(self):
+        #reset status dict
+        self.status_dict["tdarr_server"]=self.ServerStatus.status_dict
+
 
 class ServerStatus:
     def __init__(self, status_server_section):
         self.state=status_server_section["state"]
+        self.status_dict[state]=self.state
 
         #setup basic node info
         tdarr_nodes_section_dictionary=status_server_section["tdarr_nodes"]
@@ -53,6 +57,25 @@ class ServerStatus:
 
         for name in tdarr_nodes_section_dictionary:
             self.tdarr_nodes_status_dictionary[name]=tdarr_nodes_section_dictionary[name]
+    #modify stuff
+    def change_state(self, state):
+        self.status_dict["state"]=state
+
+    #add tdarr_nodes_dictionary
+    def add_tdarr_nodes(self,tdarr_nodes_dictionary)
+        self.tdarr_nodes_section={}
+
+        for name, Class in tdarr_nodes_dictionary.items():
+            self.tdarr_nodes_section[name]={"state": Class.state, "directive": Class.directive}
+
+    #update stuff
+
+class NodeStatusMaster:
+    def __init__(self, tdarr_nodes_status_dictionary):
+        self.node_status_dictionary={}
+
+        for name, inner_dictionary in tdarr_nodes_status_dictionary.items():
+            self.node_status_dictionary[name]=NodeStatus(name,inner_dictionary)
 
 class NodeStatus:
     def __init__(self, name, node_status_section):
