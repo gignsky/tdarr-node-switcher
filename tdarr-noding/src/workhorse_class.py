@@ -52,7 +52,13 @@ class Workhorse:
         # commented out for new system of work
         # Logic.reset_node_workers(Server,node_dictionary)
 
-        nodes_with_work_list,nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Server)
+        ## 3
+        for node_name in node_dictionary:
+            node_class=node_dictionary[node_name]
+            if node_class.online:
+                tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node_name,node_dictionary)
+
+        _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(Server)
 
         #shutdown nodes without work
         for node in nodes_without_work_list:
