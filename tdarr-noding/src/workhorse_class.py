@@ -1,4 +1,6 @@
 import time
+from . import Configuration as ConfigurationClass
+from . import StatusTracking
 from . import tdarr
 from . import node_interactions
 from . import Logic
@@ -20,16 +22,34 @@ class Workhorse:
 
         < Document Guardian | Protect >
         """
-        self.Configuration=src.Configuration(current_directory)
+        self.root_dir=current_directory
+        self.Configuration=ConfigurationClass(self.root_dir)
 
         self.Server=self.Configuration.setup_server_class()
 
         #check if configuration file exists
         self.status_exists,self.status_file=self.Configuration.check_if_status_exists()
 
-        self.Status=src.StatusTracking(status_file,self.Configuration.STATUS_PATH)
+        self.Status=StatusTracking(self.status_file,self.Configuration.STATUS_PATH)
 
-        self.node_dictionary=Workhorse.Configuration.setup_configuration_node_dictionary()
+        self.node_dictionary=self.Configuration.setup_configuration_node_dictionary()
+
+    def update_nodes_output(self):
+        """
+        update_nodes_output updates self.get_nodes_output to most current pull from tdarr server
+        < Document Guardian | Protect >
+        """
+        self.get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
+
+    def update_classes(self):
+        """
+        update_classes update classes with current information
+        < Document Guardian | Protect >
+        """
+        self.update_nodes_output()
+
+        for name, Class in self.node_dictionary:
+            print(f"Name: {name}; Class: {Class}")
 
     def startup(self):
         """
@@ -49,10 +69,10 @@ class Workhorse:
 
         ## 1
         ### 1.a get_nodes output
-        get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
+        self.update_nodes_output()
 
         ### 1.b update configuration class with tdarr info
-        self.Configuration.startup_update_nodes_with_tdarr_info(self.node_dictionary,get_nodes_output)
+        self.Configuration.startup_update_nodes_with_tdarr_info(self.node_dictionary,self.get_nodes_output)
 
         ## 2
         quantity_of_living_nodes=999 # set quantity of living nodes to an absurdly high number to allow for looping on next section
@@ -114,7 +134,7 @@ class Workhorse:
 #                 # TODO Same function as above on line 59 looping
 #                 print("PLACEHOLDER")
 
-    def refresh(self,self.Server):
+    def refresh(self):
         Logic.refresh_all(self.Server)
 
     # def normal(self):
