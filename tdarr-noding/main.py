@@ -29,7 +29,7 @@ def main():
             Workhorse.startup(expected_node_class_dictionary)
             Workhorse.Status.change_state("Started")
 
-    Workhorse.Status.print_server_status()
+    status_class.print_status_file()
 
 
 main()
