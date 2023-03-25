@@ -43,6 +43,7 @@ class StatusTracking:
         #reset status dict
         self.status_dict["tdarr_server"]=self.ServerStatus.status_dict
 
+        self.print_status_file()
 
 class ServerStatus:
     def __init__(self, status_server_section):
