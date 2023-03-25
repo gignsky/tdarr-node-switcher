@@ -46,8 +46,10 @@ class Workhorse:
         update_classes update classes with current information
         < Document Guardian | Protect >
         """
+        # refresh get_nodes_output
         self.update_nodes_output()
 
+        #refresh tdarr node classes
         list_of_alive_tdarr_nodes=[]
 
         for node_id in self.get_nodes_output:
