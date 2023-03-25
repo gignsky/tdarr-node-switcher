@@ -70,7 +70,7 @@ class Node:
 
     def update_node(self, line_state, tdarr_inner_dictionary=None):
         self.line_state(line_state)
-        self.update_with_tdarr_dictionary(tdarr_node_inner_id_dictionary,"Expected")
+        self.update_with_tdarr_dictionary(tdarr_inner_dictionary,"Expected")
 
         #update current workers amounts
         worker_limits_dictionary=tdarr_inner_dictionary["workerLimits"]
