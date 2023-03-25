@@ -9,6 +9,8 @@ class StatusTracking:
         else:
             self.status_file = status_file
             self.state = status_file["state"]
+            self.import_server_status()
+            self.import_node_status()
 
     #print output
     def print_status_file(self):
