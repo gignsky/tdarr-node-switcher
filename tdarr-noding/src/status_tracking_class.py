@@ -68,6 +68,8 @@ class ServerStatus:
         for name, Class in tdarr_nodes_dictionary.items():
             self.tdarr_nodes_section[name]={"state": Class.state, "directive": Class.directive}
 
+        self.status_dict["tdarr_nodes"]=self.tdarr_nodes_section
+
     #update stuff
 
 class NodeStatusMaster:
