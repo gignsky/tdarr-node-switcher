@@ -65,4 +65,4 @@ class NodeStatus:
             self.state="Offline"
 
     def update_directive(self,new_directive):
-        self.directive
+        self.directive=new_directive
