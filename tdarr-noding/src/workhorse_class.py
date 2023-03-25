@@ -67,8 +67,8 @@ class Workhorse:
             else:
                 Class.update_node("Offline")
 
-
-
+        #refresh status class
+        self.Status.status_update()
 
     def startup(self):
         """
