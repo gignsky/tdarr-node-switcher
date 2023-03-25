@@ -94,8 +94,7 @@ class Workhorse:
         # Logic.reset_node_workers(self.Server,self.node_dictionary)
 
         ## 3
-        for node_name in self.node_dictionary:
-            node_class=self.node_dictionary[node_name]
+        for node_name, node_class in node_dictionary.items():
             if node_class.online:
                 tdarr.Tdarr_Orders.reset_workers_to_zero(self.Server,node_name,self.node_dictionary)
 

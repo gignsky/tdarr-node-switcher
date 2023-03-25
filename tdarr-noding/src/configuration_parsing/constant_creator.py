@@ -85,8 +85,7 @@ class ConstantsSetup:
                 self.expected_nodes_dictionary[get_node_name] = new_node_class
 
         ##check for dead nodes
-        for node_name in self.expected_nodes_dictionary:
-            node_class = self.expected_nodes_dictionary[node_name]
+        for node_name, node_class in self.expected_nodes_dictionary.items():
             if node_class.online is None:
                 node_class.line_state("Offline")
 
