@@ -137,7 +137,7 @@ class NodeStatus:
         else:
             self.NodeClass = node_status_section
             self.node_status_section = None
-            self.update_line_state(self.NodeClass.line_state)
+            self.update_line_state(self.NodeClass.online)
             self.directive = "Initalizing"
 
     def update_line_state(self, current_line_state):
