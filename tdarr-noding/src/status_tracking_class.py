@@ -23,6 +23,7 @@ class StatusTracking:
     # modify stuff
 
     def change_state(self, state):
+        self.state = state
         self.status_dict["state"] = state
 
     # importing
