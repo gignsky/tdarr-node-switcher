@@ -165,8 +165,8 @@ class Node:
         self.tdarr_node_inner_dictionary = tdarr_node_inner_id_dictionary
 
         #added block to deal with None being inputted for tdarr_node_inner_id_dictionary
-        if self.tdarr_node_inner_id_dictionary is not None:
-            self.id_string = self.tdarr_node_inner_id_dictionary["_id"]
+        if self.tdarr_node_inner_dictionary is not None:
+            self.id_string = self.tdarr_node_inner_dictionary["_id"]
         else:
             self.id_string = None
 
