@@ -16,7 +16,7 @@ class ConstantsSetup:
 
         < Document Guardian | Protect >
         """
-        self.configuration_file=configuration_file
+        self.configuration_file = configuration_file
         self.program_folder_path = configuration_file["program"]["folder_path"]
         self.ansible_folder_path = configuration_file["program"]["ansible_path"]
 
@@ -69,9 +69,14 @@ class ConstantsSetup:
                 self.expected_nodes_dictionary[get_node_name].line_state("Online")
                 for node_id in get_nodes_output:
                     node_id_inner_dictionary = get_nodes_output[node_id]
-                    node_name=node_id_inner_dictionary["nodeName"]
-                    if node_name==self.expected_nodes_dictionary[get_node_name].node_name:
-                        self.expected_nodes_dictionary[get_node_name].update_with_tdarr_dictionary(
+                    node_name = node_id_inner_dictionary["nodeName"]
+                    if (
+                        node_name
+                        == self.expected_nodes_dictionary[get_node_name].node_name
+                    ):
+                        self.expected_nodes_dictionary[
+                            get_node_name
+                        ].update_with_tdarr_dictionary(
                             node_id_inner_dictionary, "Expected"
                         )
             else:
@@ -90,17 +95,21 @@ class ConstantsSetup:
                 node_class.line_state("Offline")
 
         ## update current transcode limits
-        self.update_current_transcode_worker_amounts(self.expected_nodes_dictionary,get_nodes_output)
+        self.update_current_transcode_worker_amounts(
+            self.expected_nodes_dictionary, get_nodes_output
+        )
 
         return self.expected_nodes_dictionary
 
-    def update_current_transcode_worker_amounts(self,node_dictionary,get_nodes_output):
+    def update_current_transcode_worker_amounts(
+        self, node_dictionary, get_nodes_output
+    ):
         for node_id in get_nodes_output:
-            inner_node_dictionary=get_nodes_output[node_id]
-            node_name=inner_node_dictionary["nodeName"]
-            worker_limits_dictionary=inner_node_dictionary["workerLimits"]
+            inner_node_dictionary = get_nodes_output[node_id]
+            node_name = inner_node_dictionary["nodeName"]
+            worker_limits_dictionary = inner_node_dictionary["workerLimits"]
 
-            node_class=node_dictionary[node_name]
+            node_class = node_dictionary[node_name]
 
             # Find current node worker limits
             current_cpu_transcode = worker_limits_dictionary["transcodecpu"]
@@ -109,7 +118,9 @@ class ConstantsSetup:
             current_gpu_healthcheck = worker_limits_dictionary["healthcheckgpu"]
 
             # set node_class current worker limits
-            node_class.set_current_worker_levels(current_cpu_transcode,
+            node_class.set_current_worker_levels(
+                current_cpu_transcode,
                 current_gpu_transcode,
                 current_cpu_healthcheck,
-                current_gpu_healthcheck)
+                current_gpu_healthcheck,
+            )

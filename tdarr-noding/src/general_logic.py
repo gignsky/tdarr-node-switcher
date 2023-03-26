@@ -1,6 +1,7 @@
 import requests
 import yaml
 from . import tdarr
+
 # from . import status_tracking
 
 
@@ -33,35 +34,35 @@ class Logic:
         except AttributeError:
             return "Empty"
 
-#     @staticmethod
-#     def reset_node_workers(Server,node_dictionary,node_name=None):
-#         if node_name is None:
-#             for node in node_dictionary:
-#                 node_class = node_dictionary[node]
-#                 line_state = node_class.online
-#                 if line_state:
-#                     #reset node to zero workers
-#                     tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
-#
-#                     #wait for workers to set to zero
-#                     time.sleep(2.5)
-#
-#                     #reset node to max worker levels
-#                     tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
-#         else:
-#             for node in node_dictionary:
-#                 node_class = node_dictionary[node]
-#                 if node_name==node:
-#                     line_state = node_class.online
-#                     if line_state:
-#                         #reset node to zero workers
-#                         tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
-#
-#                         #wait for workers to set to zero
-#                         time.sleep(2.5)
-#
-#                         #reset node to max worker levels
-#                         tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
+    #     @staticmethod
+    #     def reset_node_workers(Server,node_dictionary,node_name=None):
+    #         if node_name is None:
+    #             for node in node_dictionary:
+    #                 node_class = node_dictionary[node]
+    #                 line_state = node_class.online
+    #                 if line_state:
+    #                     #reset node to zero workers
+    #                     tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
+    #
+    #                     #wait for workers to set to zero
+    #                     time.sleep(2.5)
+    #
+    #                     #reset node to max worker levels
+    #                     tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
+    #         else:
+    #             for node in node_dictionary:
+    #                 node_class = node_dictionary[node]
+    #                 if node_name==node:
+    #                     line_state = node_class.online
+    #                     if line_state:
+    #                         #reset node to zero workers
+    #                         tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
+    #
+    #                         #wait for workers to set to zero
+    #                         time.sleep(2.5)
+    #
+    #                         #reset node to max worker levels
+    #                         tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
 
     @staticmethod
     def find_quant_living_nodes(node_dictionary):
