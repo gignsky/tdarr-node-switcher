@@ -63,7 +63,7 @@ class ServerStatus:
         self.status_dict["state"]=state
 
     #add tdarr_nodes_dictionary
-    def add_tdarr_nodes(self,tdarr_nodes_dictionary)
+    def add_tdarr_nodes(self,tdarr_nodes_dictionary):
         self.tdarr_nodes_section={}
 
         for name, Class in tdarr_nodes_dictionary.items():
