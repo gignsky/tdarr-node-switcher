@@ -41,9 +41,6 @@ class StatusTracking:
         else:
             self.NodeStatusMaster=None
 
-    def update_node_master(self,node_dictionary):
-        print("PLACEHOLDER") #TODO add update section for when new
-
     def configure_server_status(self):
         """
         configure_server_status configures server status class when there is no status file as of yet
@@ -51,9 +48,13 @@ class StatusTracking:
         self.ServerStatus=ServerStatus()
         self.import_node_status()
 
+    def startup_configure_node_master(self,node_dictionary):
+        self.NodeStatusMaster=NodeStatusMaster(node_dictionary)
+
     #updates
     def status_update(self):
-        #reset status dict
+        #update status dict
+        self.ServerStatus.update_server_dict(self.NodeStatusMaster.node_status_dictionary)
         self.status_dict["tdarr_server"]=self.ServerStatus.status_dict
 
         self.print_status_file()
@@ -95,8 +96,10 @@ class ServerStatus:
         self.status_dict["tdarr_nodes"]=self.tdarr_nodes_section
 
     #update stuff
-    #TODO yes
-
+    def update_server_dict(self,node_status_dictionary):
+        for name, Class in node_status_dictionary.items():
+            Class.update_status_dict()
+            self.status_dict[name]=Class.node_status_dict
 
 class NodeStatusMaster:
     def __init__(self, tdarr_nodes_status_dictionary):
@@ -105,12 +108,22 @@ class NodeStatusMaster:
         for name, inner_dictionary in tdarr_nodes_status_dictionary.items():
             self.node_status_dictionary[name]=NodeStatus(name,inner_dictionary)
 
+    def update_node_master(self):
+        #TODO possible placeholder might not need this class
+        print("PLACEHOLDER")
+
 class NodeStatus:
     def __init__(self, name, node_status_section):
         self.name=name
-        self.node_status_section=node_status_section
-        self.state=self.node_status_section["state"]
-        self.directive=self.node_status_section["directive"]
+        if type(node_status_section)==dict:
+            self.node_status_section=node_status_section
+            self.state=self.node_status_section["state"]
+            self.directive=self.node_status_section["directive"]
+        else:
+            self.NodeClass=node_status_section
+            self.node_status_section=None
+            self.update_line_state(self.NodeClass.line_state)
+            self.directive="Initalizing"
 
     def update_line_state(self,current_line_state):
         if current_line_state:
@@ -120,3 +133,6 @@ class NodeStatus:
 
     def update_directive(self,new_directive):
         self.directive=new_directive
+
+    def update_status_dict(self):
+        self.node_status_dict={"state": self.state, "directive": self.directive}

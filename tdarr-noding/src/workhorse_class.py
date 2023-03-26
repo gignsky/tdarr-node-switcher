@@ -66,6 +66,7 @@ class Workhorse:
             else:
                 Class.update_node("Offline")
 
+        #update node master
         #refresh status class & print output
         self.Status.status_update()
 
@@ -131,6 +132,8 @@ class Workhorse:
                     #set node status to offline
                     self.node_dictionary[node_dict_name].line_state("Offline")
 
+        self.Status.startup_configure_node_master(self.node_dictionary)
+        self.update_classes()
         # primary_node = self.Server.primary_node
         # primary_node_class = self.node_dictionary[primary_node]
 
