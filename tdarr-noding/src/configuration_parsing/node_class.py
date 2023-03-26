@@ -57,11 +57,11 @@ class Node:
         except KeyError:
             shutdown_command = None
 
-        #fix up startup and shutdown
+        # fix up startup and shutdown
         if startup_command is not None:
-            startup_command=startup_command.split()
+            startup_command = startup_command.split()
         if shutdown_command is not None:
-            shutdown_command=shutdown_command.split()
+            shutdown_command = shutdown_command.split()
 
         print(f"Startup CMD:{startup_command}")
         print(f"Shutdown CMD:{shutdown_command}")
@@ -70,18 +70,23 @@ class Node:
 
     def update_node(self, line_state, tdarr_inner_dictionary=None):
         self.line_state(line_state)
-        self.update_with_tdarr_dictionary(tdarr_inner_dictionary,"Expected")
+        self.update_with_tdarr_dictionary(tdarr_inner_dictionary, "Expected")
 
-        #update current workers amounts
+        # update current workers amounts
         if tdarr_inner_dictionary is not None:
-            worker_limits_dictionary=tdarr_inner_dictionary["workerLimits"]
+            worker_limits_dictionary = tdarr_inner_dictionary["workerLimits"]
 
             current_cpu_transcode = worker_limits_dictionary["transcodecpu"]
             current_gpu_transcode = worker_limits_dictionary["transcodegpu"]
             current_cpu_healthcheck = worker_limits_dictionary["healthcheckcpu"]
             current_gpu_healthcheck = worker_limits_dictionary["healthcheckgpu"]
 
-            self.set_current_worker_levels(current_cpu_transcode,current_gpu_transcode,current_cpu_healthcheck,current_gpu_healthcheck)
+            self.set_current_worker_levels(
+                current_cpu_transcode,
+                current_gpu_transcode,
+                current_cpu_healthcheck,
+                current_gpu_healthcheck,
+            )
 
     def line_state(self, online_or_offline):
         """
@@ -98,7 +103,13 @@ class Node:
             print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Offline")
             self.online = False
 
-    def set_current_worker_levels(self,current_cpu_transcode,current_gpu_transcode,current_cpu_healthcheck,current_gpu_healthcheck):
+    def set_current_worker_levels(
+        self,
+        current_cpu_transcode,
+        current_gpu_transcode,
+        current_cpu_healthcheck,
+        current_gpu_healthcheck,
+    ):
         self.current_cpu_transcode = current_cpu_transcode
         self.current_gpu_transcode = current_gpu_transcode
         self.current_cpu_healthcheck = current_cpu_healthcheck
@@ -165,7 +176,7 @@ class Node:
         """
         self.tdarr_node_inner_dictionary = tdarr_node_inner_id_dictionary
 
-        #added block to deal with None being inputted for tdarr_node_inner_id_dictionary
+        # added block to deal with None being inputted for tdarr_node_inner_id_dictionary
         if self.tdarr_node_inner_dictionary is not None:
             self.id_string = self.tdarr_node_inner_dictionary["_id"]
         else:
