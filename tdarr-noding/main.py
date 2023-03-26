@@ -21,11 +21,12 @@ def main():
         Workhorse.Status.set_server_status("Offline")
     else:
         Workhorse.Status.set_server_status("Online")
+        Workhorse.update_classes()
 
         if Workhorse.status_exists:
-            pass
+            Workhorse.normal()
+            Workhorse.Status.change_state("Normal")
         else:
-            Workhorse.update_classes()
             Workhorse.startup()
             Workhorse.Status.change_state("Started")
 
