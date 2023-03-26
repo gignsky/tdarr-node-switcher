@@ -29,7 +29,7 @@ def main():
             Workhorse.startup()
             Workhorse.Status.change_state("Started")
 
-    status_class.print_status_file()
+    Workhorse.Status.print_status_file()
 
 
 main()
