@@ -18,9 +18,9 @@ def main():
     server_status=src.Logic.server_status_check(Workhorse.Server)
 
     if server_status=="stop":
-        Workhorse.Status.set_server_status("Offline")
+        Workhorse.Status.ServerStatus.set_server_status("Offline")
     else:
-        Workhorse.Status.set_server_status("Online")
+        Workhorse.Status.ServerStatus.set_server_status("Online")
 
         if Workhorse.status_exists:
             Workhorse.normal()

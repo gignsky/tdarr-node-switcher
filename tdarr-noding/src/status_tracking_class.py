@@ -6,6 +6,7 @@ class StatusTracking:
         self.path=path
         if status_file is None:
             self.status_file = None
+            self.configure_server_status()
         else:
             self.status_file = status_file
             self.state = status_file["state"]
@@ -19,8 +20,6 @@ class StatusTracking:
             yaml.dump(self.status_dict, file)
 
     #modify stuff
-    def set_server_status(self,server_status):
-        self.status_dict["tdarr_server"]={"state": server_status}
 
     def change_state(self, state):
         self.status_dict["state"]=state
@@ -39,6 +38,13 @@ class StatusTracking:
         #set up node status dictionary
         self.NodeStatusMaster=NodeStatusMaster(self.ServerStatus.tdarr_nodes_status_dictionary)
 
+    def configure_server_status(self):
+        """
+        configure_server_status configures server status class when there is no status file as of yet
+        """
+        self.ServerStatus=ServerStatus()
+        self.import_node_status()
+
     #updates
     def status_update(self):
         #reset status dict
@@ -48,21 +54,31 @@ class StatusTracking:
         self.print_status_file()
 
 class ServerStatus:
-    def __init__(self, status_server_section):
-        self.state=status_server_section["state"]
-        self.status_dict["state"]=self.state
+    def __init__(self, status_server_section=None):
+        if status_server_section is not None:
+            self.state=status_server_section["state"]
+            self.status_dict["state"]=self.state
 
-        #setup basic node info
-        tdarr_nodes_section_dictionary=status_server_section["tdarr_nodes"]
+            #setup basic node info
+            tdarr_nodes_section_dictionary=status_server_section["tdarr_nodes"]
 
-        #initalize var
-        self.tdarr_nodes_status_dictionary={}
+            #initalize var
+            self.tdarr_nodes_status_dictionary={}
 
-        for name in tdarr_nodes_section_dictionary:
-            self.tdarr_nodes_status_dictionary[name]=tdarr_nodes_section_dictionary[name]
+            for name in tdarr_nodes_section_dictionary:
+                self.tdarr_nodes_status_dictionary[name]=tdarr_nodes_section_dictionary[name]
+        else:
+            self.state=None
+            self.status_dict={}
+            self.tdarr_nodes_status_dictionary={}
+
     #modify stuff
     def change_state(self, state):
-        self.status_dict["state"]=state
+        self.state=state
+        self.status_dict["state"]=self.state
+
+    def set_server_status(self,server_status):
+        self.status_dict={"state": server_status}
 
     #add tdarr_nodes_dictionary
     def add_tdarr_nodes(self,tdarr_nodes_dictionary):
