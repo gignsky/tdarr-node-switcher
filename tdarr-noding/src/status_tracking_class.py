@@ -36,7 +36,7 @@ class StatusTracking:
 
     def import_node_status(self):
         #set up node status dictionary
-        if len(self.ServerStatus.tdarr_nodes_status_dictionary) == 0:
+        if len(self.ServerStatus.tdarr_nodes_status_dictionary) != 0:
             self.NodeStatusMaster=NodeStatusMaster(self.ServerStatus.tdarr_nodes_status_dictionary)
         else:
             self.NodeStatusMaster=None
@@ -54,8 +54,7 @@ class StatusTracking:
     #updates
     def status_update(self):
         #reset status dict
-        if self.status_file is not None:
-            self.status_dict["tdarr_server"]=self.ServerStatus.status_dict
+        self.status_dict["tdarr_server"]=self.ServerStatus.status_dict
 
         self.print_status_file()
 
