@@ -8,35 +8,26 @@ import src
 
 def main():
     #establish classes
-    workhorse_class=src.Workhorse()
+    Workhorse=src.Workhorse()
 
     current_directory=os.getcwd()
-    configuration_class=src.Configuration(current_directory)
 
-    server_class=configuration_class.setup_server_class()
-
-    #check if configuration file exists
-    status_exists,status_file=configuration_class.check_if_status_exists()
-
-    status_class=src.StatusTracking(status_file,configuration_class.STATUS_PATH)
+    Workhorse.setup_classes(current_directory)
 
     # check if server is online
-    server_status=src.Logic.server_status_check(server_class)
+    server_status=src.Logic.server_status_check(Workhorse.Server)
 
     if server_status=="stop":
-        status_class.set_server_status("Offline")
+        Workhorse.Status.set_server_status("Offline")
     else:
-        status_class.set_server_status("Online")
+        Workhorse.Status.set_server_status("Online")
 
-        #continue establishing classes
-        expected_node_class_dictionary=configuration_class.setup_configuration_node_dictionary()
-
-
-        if status_exists:
+        if Workhorse.status_exists:
             pass
         else:
-            workhorse_class.startup(server_class,expected_node_class_dictionary,configuration_class)
-            status_class.change_state("Started")
+            Workhorse.update_classes()
+            Workhorse.startup()
+            Workhorse.Status.change_state("Started")
 
     status_class.print_status_file()
 

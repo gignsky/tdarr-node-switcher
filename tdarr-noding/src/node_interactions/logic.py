@@ -10,8 +10,9 @@ class HostLogic:
         < Document Guardian | Protect >
         """
         high_priority_node_name= HostLogic.get_node_with_highest_priority(node_dictionary)
-        shutdown_command=node_dictionary[high_priority_node_name].shutdown
-        HostCommands.shutdown_node(configuration_class,shutdown_command)
+        HostLogic.kill_node(configuration_class,node_dictionary,high_priority_node_name)
+
+        return high_priority_node_name
 
     @staticmethod
     def get_node_with_highest_priority(node_dictionary):
@@ -32,5 +33,6 @@ class HostLogic:
             if name == node:
                 if node_dictionary[node].online:
                     #order shutdown
+                    print(f"Killing Node: '{name}'")
                     shutdown_command=node_dictionary[node].shutdown
                     HostCommands.shutdown_node(configuration_class,shutdown_command)

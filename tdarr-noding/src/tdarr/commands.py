@@ -104,9 +104,8 @@ class Tdarr_Orders:
         < Document Guardian | Protect >
         """
         #iterate through nodes
-        for name in node_dictionary:
+        for name, NodeClass in node_dictionary.items():
             if node_name==name:
-                NodeClass=node_dictionary[name]
                 if NodeClass.online:
                     if NodeClass.current_cpu_transcode != 0:
                         for _ in range(NodeClass.current_cpu_transcode):
@@ -124,9 +123,8 @@ class Tdarr_Orders:
     @staticmethod
     def reset_workers_to_max_limits(Server,node_name,node_dictionary):
         #iterate through nodes
-        for name in node_dictionary:
+        for name, NodeClass in node_dictionary.items():
             if node_name==name:
-                NodeClass=node_dictionary[name]
                 if NodeClass.online:
                     if NodeClass.transcode_max_cpu != 0:
                         for _ in range(NodeClass.transcode_max_cpu):
