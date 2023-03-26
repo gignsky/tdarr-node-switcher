@@ -1,4 +1,3 @@
-import time
 from . import Configuration as ConfigurationClass
 from . import StatusTracking
 from . import tdarr
