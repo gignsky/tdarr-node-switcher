@@ -92,3 +92,49 @@ class Tdarr_Orders:
         #         response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
         # else:
             response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
+
+    @staticmethod
+    def reset_workers_to_zero(Server,node_name,node_dictionary):
+        """
+        reset_workers_to_zero resets nodes to zero workers in each category
+
+        Args:
+            Server (class): Server Class with all relevent endpoints
+            node_dictionary (dictionary of classes): dictionary with classes associated with the node names
+        < Document Guardian | Protect >
+        """
+        #iterate through nodes
+        for name, NodeClass in node_dictionary.items():
+            if node_name==name:
+                if NodeClass.online:
+                    if NodeClass.current_cpu_transcode != 0:
+                        for _ in range(NodeClass.current_cpu_transcode):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"transcodecpu")
+                    if NodeClass.current_gpu_transcode != 0:
+                        for _ in range(NodeClass.current_gpu_transcode):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"transcodegpu")
+                    if NodeClass.current_cpu_healthcheck != 0:
+                        for _ in range(NodeClass.current_cpu_healthcheck):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"healthcheckcpu")
+                    if NodeClass.current_gpu_healthcheck != 0:
+                        for _ in range(NodeClass.current_gpu_healthcheck):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,0,"healthcheckgpu")
+
+    @staticmethod
+    def reset_workers_to_max_limits(Server,node_name,node_dictionary):
+        #iterate through nodes
+        for name, NodeClass in node_dictionary.items():
+            if node_name==name:
+                if NodeClass.online:
+                    if NodeClass.transcode_max_cpu != 0:
+                        for _ in range(NodeClass.transcode_max_cpu):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.transcode_max_cpu,"transcodecpu")
+                    if NodeClass.transcode_max_gpu != 0:
+                        for _ in range(NodeClass.transcode_max_gpu):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.transcode_max_gpu,"transcodegpu")
+                    if NodeClass.healthcheck_max_cpu != 0:
+                        for _ in range(NodeClass.healthcheck_max_cpu):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_cpu,"healthcheckcpu")
+                    if NodeClass.healthcheck_max_gpu != 0:
+                        for _ in range(NodeClass.healthcheck_max_gpu):
+                            Tdarr_Orders.set_worker_level(Server,NodeClass,NodeClass.healthcheck_max_gpu,"healthcheckgpu")
