@@ -67,7 +67,7 @@ class Workhorse:
             else:
                 Class.update_node("Offline")
 
-        #refresh status class
+        #refresh status class & print output
         self.Status.status_update()
 
     def startup(self):
@@ -155,9 +155,7 @@ class Workhorse:
     def refresh(self):
         Logic.refresh_all(self.Server)
 
-    # def normal(self):
-    #     if self.script_status_file == "Stopped":
-    #         self.startup()
-    #     else:
-    #         print("PLACEHOLDER")
-    #         # TODO Write info in for reading yaml status file and the rest of what to do after startup has finished executing
+    def normal(self):
+        """
+        normal run normal workflow after 
+        """
