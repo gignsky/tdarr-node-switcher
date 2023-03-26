@@ -57,9 +57,10 @@ class StatusTracking:
     # updates
     def status_update(self):
         # update status dict
-        self.ServerStatus.update_server_dict(
-            self.NodeStatusMaster.node_status_dictionary
-        )
+        if self.NodeStatusMaster is not None:
+            self.ServerStatus.update_server_dict(
+                self.NodeStatusMaster.node_status_dictionary
+            )
         self.status_dict["tdarr_server"] = self.ServerStatus.status_dict
 
         self.print_status_file()
@@ -91,26 +92,23 @@ class ServerStatus:
         self.state = state
         self.status_dict["state"] = self.state
 
-    def set_server_status(self, server_status):
-        self.status_dict = {"state": server_status}
-
     # add tdarr_nodes_dictionary
-    def add_tdarr_nodes(self, tdarr_nodes_dictionary):
-        self.tdarr_nodes_section = {}
-
-        for name, Class in tdarr_nodes_dictionary.items():
-            self.tdarr_nodes_section[name] = {
-                "state": Class.state,
-                "directive": Class.directive,
-            }
-
-        self.status_dict["tdarr_nodes"] = self.tdarr_nodes_section
+    #     def add_tdarr_nodes(self,tdarr_nodes_dictionary):
+    #         self.tdarr_nodes_section={}
+    #
+    #         for name, Class in tdarr_nodes_dictionary.items():
+    #             self.tdarr_nodes_section[name]={"state": Class.state, "directive": Class.directive}
+    #
+    #         self.status_dict["tdarr_nodes"]=self.tdarr_nodes_section
 
     # update stuff
     def update_server_dict(self, node_status_dictionary):
+        node_status_dictionary = {}
         for name, Class in node_status_dictionary.items():
             Class.update_status_dict()
-            self.status_dict[name] = Class.node_status_dict
+            node_status_dictionary[name] = Class.node_status_dict
+
+        self.status_dict["tdarr_nodes"] = node_status_dictionary
 
 
 class NodeStatusMaster:
