@@ -42,7 +42,8 @@ class StatusTracking:
     #updates
     def status_update(self):
         #reset status dict
-        self.status_dict["tdarr_server"]=self.ServerStatus.status_dict
+        if self.status_file is not None:
+            self.status_dict["tdarr_server"]=self.ServerStatus.status_dict
 
         self.print_status_file()
 
