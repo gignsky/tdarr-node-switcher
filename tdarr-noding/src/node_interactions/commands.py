@@ -6,9 +6,10 @@ class HostCommands:
     @staticmethod
     def shutdown_node(Configuration, shutdown_command):
         os.chdir(Configuration.Constants.ansible_folder_path)
-        subprocess.call(
-            shutdown_command
-        )  # TODO START HERE UPON REENTRY you were trying to get this ansible playbook to run as expected when this point is reached
+        if shutdown_command is not None:
+            subprocess.call(shutdown_command)
+        else:
+            print("ERROR: Cannot shutdown node as there is no shutdown command")
 
     @staticmethod
     def start_node(NodeClass):
