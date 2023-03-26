@@ -126,6 +126,11 @@ class NodeStatusMaster:
         # TODO possible placeholder might not need this class
         print("PLACEHOLDER")
 
+    def update_directive(self, name, directive):
+        for node_name, NodeClass in self.node_status_dictionary.items():
+            if name == node_name:
+                NodeClass.update_directive(directive)
+
 
 class NodeStatus:
     def __init__(self, name, node_status_section):
@@ -140,6 +145,14 @@ class NodeStatus:
             self.update_line_state(self.NodeClass.online)
             self.directive = "Initalizing"
 
+            self.check_for_sleeping()
+
+    def check_for_sleeping(self):
+        if self.state == "Online":
+            self.directive = "Active"
+        elif self.state == "Offline":
+            self.directive = "Sleeping"
+
     def update_line_state(self, current_line_state):
         if current_line_state:
             self.state = "Online"
@@ -150,4 +163,5 @@ class NodeStatus:
         self.directive = new_directive
 
     def update_status_dict(self):
+        self.check_for_sleeping()
         self.node_status_dict = {"state": self.state, "directive": self.directive}
