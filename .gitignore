@@ -7,4 +7,4 @@ ansible_files/become_pass
 ansible_files/inventory
 ansible_files/ansible.cfg
 ansible_files/defaults/main.yml
-tdarr-noding/status.yml
+# tdarr-noding/status.yml
