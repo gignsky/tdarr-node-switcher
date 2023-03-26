@@ -4,6 +4,7 @@ from . import tdarr
 from . import node_interactions
 from . import Logic
 
+
 class Workhorse:
     """
     general workhorse for the entireprogram where the large amount of overall processing is handled
@@ -12,7 +13,7 @@ class Workhorse:
     """
 
     # main methods
-    def setup_classes(self,current_directory):
+    def setup_classes(self, current_directory):
         """
         setup_classes setup classes to be used each time the program runs
 
@@ -21,24 +22,27 @@ class Workhorse:
 
         < Document Guardian | Protect >
         """
-        self.root_dir=current_directory
-        self.Configuration=ConfigurationClass(self.root_dir)
+        self.root_dir = current_directory
+        self.Configuration = ConfigurationClass(self.root_dir)
 
-        self.Server=self.Configuration.setup_server_class()
+        self.Server = self.Configuration.setup_server_class()
 
-        #check if configuration file exists
-        self.status_exists,self.status_file=self.Configuration.check_if_status_exists()
+        # check if configuration file exists
+        (
+            self.status_exists,
+            self.status_file,
+        ) = self.Configuration.check_if_status_exists()
 
-        self.Status=StatusTracking(self.status_file,self.Configuration.STATUS_PATH)
+        self.Status = StatusTracking(self.status_file, self.Configuration.STATUS_PATH)
 
-        self.node_dictionary=self.Configuration.setup_configuration_node_dictionary()
+        self.node_dictionary = self.Configuration.setup_configuration_node_dictionary()
 
     def update_nodes_output(self):
         """
         update_nodes_output updates self.get_nodes_output to most current pull from tdarr server
         < Document Guardian | Protect >
         """
-        self.get_nodes_output=tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
+        self.get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
 
     def update_classes(self):
         """
@@ -48,25 +52,26 @@ class Workhorse:
         # refresh get_nodes_output
         self.update_nodes_output()
 
-        #refresh tdarr node classes
-        list_of_alive_tdarr_nodes=[]
+        # refresh tdarr node classes
+        list_of_alive_tdarr_nodes = []
 
         for node_id in self.get_nodes_output:
-            inner_tdarr_dictionary=self.get_nodes_output[node_id]
-            node_name=inner_tdarr_dictionary["nodeName"]
+            inner_tdarr_dictionary = self.get_nodes_output[node_id]
+            node_name = inner_tdarr_dictionary["nodeName"]
             list_of_alive_tdarr_nodes.append(node_name)
 
         for name, Class in self.node_dictionary.items():
 
-            #run update in node class
+            # run update in node class
             if name in list_of_alive_tdarr_nodes:
                 for node_id in self.get_nodes_output:
-                    inner_tdarr_dictionary=self.get_nodes_output[node_id]
-                    Class.update_node("Online",inner_tdarr_dictionary)
+                    inner_tdarr_dictionary = self.get_nodes_output[node_id]
+                    Class.update_node("Online", inner_tdarr_dictionary)
             else:
                 Class.update_node("Offline")
 
-        #refresh status class & print output
+        # update node master
+        # refresh status class & print output
         self.Status.status_update()
 
     def startup(self):
@@ -83,27 +88,36 @@ class Workhorse:
             5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
         """
-        # initiate start up
+        # initiate start up - and configure node master initally
+        self.Status.startup_configure_node_master(self.node_dictionary)
 
         ## 1
         ### 1.a get_nodes output
         self.update_nodes_output()
 
         ### 1.b update configuration class with tdarr info
-        self.Configuration.startup_update_nodes_with_tdarr_info(self.node_dictionary,self.get_nodes_output)
+        self.Configuration.startup_update_nodes_with_tdarr_info(
+            self.node_dictionary, self.get_nodes_output
+        )
 
         ## 2
-        quantity_of_living_nodes=999 # set quantity of living nodes to an absurdly high number to allow for looping on next section
+        quantity_of_living_nodes = 999  # set quantity of living nodes to an absurdly high number to allow for looping on next section
 
         ### 2.a - begin looping to kill lowest priority nodes
         while quantity_of_living_nodes > self.Server.max_nodes:
-            quantity_of_living_nodes = Logic.find_quant_living_nodes(self.node_dictionary)
+            quantity_of_living_nodes = Logic.find_quant_living_nodes(
+                self.node_dictionary
+            )
 
             if quantity_of_living_nodes > self.Server.max_nodes:
                 print(
                     "WARNING: Too many nodes alive; killing last node on the priority list"
                 )
-                highest_priority_node_name=node_interactions.HostLogic.kill_smallest_priority_node(self.Configuration,self.node_dictionary)
+                highest_priority_node_name = (
+                    node_interactions.HostLogic.kill_smallest_priority_node(
+                        self.Configuration, self.node_dictionary
+                    )
+                )
 
                 # set node state to offline
                 self.node_dictionary[highest_priority_node_name].line_state("Offline")
@@ -114,42 +128,51 @@ class Workhorse:
         ## 3
         for node_name, node_class in self.node_dictionary.items():
             if node_class.online:
-                tdarr.Tdarr_Orders.reset_workers_to_zero(self.Server,node_name,self.node_dictionary)
-
+                tdarr.Tdarr_Orders.reset_workers_to_zero(
+                    self.Server, node_name, self.node_dictionary
+                )
 
         ## 4
         _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
 
-        #shutdown nodes without work
+        # shutdown nodes without work
         for node in nodes_without_work_list:
             for node_dict_name in self.node_dictionary:
                 if node == node_dict_name:
-                    #set workers to zero
-                    tdarr.Tdarr_Orders.reset_workers_to_zero(self.Server,node,self.node_dictionary)
-                    #order shutdown
-                    node_interactions.HostLogic.kill_node(self.Configuration,self.node_dictionary,node)
-                    #set node status to offline
+                    # set workers to zero
+                    tdarr.Tdarr_Orders.reset_workers_to_zero(
+                        self.Server, node, self.node_dictionary
+                    )
+                    # order shutdown
+                    node_interactions.HostLogic.kill_node(
+                        self.Configuration, self.node_dictionary, node
+                    )
+                    # set node status to offline
                     self.node_dictionary[node_dict_name].line_state("Offline")
 
+                    # set node directive to sleep
+                    self.Status.NodeStatusMaster.update_directive(node, "Sleeping")
+
+        self.update_classes()
         # primary_node = self.Server.primary_node
         # primary_node_class = self.node_dictionary[primary_node]
 
-#         if primary_node_class.online:
-#             print(f"Primary NODE: `{primary_node}` is ONLINE")
-#             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
-#
-#             number_of_working_nodes = len(nodes_with_work_list)
-#
-#             if number_of_working_nodes == 1:
-#                 print("PLACEHOLDER")
-#                 if quantity_of_living_nodes > 1:
-#                     print("INFO: Shutting/Pausing down all nodes except primary")
-#                     # TODO shutdown all online nodes except primary
-#                 else:
-#                     self.refresh()
-#             else:
-#                 # TODO Same function as above on line 59 looping
-#                 print("PLACEHOLDER")
+    #         if primary_node_class.online:
+    #             print(f"Primary NODE: `{primary_node}` is ONLINE")
+    #             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
+    #
+    #             number_of_working_nodes = len(nodes_with_work_list)
+    #
+    #             if number_of_working_nodes == 1:
+    #                 print("PLACEHOLDER")
+    #                 if quantity_of_living_nodes > 1:
+    #                     print("INFO: Shutting/Pausing down all nodes except primary")
+    #                     # TODO shutdown all online nodes except primary
+    #                 else:
+    #                     self.refresh()
+    #             else:
+    #                 # TODO Same function as above on line 59 looping
+    #                 print("PLACEHOLDER")
 
     def refresh(self):
         Logic.refresh_all(self.Server)
@@ -160,7 +183,7 @@ class Workhorse:
 
         all of these steps will function on a "if previous step fails, do not continue" order
         steps to take:
-            1. Check for nodes that are going down and see if they have work, if they do kill these nodes, if and only if this check passes continue with the process if not end the loop and allow for rerunning
+            1. Check for nodes that are going down and see if they have work, if they do not kill these nodes, if and only if this check passes continue with the process if not end the loop and allow for rerunning
             2. Find quantity of work to be done and activate the appropriate number of nodes (while checking to make sure not to go over the max_nodes amount)
             2.5 find that quantity of work is less than required nodes and kill excess nodes
             3. if all work is finished check for online status of primary node, if it is offline attempt to start, if started set all other nodes to zero workers then set workers to normal limits and run refresh

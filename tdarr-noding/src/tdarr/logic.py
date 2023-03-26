@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 class Tdarr_Logic:
     @staticmethod
     def generic_get_nodes(Server):
@@ -67,7 +68,7 @@ class Tdarr_Logic:
         json_response = Tdarr_Logic.generic_get_nodes(Server)
 
         list_of_nodes_with_work = []
-        list_of_nodes_without_work=[]
+        list_of_nodes_without_work = []
 
         for node_id in json_response:
             node_id_inner_dictionary = json_response[node_id]
@@ -80,7 +81,7 @@ class Tdarr_Logic:
             else:
                 list_of_nodes_with_work.append(node_id_inner_dictionary["nodeName"])
 
-        return list_of_nodes_with_work,list_of_nodes_without_work
+        return list_of_nodes_with_work, list_of_nodes_without_work
 
     # searching...
     @staticmethod
@@ -108,7 +109,9 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_failed_transcodes(Server):
-        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Transcode error")
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification(
+            "Transcode error"
+        )
 
         response = requests.post(
             Server.search, json=payload, headers=headers, timeout=1.5
@@ -128,7 +131,9 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_successful_transcodes(Server):
-        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Transcode success")
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification(
+            "Transcode success"
+        )
 
         response = requests.post(
             Server.search, json=payload, headers=headers, timeout=1.5
@@ -159,7 +164,9 @@ class Tdarr_Logic:
         return payload, headers
 
     @staticmethod
-    def payload_and_headers_worker_modification(node_id,increase_or_decrease,worker_type):
+    def payload_and_headers_worker_modification(
+        node_id, increase_or_decrease, worker_type
+    ):
         """
         payload_and_headers_worker_modification payload creator for worker modification
 
@@ -180,10 +187,11 @@ class Tdarr_Logic:
         #         final_payload.append(payload)
         # else:
         final_payload = {
-            "data":
-                {"nodeID": node_id,
+            "data": {
+                "nodeID": node_id,
                 "process": increase_or_decrease,
-                "workerType": worker_type}
+                "workerType": worker_type,
+            }
         }
         return final_payload, headers
 
@@ -236,14 +244,14 @@ class Tdarr_Logic:
                 current_level = NodeClass.current_gpu_transcode
             if current_level > set_to_level:
                 direction = "decrease"
-            elif current_level==set_to_level:
-                direction="Hold"
+            elif current_level == set_to_level:
+                direction = "Hold"
             elif current_level < set_to_level:
-                direction="increase"
+                direction = "increase"
 
             # if worker_type=="All":
             #     increase_or_decrease=list_of_up_downs
             # else:
-            increase_or_decrease=direction
+            increase_or_decrease = direction
 
         return increase_or_decrease

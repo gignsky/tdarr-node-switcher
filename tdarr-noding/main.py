@@ -7,17 +7,17 @@ import src
 
 
 def main():
-    #establish classes
-    Workhorse=src.Workhorse()
+    # establish classes
+    Workhorse = src.Workhorse()
 
-    current_directory=os.getcwd()
+    current_directory = os.getcwd()
 
     Workhorse.setup_classes(current_directory)
 
     # check if server is online
-    server_status=src.Logic.server_status_check(Workhorse.Server)
+    server_status = src.Logic.server_status_check(Workhorse.Server)
 
-    if server_status=="stop":
+    if server_status == "stop":
         Workhorse.Status.ServerStatus.set_server_status("Offline")
     else:
         Workhorse.Status.ServerStatus.set_server_status("Online")
