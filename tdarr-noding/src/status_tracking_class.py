@@ -15,7 +15,8 @@ class StatusTracking:
     #print output
     def print_status_file(self):
         with open(self.path,"w") as file:
-            server_status_file_output=yaml.dump(self.status_dict, file)
+            # server_status_file_output=
+            yaml.dump(self.status_dict, file)
 
     #modify stuff
     def set_server_status(self,server_status):
@@ -48,7 +49,7 @@ class StatusTracking:
 class ServerStatus:
     def __init__(self, status_server_section):
         self.state=status_server_section["state"]
-        self.status_dict[state]=self.state
+        self.status_dict["state"]=self.state
 
         #setup basic node info
         tdarr_nodes_section_dictionary=status_server_section["tdarr_nodes"]
