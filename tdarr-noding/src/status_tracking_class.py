@@ -107,12 +107,12 @@ class ServerStatus:
 
     # update stuff
     def update_server_dict(self, node_status_dictionary):
-        node_status_dictionary = {}
+        node_status_dict = {}
         for name, Class in node_status_dictionary.items():
             Class.update_status_dict()
-            node_status_dictionary[name] = Class.node_status_dict
+            node_status_dict[name] = Class.node_status_dict
 
-        self.status_dict["tdarr_nodes"] = node_status_dictionary
+        self.status_dict["tdarr_nodes"] = node_status_dict
 
 
 class NodeStatusMaster:
