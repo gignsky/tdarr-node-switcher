@@ -73,14 +73,15 @@ class Node:
         self.update_with_tdarr_dictionary(tdarr_inner_dictionary,"Expected")
 
         #update current workers amounts
-        worker_limits_dictionary=tdarr_inner_dictionary["workerLimits"]
+        if tdarr_inner_dictionary is not None:
+            worker_limits_dictionary=tdarr_inner_dictionary["workerLimits"]
 
-        current_cpu_transcode = worker_limits_dictionary["transcodecpu"]
-        current_gpu_transcode = worker_limits_dictionary["transcodegpu"]
-        current_cpu_healthcheck = worker_limits_dictionary["healthcheckcpu"]
-        current_gpu_healthcheck = worker_limits_dictionary["healthcheckgpu"]
+            current_cpu_transcode = worker_limits_dictionary["transcodecpu"]
+            current_gpu_transcode = worker_limits_dictionary["transcodegpu"]
+            current_cpu_healthcheck = worker_limits_dictionary["healthcheckcpu"]
+            current_gpu_healthcheck = worker_limits_dictionary["healthcheckgpu"]
 
-        self.set_current_worker_levels(current_cpu_transcode,current_gpu_transcode,current_cpu_healthcheck,current_gpu_healthcheck)
+            self.set_current_worker_levels(current_cpu_transcode,current_gpu_transcode,current_cpu_healthcheck,current_gpu_healthcheck)
 
     def line_state(self, online_or_offline):
         """
