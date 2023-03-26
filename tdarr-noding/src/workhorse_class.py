@@ -157,5 +157,7 @@ class Workhorse:
 
     def normal(self):
         """
-        normal run normal workflow after 
+        normal run normal workflow when startup has already been run
         """
+
+        print("PLACEHOLDER")
