@@ -36,7 +36,13 @@ class StatusTracking:
 
     def import_node_status(self):
         #set up node status dictionary
-        self.NodeStatusMaster=NodeStatusMaster(self.ServerStatus.tdarr_nodes_status_dictionary)
+        if len(self.ServerStatus.tdarr_nodes_status_dictionary) == 0:
+            self.NodeStatusMaster=NodeStatusMaster(self.ServerStatus.tdarr_nodes_status_dictionary)
+        else:
+            self.NodeStatusMaster=None
+
+    def update_node_master(self,node_dictionary):
+        print("PLACEHOLDER") #TODO add update section for when new
 
     def configure_server_status(self):
         """
