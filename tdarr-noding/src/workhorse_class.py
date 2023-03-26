@@ -157,6 +157,14 @@ class Workhorse:
     def normal(self):
         """
         normal run normal workflow when startup has already been run
+
+        all of these steps will function on a "if previous step fails, do not continue" order
+        steps to take:
+            1. Check for nodes that are going down and see if they have work, if they do kill these nodes, if and only if this check passes continue with the process if not end the loop and allow for rerunning
+            2. Find quantity of work to be done and activate the appropriate number of nodes (while checking to make sure not to go over the max_nodes amount)
+            2.5 find that quantity of work is less than required nodes and kill excess nodes
+            3. if all work is finished check for online status of primary node, if it is offline attempt to start, if started set all other nodes to zero workers then set workers to normal limits and run refresh
+            4. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
         """
 
         print("PLACEHOLDER")
