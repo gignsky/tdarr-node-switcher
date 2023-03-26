@@ -88,7 +88,8 @@ class Workhorse:
             5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
         """
-        # initiate start up
+        # initiate start up - and configure node master initally
+        self.Status.startup_configure_node_master(self.node_dictionary)
 
         ## 1
         ### 1.a get_nodes output
@@ -149,7 +150,9 @@ class Workhorse:
                     # set node status to offline
                     self.node_dictionary[node_dict_name].line_state("Offline")
 
-        self.Status.startup_configure_node_master(self.node_dictionary)
+                    # set node directive to sleep
+                    self.Status.NodeStatusMaster.update_directive(node, "Sleeping")
+
         self.update_classes()
         # primary_node = self.Server.primary_node
         # primary_node_class = self.node_dictionary[primary_node]
