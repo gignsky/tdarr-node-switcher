@@ -162,9 +162,15 @@ class Node:
             expected_or_not (string): "Expected" or "Unexpected"
         < Document Guardian | Protect >
         """
-        self.id_string = tdarr_node_inner_id_dictionary["_id"]
-        self.expected_or_not(expected_or_not)
         self.tdarr_node_inner_dictionary = tdarr_node_inner_id_dictionary
+
+        #added block to deal with None being inputted for tdarr_node_inner_id_dictionary
+        if self.tdarr_node_inner_id_dictionary is not None:
+            self.id_string = self.tdarr_node_inner_id_dictionary["_id"]
+        else:
+            self.id_string = None
+
+        self.expected_or_not(expected_or_not)
 
     def expected_or_not(self, expected_or_not):
         """
