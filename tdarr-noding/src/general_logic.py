@@ -1,5 +1,6 @@
 import requests
 import yaml
+from pathlib import Path
 from . import tdarr
 
 # from . import status_tracking
@@ -23,15 +24,13 @@ class Logic:
             return "alive"
 
     @staticmethod
-    def script_status(path):
-        try:
-            if path.is_file():
-                with open(path, "r") as file:
-                    status_file = yaml.safe_load(file)
-                    return status_file
-            else:
-                return "Empty"
-        except AttributeError:
+    def script_status(path_str):
+        path = Path(path_str)
+        if path.is_file():
+            with open(path, "r") as file:
+                status_file = yaml.safe_load(file)
+                return status_file
+        else:
             return "Empty"
 
     #     @staticmethod

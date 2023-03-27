@@ -71,6 +71,7 @@ class ServerStatus:
     def __init__(self, status_server_section=None):
         if status_server_section is not None:
             self.state = status_server_section["state"]
+            self.status_dict = {}
             self.status_dict["state"] = self.state
 
             # setup basic node info
@@ -123,7 +124,7 @@ class NodeStatusMaster:
             self.node_status_dictionary[name] = NodeStatus(name, inner_dictionary)
 
     def update_node_master(self):
-        # TODO possible placeholder might not need this class
+        # TODO possible placeholder might not need this function
         print("PLACEHOLDER")
 
     def update_directive(self, name, directive):
@@ -149,7 +150,8 @@ class NodeStatus:
 
     def check_for_sleeping(self):
         if self.state == "Online":
-            self.directive = "Active"
+            if self.directive != "Going_down":
+                self.directive = "Active"
         elif self.state == "Offline":
             self.directive = "Sleeping"
 

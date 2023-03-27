@@ -13,16 +13,16 @@ class Workhorse:
     """
 
     # main methods
-    def setup_classes(self, current_directory):
+    def __init__(self, current_directory):
         """
-        setup_classes setup classes to be used each time the program runs
+        __init__ setup classes to be used each time the program runs
 
         Args:
             current_directory (str): path to current working directory of main.py
 
         < Document Guardian | Protect >
         """
-        print("SECTION INFO: Starting workhorse 'SETUP_CLASSES'")
+        print("SECTION INFO: Starting workhorse '__init__'")
         self.root_dir = current_directory
         self.Configuration = ConfigurationClass(self.root_dir)
 
@@ -52,6 +52,13 @@ class Workhorse:
         """
         print("SECTION INFO: Starting workhorse 'UPDATE_CLASSES'")
         # refresh get_nodes_output
+        self.update_nodes()
+
+        # update node master
+        # refresh status class & print output
+        self.Status.status_update(self.node_dictionary)
+
+    def update_nodes(self):
         self.update_nodes_output()
 
         # refresh tdarr node classes
@@ -63,7 +70,6 @@ class Workhorse:
             list_of_alive_tdarr_nodes.append(node_name)
 
         for name, Class in self.node_dictionary.items():
-
             # run update in node class
             if name in list_of_alive_tdarr_nodes:
                 for node_id in self.get_nodes_output:
@@ -73,10 +79,6 @@ class Workhorse:
                         Class.update_node("Online", inner_tdarr_dictionary)
             else:
                 Class.update_node("Offline")
-
-        # update node master
-        # refresh status class & print output
-        self.Status.status_update(self.node_dictionary)
 
     def startup(self):
         """
@@ -196,6 +198,9 @@ class Workhorse:
             4. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
         """
 
+        # update nodes
+        self.update_nodes()
+
         # start loop
         q = 1
 
@@ -204,6 +209,7 @@ class Workhorse:
                 # 1
                 # 1.a - find nodes "going down"
                 list_of_nodes_going_down = []
+                list_of_nodes_going_down_still = []
                 for (
                     node,
                     Class,
@@ -234,18 +240,19 @@ class Workhorse:
                         self.node_dictionary[node].line_state("Offline")
 
                         # set node directive to sleep
-                        self.Status.NodeStatusMaster.update_directive("Sleeping")
+                        self.Status.NodeStatusMaster.update_directive(node, "Sleeping")
 
-                        # pop node from list
-                        list_of_nodes_going_down.pop(node)
                     else:
                         # set node directive to going_down
                         self.Status.NodeStatusMaster.update_directive("Going_down")
+                        list_of_nodes_going_down_still.append(node)
 
-                if len(list_of_nodes_going_down) == 0:
+                if len(list_of_nodes_going_down_still) == 0:
                     q += 1
                 else:
                     break
+
+                self.update_classes()
 
             elif q == 2:
                 print("PLACEHOLDER")

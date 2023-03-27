@@ -8,11 +8,10 @@ import src
 
 def main():
     # establish classes
-    Workhorse = src.Workhorse()
 
     current_directory = os.getcwd()
 
-    Workhorse.setup_classes(current_directory)
+    Workhorse = src.Workhorse(current_directory)
 
     # check if server is online
     server_status = src.Logic.server_status_check(Workhorse.Server)
