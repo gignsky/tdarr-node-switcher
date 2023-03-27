@@ -119,6 +119,8 @@ class Workhorse:
                     )
                 )
 
+                # decrement quantity of living nodes
+                quantity_of_living_nodes -= 1
                 # set node state to offline
                 self.node_dictionary[highest_priority_node_name].line_state("Offline")
 
