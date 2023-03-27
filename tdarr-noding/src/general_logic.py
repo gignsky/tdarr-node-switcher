@@ -141,12 +141,91 @@ class Logic:
                     else:
                         max_transcode_workers -= highest_priority_transcode_workers
                         max_transcode_workers += primary_node_transcode_workers
-                        includes_primary_node=True
+                        includes_primary_node = True
                 else:
                     print(
                         "WARN: POSSIBLE ERROR, unaccounted for possibility in find_quantity_of_transcode_workers function in general_logic.py"
                     )
             else:
-                includes_primary_node=False
+                includes_primary_node = False
 
-        return max_transcode_workers,includes_primary_node
+        return max_transcode_workers, includes_primary_node
+
+    @staticmethod
+    def find_priority_target_level(
+        queued_quantity,
+        max_transcode_workers,
+        includes_primary_node,
+        node_dictionary,
+        max_nodes,
+    ):
+
+        # create two arrays with priority number and total transcode workers
+        priority_array_without_primary = {}
+        priority_array_with_primary = {}
+        cap = max_nodes
+
+        if includes_primary_node:
+            cap -= 1
+
+        current_priority_level = 0
+        while current_priority_level <= cap:
+            for node, Class in node_dictionary.items():
+                node_priority = Class.priority
+                node_transcode_workers = (
+                    Class.transcode_max_cpu + Class.transcode_max_gpu
+                )
+                if node_priority == current_priority_level:
+                    if node_priority == 0:
+                        priority_array_with_primary[
+                            node_priority
+                        ] = node_transcode_workers
+                    elif node_priority == cap:
+                        if includes_primary_node:
+                            priority_array_with_primary[
+                                node_priority
+                            ] = node_transcode_workers
+                        else:
+                            priority_array_without_primary[
+                                node_priority
+                            ] = node_transcode_workers
+                    else:
+                        priority_array_without_primary[
+                            node_priority
+                        ] = node_transcode_workers
+
+                    current_priority_level += 1
+
+        if includes_primary_node:
+            priority_array = priority_array_with_primary
+        else:
+            priority_array = priority_array_without_primary
+
+        cumulative_quantity = 0
+        for priority_level, quantity in priority_array.items():
+            if queued_quantity <= quantity:
+                target_priority = priority_level
+            elif queued_quantity >= quantity:
+                cumulative_quantity += quantity
+                if queued_quantity <= cumulative_quantity:
+                    target_priority = priority_level
+                elif queued_quantity > cumulative_quantity:
+                    pass
+
+        return target_priority
+
+
+#
+#         for _,Class in node_dictionary.items():
+#             priority_level=Class.transcode_max_cpu + Class.transcode_max_gpu
+#
+#
+#         if includes_primary_node:
+#             primary_node_workers=0
+#             priority_level=0
+#             for _, Class in node_dictionary.items():
+#                 if Class.primary:
+#                     primary_node_workers+=Class.transcode_max_cpu + Class.transcode_max_gpu
+#             for priority_level in range(max_nodes):
+#                 for _, Class in node_dictionary.items():
+#                     if priority_level == Class.priority_level:
