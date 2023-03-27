@@ -99,9 +99,9 @@ class Tdarr_Logic:
         for i in response:
             node_id = i.get("_id")
 
-            healthCheckStatus = i.get("HealthCheck")
+            health_check_status = i.get("HealthCheck")
             # print(healthCheckStatus)
-            if healthCheckStatus == "Error":
+            if health_check_status == "Error":
                 fails.append(node_id)
                 # print(i)
 
@@ -120,14 +120,14 @@ class Tdarr_Logic:
         response = json.loads(response.text)
 
         # print(len(response))
-        transcodeErrors = []
+        transcode_errors = []
         for i in response:
             node_id = i.get("_id")
 
-            transcodeErrors.append(node_id)
+            transcode_errors.append(node_id)
             # print(i)
 
-        return transcodeErrors
+        return transcode_errors
 
     @staticmethod
     def search_for_successful_transcodes(Server):
@@ -142,14 +142,14 @@ class Tdarr_Logic:
         response = json.loads(response.text)
 
         # print(len(response))
-        transcodeSuccesses = []
+        transcode_successes = []
         for i in response:
             node_id = i.get("_id")
 
-            transcodeSuccesses.append(node_id)
+            transcode_successes.append(node_id)
             # print(i)
 
-        return transcodeSuccesses
+        return transcode_successes
 
     @staticmethod
     def payload_and_headers_file_modification(string):
