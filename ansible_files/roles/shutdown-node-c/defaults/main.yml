@@ -1,1 +1,15 @@
-../../../defaults/main.yml
+---
+# vars file for roles/startup
+# API INFO
+api_user: "{{ lookup('env', 'API_USER') }}"
+api_password: "{{ lookup('env', 'API_PASSWORD') }}"
+
+# Proxmox Hosts INFO
+node_a_host: "{{ lookup('env', 'PROXMOX_HOST') }}"
+node_b_host: "{{ lookup('env', 'PROXMOX_HOST') }}"
+node_c_host: "{{ lookup('env', 'PROXMOX_HOST') }}"
+
+# VMIDs
+node_a_vmid: "{{ lookup('env', 'NODE_A_VMID') }}"
+node_b_vmid: "{{ lookup('env', 'NODE_B_VMID') }}"
+node_c_vmid: "{{ lookup('env', 'NODE_C_VMID') }}"
