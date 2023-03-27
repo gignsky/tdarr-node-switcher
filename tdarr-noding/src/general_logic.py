@@ -87,3 +87,66 @@ class Logic:
                 if priority_level >= current_priority_level:
                     current_priority_level = priority_level
         return quantity_of_living_nodes
+
+    @staticmethod()
+    def find_quantity_of_transcode_workers(node_dictionary, max_nodes):
+        # does not count work to be done on primary node unless node is alive
+        max_transcode_workers = 0
+        is_primary_alive = None
+        primary_node_transcode_workers = 0
+        is_primary_killable = None
+        highest_priority_number = 0
+        highest_priority_transcode_workers = 0
+
+        for _, Class in node_dictionary.items():
+            primary_node_bool = Class.primary_node
+
+            node_max_transcode_workers = (
+                Class.transcode_max_cpu + Class.transcode_max_gpu
+            )
+
+            priority_number = Class.priority
+
+            if priority_number > highest_priority_number:
+                highest_priority_transcode_workers = node_max_transcode_workers
+                highest_priority_transcode_workers = priority_number
+
+            if primary_node_bool:
+                if Class.online:
+                    is_primary_alive = True
+                else:
+                    is_primary_alive = False
+
+                primary_node_transcode_workers = node_max_transcode_workers
+
+                if Class.shutdown_command is None:
+                    is_primary_killable = False
+                else:
+                    is_primary_killable = True
+
+            else:
+                max_transcode_workers += node_max_transcode_workers
+
+        quantity_of_nodes = len(node_dictionary)
+        quantity_of_nodes_minus_primary = quantity_of_nodes - 1
+
+        if max_nodes > quantity_of_nodes:
+            if is_primary_alive:
+                if max_nodes > quantity_of_nodes_minus_primary:
+                    print("ERROR: more than one node over max")
+                elif max_nodes == quantity_of_nodes_minus_primary:
+                    if is_primary_killable:
+                        print("ERROR: Not yet implemented")
+                        # TODO Consider implementing functionality for killable primary node
+                    else:
+                        max_transcode_workers -= highest_priority_transcode_workers
+                        max_transcode_workers += primary_node_transcode_workers
+                        includes_primary_node=True
+                else:
+                    print(
+                        "WARN: POSSIBLE ERROR, unaccounted for possibility in find_quantity_of_transcode_workers function in general_logic.py"
+                    )
+            else:
+                includes_primary_node=False
+
+        return max_transcode_workers,includes_primary_node

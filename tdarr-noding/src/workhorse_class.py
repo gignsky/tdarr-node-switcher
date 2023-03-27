@@ -265,6 +265,7 @@ class Workhorse:
                 queued_transcode_quantity = len(queued_transcode_ids)
 
                 # 2.b - find total amount of work able to be done by all transcode nodes at once
+                max_quantity_of_work,includes_primary_node=Logic.find_quantity_of_transcode_workers(self.node_dictionary,self.Server.max_nodes)
 
                 # 2.c - compare quantity of work to be done with able to be done, should set var with priority level capable of taking on the load
 
