@@ -1,6 +1,6 @@
 ---
 # tasks file for roles/shutdown
-- name: Signal Node-C to Start
+- name: Signal Node-C to Stop
   debug:
     msg: ''
   changed_when: true
