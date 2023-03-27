@@ -7,3 +7,4 @@ files_to_remove/*
 .env
 ansible_files/become_pass
 ansible_files/inventory.ini
+**/defaults/main.yml
