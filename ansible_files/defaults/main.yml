@@ -1,0 +1,15 @@
+---
+# vars file for roles/startup
+# API INFO
+api_user: ${API_USER}
+api_password: ${API_PASSWORD}
+
+# Proxmox Hosts INFO
+node_a_host: ${PROXMOX_HOST}
+node_b_host: ${PROXMOX_HOST}
+node_c_host: ${PROXMOX_HOST}
+
+# VMIDs
+node_a_vmid: ${NODE_A_VMID}
+node_b_vmid: ${NODE_B_VMID}
+node_c_vmid: ${NODE_C_VMID}
