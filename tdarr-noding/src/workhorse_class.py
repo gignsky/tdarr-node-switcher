@@ -22,6 +22,7 @@ class Workhorse:
 
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'SETUP_CLASSES'")
         self.root_dir = current_directory
         self.Configuration = ConfigurationClass(self.root_dir)
 
@@ -49,6 +50,7 @@ class Workhorse:
         update_classes update classes with current information
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'UPDATE_CLASSES'")
         # refresh get_nodes_output
         self.update_nodes_output()
 
@@ -66,13 +68,15 @@ class Workhorse:
             if name in list_of_alive_tdarr_nodes:
                 for node_id in self.get_nodes_output:
                     inner_tdarr_dictionary = self.get_nodes_output[node_id]
-                    Class.update_node("Online", inner_tdarr_dictionary)
+                    inner_tdarr_dictionary_name = inner_tdarr_dictionary["nodeName"]
+                    if inner_tdarr_dictionary_name == name:
+                        Class.update_node("Online", inner_tdarr_dictionary)
             else:
                 Class.update_node("Offline")
 
         # update node master
         # refresh status class & print output
-        self.Status.status_update()
+        self.Status.status_update(self.node_dictionary)
 
     def startup(self):
         """
@@ -192,4 +196,55 @@ class Workhorse:
             4. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
         """
 
-        print("PLACEHOLDER")
+        #start loop
+        q=1
+
+        while q != 4:
+            if q==1:
+                # 1
+                # 1.a - find nodes "going down"
+                list_of_nodes_going_down = []
+                for node, Class in self.Status.NodeStatusMaster.node_status_dictionary.items():
+                    if Class.directive == "Going_down":
+                        list_of_nodes_going_down.append(node)
+
+                # 1.b - find nodes with active work
+                _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
+
+                # 1.c - check if nodes going down have no work & shutdown if found to be true
+                for node in list_of_nodes_going_down:
+                    # ensure workers are set to zero
+                    tdarr.Tdarr_Orders.reset_workers_to_zero(
+                        self.Server, node, self.node_dictionary
+                    )
+
+                    if node in nodes_without_work_list:
+
+                        # order shutdown
+                        node_interactions.HostLogic.kill_node(
+                            self.Configuration, self.node_dictionary, node
+                        )
+
+                        # set node status to offline
+                        self.node_dictionary[node].line_state("Offline")
+
+                        # set node directive to sleep
+                        self.Status.NodeStatusMaster.update_directive("Sleeping")
+
+                        #pop node from list
+                        list_of_nodes_going_down.pop(node)
+                    else:
+                        # set node directive to going_down
+                        self.Status.NodeStatusMaster.update_directive("Going_down")
+
+
+            elif q==2:
+                #2
+                #2.a - find quantity of work to be done
+                #TODO WRITE THE QUANTITY OF WORK TO BE DONE FUNCTION
+
+                #2.b - find total amount of work able to be done by all transcode nodes at once
+
+                #2.c - compare quantity of work to be done with able to be done, if able is less than max then activate all nodes to max nodes limit
+
+                
