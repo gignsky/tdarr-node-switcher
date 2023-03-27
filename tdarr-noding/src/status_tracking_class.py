@@ -56,11 +56,11 @@ class StatusTracking:
         self.NodeStatusMaster = NodeStatusMaster(node_dictionary)
 
     # updates
-    def status_update(self):
+    def status_update(self, regular_node_dictionary):
         # update status dict
         if self.NodeStatusMaster is not None:
             self.ServerStatus.update_server_dict(
-                self.NodeStatusMaster.node_status_dictionary
+                self.NodeStatusMaster.node_status_dictionary, regular_node_dictionary
             )
         self.status_dict["tdarr_server"] = self.ServerStatus.status_dict
 
@@ -106,10 +106,10 @@ class ServerStatus:
     #         self.status_dict["tdarr_nodes"]=self.tdarr_nodes_section
 
     # update stuff
-    def update_server_dict(self, node_status_dictionary):
+    def update_server_dict(self, node_status_dictionary, regular_node_dictionary):
         node_status_dict = {}
         for name, Class in node_status_dictionary.items():
-            Class.update_status_dict()
+            Class.update_status_dict(regular_node_dictionary[name].online)
             node_status_dict[name] = Class.node_status_dict
 
         self.status_dict["tdarr_nodes"] = node_status_dict
@@ -162,6 +162,7 @@ class NodeStatus:
     def update_directive(self, new_directive):
         self.directive = new_directive
 
-    def update_status_dict(self):
+    def update_status_dict(self, line_state):
+        self.update_line_state(line_state)
         self.check_for_sleeping()
         self.node_status_dict = {"state": self.state, "directive": self.directive}
