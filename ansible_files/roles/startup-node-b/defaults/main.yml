@@ -10,6 +10,6 @@ node_b_host: "{{ lookup('env', 'PROXMOX_HOST') }}"
 node_c_host: "{{ lookup('env', 'PROXMOX_HOST') }}"
 
 # VMIDs
-node_a_vmid: "{{ lookup('env', 'NODE_A_VMID') }}"
-node_b_vmid: "{{ lookup('env', 'NODE_B_VMID') }}"
-node_c_vmid: "{{ lookup('env', 'NODE_C_VMID') }}"
+node_a_vmid: 110
+node_b_vmid: 111
+node_c_vmid: 112
