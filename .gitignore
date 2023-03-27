@@ -4,3 +4,4 @@ __pycache__/
 files_to_remove/*
 # ansible_files/*
 # tdarr-noding/status.yml
+.env
