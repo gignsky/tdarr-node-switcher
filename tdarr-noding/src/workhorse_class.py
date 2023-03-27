@@ -196,20 +196,25 @@ class Workhorse:
             4. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
         """
 
-        #start loop
-        q=1
+        # start loop
+        q = 1
 
         while q != 4:
-            if q==1:
+            if q == 1:
                 # 1
                 # 1.a - find nodes "going down"
                 list_of_nodes_going_down = []
-                for node, Class in self.Status.NodeStatusMaster.node_status_dictionary.items():
+                for (
+                    node,
+                    Class,
+                ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
                     if Class.directive == "Going_down":
                         list_of_nodes_going_down.append(node)
 
                 # 1.b - find nodes with active work
-                _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
+                _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(
+                    self.Server
+                )
 
                 # 1.c - check if nodes going down have no work & shutdown if found to be true
                 for node in list_of_nodes_going_down:
@@ -231,20 +236,59 @@ class Workhorse:
                         # set node directive to sleep
                         self.Status.NodeStatusMaster.update_directive("Sleeping")
 
-                        #pop node from list
+                        # pop node from list
                         list_of_nodes_going_down.pop(node)
                     else:
                         # set node directive to going_down
                         self.Status.NodeStatusMaster.update_directive("Going_down")
 
+                if len(list_of_nodes_going_down) == 0:
+                    q += 1
+                else:
+                    break
 
-            elif q==2:
-                #2
-                #2.a - find quantity of work to be done
-                #TODO WRITE THE QUANTITY OF WORK TO BE DONE FUNCTION
+            elif q == 2:
+                print("PLACEHOLDER")
+                # 2
+                # 2.a - find quantity of work to be done
+                # TODO WRITE THE QUANTITY OF WORK TO BE DONE FUNCTION
 
-                #2.b - find total amount of work able to be done by all transcode nodes at once
+                # 2.b - find total amount of work able to be done by all transcode nodes at once
 
-                #2.c - compare quantity of work to be done with able to be done, if able is less than max then activate all nodes to max nodes limit
+                # 2.c - compare quantity of work to be done with able to be done, should set var with priority level capable of taking on the load
 
-                
+                # 2.d - activate nodes to priority level if required
+
+                # 2.5a - deactivate nodes to priority level if required
+
+                # 2.5b - deal with incrementing of breaking from q loop, should only increment if all work is done
+
+            elif q == 3:
+                print("PLACEHOLDER")
+                # 3 - should only run once all work is done
+                # 3.a - find primary node name
+
+                # 3.b - check if primary node is online
+
+                # 3.c - if node is offline attempt to start
+
+                # 3.c.1 - if node is started or is already running, set workers to normal amounts
+
+                # 3.c.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
+
+                # 3.d - order refresh
+
+                # 3.e - check if all refresh work is done
+
+                # 3.f - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
+
+            elif q == 4:
+                print("PLACEHOLDER")
+                # 4 - should only run after the end of a refresh
+                # 4.a - attempt shutdown of primary node if possible
+                # 4.a.1 - set workers on primary node to zero
+
+                # 4.a.2 - attempt shutdown of primary node
+
+                # 4.b - increment q to 5 and end the loop all work is done
+                q = 5
