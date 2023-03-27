@@ -244,7 +244,9 @@ class Workhorse:
 
                     else:
                         # set node directive to going_down
-                        self.Status.NodeStatusMaster.update_directive("Going_down")
+                        self.Status.NodeStatusMaster.update_directive(
+                            node, "Going_down"
+                        )
                         list_of_nodes_going_down_still.append(node)
 
                 if len(list_of_nodes_going_down_still) == 0:
