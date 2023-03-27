@@ -8,3 +8,4 @@ files_to_remove/*
 ansible_files/become_pass
 ansible_files/inventory.ini
 **/defaults/main.yml
+tdarr-noding/status.yml
