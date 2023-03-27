@@ -152,6 +152,26 @@ class Tdarr_Logic:
         return transcode_successes
 
     @staticmethod
+    def search_for_queued_transcodes(Server):
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Queued")
+
+        response = requests.post(
+            Server.search, json=payload, headers=headers, timeout=1.5
+        )
+
+        response = json.loads(response.text)
+
+        # print(len(response))
+        transcode_queued = []
+        for i in response:
+            node_id = i.get("_id")
+            if i.get("TranscodeDecisionMaker") == "Queued":
+                transcode_queued.append(node_id)
+        print(transcode_queued)
+
+        return transcode_queued
+
+    @staticmethod
     def payload_and_headers_file_modification(string):
         payload = {
             "data": {

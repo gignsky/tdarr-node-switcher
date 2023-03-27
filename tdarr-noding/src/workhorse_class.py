@@ -255,10 +255,12 @@ class Workhorse:
                 self.update_classes()
 
             elif q == 2:
-                print("PLACEHOLDER")
                 # 2
                 # 2.a - find quantity of work to be done
-                # TODO WRITE THE QUANTITY OF WORK TO BE DONE FUNCTION
+                queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
+                    self.Server
+                )
+                queued_transcode_quantity = len(queued_transcode_ids)
 
                 # 2.b - find total amount of work able to be done by all transcode nodes at once
 
