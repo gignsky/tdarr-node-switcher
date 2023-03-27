@@ -82,8 +82,8 @@ class Workhorse:
 
             steps to be taken in this function:
             1. get inital tdarr get_nodes output and update the classes with relevant information
-            2. ensure that more than the max nodes number is not running at once, and if found to be true shutdown nodes with smallest priority
-            3. ensure that all nodes are set to zero workers
+            2. ensure that all nodes are set to zero workers
+            3. ensure that more than the max nodes number is not running at once, and if found to be true shutdown nodes with smallest priority
             4. kill nodes without active work
             5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
@@ -101,9 +101,16 @@ class Workhorse:
         )
 
         ## 2
+        for node_name, node_class in self.node_dictionary.items():
+            if node_class.online:
+                tdarr.Tdarr_Orders.reset_workers_to_zero(
+                    self.Server, node_name, self.node_dictionary
+                )
+
+        ## 3
         quantity_of_living_nodes = 999  # set quantity of living nodes to an absurdly high number to allow for looping on next section
 
-        ### 2.a - begin looping to kill lowest priority nodes
+        ### 3.a - begin looping to kill lowest priority nodes
         while quantity_of_living_nodes > self.Server.max_nodes:
             quantity_of_living_nodes = Logic.find_quant_living_nodes(
                 self.node_dictionary
@@ -126,13 +133,6 @@ class Workhorse:
 
         # commented out for new system of work
         # Logic.reset_node_workers(self.Server,self.node_dictionary)
-
-        ## 3
-        for node_name, node_class in self.node_dictionary.items():
-            if node_class.online:
-                tdarr.Tdarr_Orders.reset_workers_to_zero(
-                    self.Server, node_name, self.node_dictionary
-                )
 
         ## 4
         _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
