@@ -88,7 +88,7 @@ class Logic:
                     current_priority_level = priority_level
         return quantity_of_living_nodes
 
-    @staticmethod()
+    @staticmethod
     def find_quantity_of_transcode_workers(node_dictionary, max_nodes):
         # does not count work to be done on primary node unless node is alive
         max_transcode_workers = 0
@@ -109,7 +109,7 @@ class Logic:
 
             if priority_number > highest_priority_number:
                 highest_priority_transcode_workers = node_max_transcode_workers
-                highest_priority_transcode_workers = priority_number
+                highest_priority_transcode_workers_priority_number = priority_number
 
             if primary_node_bool:
                 if Class.online:
@@ -119,7 +119,7 @@ class Logic:
 
                 primary_node_transcode_workers = node_max_transcode_workers
 
-                if Class.shutdown_command is None:
+                if Class.shutdown is None:
                     is_primary_killable = False
                 else:
                     is_primary_killable = True
@@ -130,9 +130,9 @@ class Logic:
         quantity_of_nodes = len(node_dictionary)
         quantity_of_nodes_minus_primary = quantity_of_nodes - 1
 
-        if max_nodes > quantity_of_nodes:
+        if quantity_of_nodes > max_nodes:
             if is_primary_alive:
-                if max_nodes > quantity_of_nodes_minus_primary:
+                if quantity_of_nodes_minus_primary > max_nodes:
                     print("ERROR: more than one node over max")
                 elif max_nodes == quantity_of_nodes_minus_primary:
                     if is_primary_killable:
@@ -141,13 +141,15 @@ class Logic:
                     else:
                         max_transcode_workers -= highest_priority_transcode_workers
                         max_transcode_workers += primary_node_transcode_workers
-                        includes_primary_node = True
                 else:
                     print(
                         "WARN: POSSIBLE ERROR, unaccounted for possibility in find_quantity_of_transcode_workers function in general_logic.py"
                     )
-            else:
-                includes_primary_node = False
+
+        if is_primary_alive:
+            includes_primary_node = True
+        else:
+            includes_primary_node = False
 
         return max_transcode_workers, includes_primary_node
 
@@ -180,7 +182,9 @@ class Logic:
                         priority_array_with_primary[
                             node_priority
                         ] = node_transcode_workers
-                    elif node_priority == cap:
+                        current_priority_level += 1
+                        break
+                    else:
                         if includes_primary_node:
                             priority_array_with_primary[
                                 node_priority
@@ -189,12 +193,11 @@ class Logic:
                             priority_array_without_primary[
                                 node_priority
                             ] = node_transcode_workers
-                    else:
-                        priority_array_without_primary[
-                            node_priority
-                        ] = node_transcode_workers
-
+                        current_priority_level += 1
+                        break
+                elif node_priority == cap:
                     current_priority_level += 1
+                    break
 
         if includes_primary_node:
             priority_array = priority_array_with_primary
@@ -207,10 +210,7 @@ class Logic:
                 target_priority = priority_level
             elif queued_quantity >= quantity:
                 cumulative_quantity += quantity
-                if queued_quantity <= cumulative_quantity:
-                    target_priority = priority_level
-                elif queued_quantity > cumulative_quantity:
-                    pass
+                target_priority = priority_level
 
         return target_priority
 
@@ -230,7 +230,7 @@ class Logic:
     #                     if priority_level == Class.priority_level:
 
     @staticmethod
-    def active_node_to_priority_level(node_dictionary, priority_target):
+    def activate_node_to_priority_level(node_dictionary, priority_target):
         nodes_to_activate = []
         for node, Class in node_dictionary.items():
             if Class.priority <= priority_target:
@@ -240,10 +240,10 @@ class Logic:
         return nodes_to_activate
 
     @staticmethod
-    def deactive_node_to_priority_level(node_dictionary, priority_target):
+    def deactivate_node_to_priority_level(node_dictionary, priority_target):
         nodes_to_deactivate = []
         for node, Class in node_dictionary.items():
-            if Class.priority >= priority_target:
+            if Class.priority > priority_target:
                 if Class.online:
                     nodes_to_deactivate.append(node)
 

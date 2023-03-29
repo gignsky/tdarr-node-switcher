@@ -194,8 +194,9 @@ class Workhorse:
             1. Check for nodes that are going down and see if they have work, if they do not kill these nodes, if and only if this check passes continue with the process if not end the loop and allow for rerunning
             2. Find quantity of work to be done and activate the appropriate number of nodes (while checking to make sure not to go over the max_nodes amount)
             2.5 find that quantity of work is less than required nodes and kill excess nodes
-            3. if all work is finished check for online status of primary node, if it is offline attempt to start, if started set all other nodes to zero workers then set workers to normal limits and run refresh
-            4. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
+            3. Activate all alive nodes with total number of workers
+            4. if all work is finished check for online status of primary node, if it is offline attempt to start, if started set all other nodes to zero workers then set workers to normal limits and run refresh
+            5. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
         """
 
         # update nodes
@@ -278,40 +279,15 @@ class Workhorse:
                     max_quantity_of_work,
                     includes_primary_node,
                     self.node_dictionary,
-                    Server.max_nodes,
+                    self.Server.max_nodes,
                 )
 
-                # 2.d - get list of nodes to activate to priority level if required
-                list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
-                    self.node_dictionary, priority_level_target
-                )
-
-                # 2.e - activate and setup their class stuff
-                for node in list_of_nodes_to_activate:
-                    # set as active
-                    self.Status.NodeStatusMaster.update_directive(node, "Active")
-
-                    # activate
-                    startup_command = self.node_dictionary[node].startup_command
-                    node_interactions.HostCommands.start_node(
-                        self.Configuration, startup_command
-                    )
-
-                    # set workers to normal levels
-                    for node_name, Class in self.node_dictionary:
-                        if node == node_name:
-                            dict_of_max_levels = Class.max_level_dict_creator()
-                            for worker_type, max_level in dict_of_max_levels.items():
-                                tdarr.Tdarr_Orders.set_worker_level(
-                                    self.Server, Class, max_level, worker_type
-                                )
-
-                # 2.5a - get list of nodes to deactivate
+                # 2.d - get list of nodes to deactivate
                 list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
                     self.node_dictionary, priority_level_target
                 )
 
-                # 2.5b - deactivate nodes to priority level if required
+                # 2.e - deactivate nodes to priority level if required
                 for node in list_of_nodes_to_deactivate:
                     # mark as going down
                     self.Status.NodeStatusMaster.update_directive(node, "Going_down")
@@ -328,47 +304,79 @@ class Workhorse:
                     )
 
                     if node not in nodes_with_work_list:
-                        shutdown_command = self.node_dictionary[node].shutdown_command
-                        node_interactions.HostCommands.stop_node(
+                        shutdown_command = self.node_dictionary[node].shutdown
+                        node_interactions.HostCommands.shutdown_node(
                             self.Configuration, shutdown_command
                         )
 
+                # 2.5.a - get list of nodes to activate to priority level if required
+                list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
+                    self.node_dictionary, priority_level_target
+                )
+
+                # 2.5.b - activate and setup their class stuff
+                for node in list_of_nodes_to_activate:
+                    # set as active
+                    self.Status.NodeStatusMaster.update_directive(node, "Active")
+
+                    # activate
+                    startup_command = self.node_dictionary[node].startup
+                    node_interactions.HostCommands.start_node(
+                        self.Configuration, startup_command
+                    )
+
+                    ###### commented out for normal level activation later on
+                    # # set workers to normal levels
+                    # for node_name, Class in self.node_dictionary:
+                    #     if node == node_name:
+                    #         dict_of_max_levels = Class.max_level_dict_creator()
+                    #         for worker_type, max_level in dict_of_max_levels.items():
+                    #             tdarr.Tdarr_Orders.set_worker_level(
+                    #                 self.Server, Class, max_level, worker_type
+                    #             )
+
                 # 2.5c - deal with incrementing of breaking from q loop, should only increment if all work is done
-                self.update_class()
+                self.update_classes()
                 continue_to_q3 = True
-                for node, Class in self.Status.NodeStatusMaster.node_status_dictionary:
+                for (
+                    node,
+                    Class,
+                ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
                     if Class.directive == "Going_down":
                         continue_to_q3 = False
 
                 if continue_to_q3:
                     q += 1
 
-            elif q == 3:
+            elif q==3:
+                # 3 - should set active nodes to max worker levels #TODO in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
                 print("PLACEHOLDER")
-                # 3 - should only run once all work is done
-                # 3.a - find primary node name
-
-                # 3.b - check if primary node is online
-
-                # 3.c - if node is offline attempt to start
-
-                # 3.c.1 - if node is started or is already running, set workers to normal amounts
-
-                # 3.c.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
-
-                # 3.d - order refresh
-
-                # 3.e - check if all refresh work is done
-
-                # 3.f - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
 
             elif q == 4:
                 print("PLACEHOLDER")
-                # 4 - should only run after the end of a refresh
-                # 4.a - attempt shutdown of primary node if possible
-                # 4.a.1 - set workers on primary node to zero
+                # 4 - should only run once all work is done
+                # 4.a - find primary node name
 
-                # 4.a.2 - attempt shutdown of primary node
+                # 4.b - check if primary node is online
 
-                # 4.b - increment q to 5 and end the loop all work is done
-                q = 5
+                # 4.c - if node is offline attempt to start
+
+                # 4.c.1 - if node is started or is already running, set workers to normal amounts
+
+                # 4.c.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
+
+                # 4.d - order refresh
+
+                # 4.e - check if all refresh work is done
+
+                # 4.f - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
+
+            elif q == 5:
+                print("PLACEHOLDER")
+                # 5 - should only run after the end of a refresh
+                # 5.a - attempt shutdown of primary node if possible
+                # 5.a.1 - set workers on primary node to zero
+
+                # 5.a.2 - attempt shutdown of primary node
+
+                # 5.b - increment q to 5 and end the loop all work is done
