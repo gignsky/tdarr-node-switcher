@@ -200,5 +200,10 @@ class Node:
             print(f"WARN: FROM NODE CLASS: `{self.node_name}` is Unexpected")
 
     def max_level_dict_creator(self):
-        max_level_dict={"healthcheckcpu":self.healthcheck_max_cpu;"healthcheckgpu":self.healthcheck_max_gpu;"transcodecpu":self.transcode_max_cpu;"transcodegpu":self.transcode_max_gpu}
+        max_level_dict = {
+            "healthcheckcpu": self.healthcheck_max_cpu,
+            "healthcheckgpu": self.healthcheck_max_gpu,
+            "transcodecpu": self.transcode_max_cpu,
+            "transcodegpu": self.transcode_max_gpu,
+        }
         return max_level_dict
