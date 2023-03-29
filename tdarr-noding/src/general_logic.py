@@ -214,18 +214,37 @@ class Logic:
 
         return target_priority
 
+    #
+    #         for _,Class in node_dictionary.items():
+    #             priority_level=Class.transcode_max_cpu + Class.transcode_max_gpu
+    #
+    #
+    #         if includes_primary_node:
+    #             primary_node_workers=0
+    #             priority_level=0
+    #             for _, Class in node_dictionary.items():
+    #                 if Class.primary:
+    #                     primary_node_workers+=Class.transcode_max_cpu + Class.transcode_max_gpu
+    #             for priority_level in range(max_nodes):
+    #                 for _, Class in node_dictionary.items():
+    #                     if priority_level == Class.priority_level:
 
-#
-#         for _,Class in node_dictionary.items():
-#             priority_level=Class.transcode_max_cpu + Class.transcode_max_gpu
-#
-#
-#         if includes_primary_node:
-#             primary_node_workers=0
-#             priority_level=0
-#             for _, Class in node_dictionary.items():
-#                 if Class.primary:
-#                     primary_node_workers+=Class.transcode_max_cpu + Class.transcode_max_gpu
-#             for priority_level in range(max_nodes):
-#                 for _, Class in node_dictionary.items():
-#                     if priority_level == Class.priority_level:
+    @staticmethod
+    def active_node_to_priority_level(node_dictionary, priority_target):
+        nodes_to_activate = []
+        for node, Class in node_dictionary.items():
+            if Class.priority <= priority_target:
+                if not Class.online:
+                    nodes_to_activate.append(node)
+
+        return nodes_to_activate
+
+    @staticmethod
+    def deactive_node_to_priority_level(node_dictionary, priority_target):
+        nodes_to_deactivate = []
+        for node, Class in node_dictionary.items():
+            if Class.priority >= priority_target:
+                if Class.online:
+                    nodes_to_deactivate.append(node)
+
+        return nodes_to_deactivate

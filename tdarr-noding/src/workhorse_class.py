@@ -273,12 +273,75 @@ class Workhorse:
                 )
 
                 # 2.c - compare quantity of work to be done with able to be done, should set var with priority level capable of taking on the load
+                priority_level_target = Logic.find_priority_target_level(
+                    queued_transcode_quantity,
+                    max_quantity_of_work,
+                    includes_primary_node,
+                    self.node_dictionary,
+                    Server.max_nodes,
+                )
 
-                # 2.d - activate nodes to priority level if required
+                # 2.d - get list of nodes to activate to priority level if required
+                list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
+                    self.node_dictionary, priority_level_target
+                )
 
-                # 2.5a - deactivate nodes to priority level if required
+                # 2.e - activate and setup their class stuff
+                for node in list_of_nodes_to_activate:
+                    # set as active
+                    self.Status.NodeStatusMaster.update_directive(node, "Active")
 
-                # 2.5b - deal with incrementing of breaking from q loop, should only increment if all work is done
+                    # activate
+                    startup_command = self.node_dictionary[node].startup_command
+                    node_interactions.HostCommands.start_node(
+                        self.Configuration, startup_command
+                    )
+
+                    # set workers to normal levels
+                    for node_name, Class in self.node_dictionary:
+                        if node == node_name:
+                            dict_of_max_levels = Class.max_level_dict_creator()
+                            for worker_type, max_level in dict_of_max_levels.items():
+                                tdarr.Tdarr_Orders.set_worker_level(
+                                    self.Server, Class, max_level, worker_type
+                                )
+
+                # 2.5a - get list of nodes to deactivate
+                list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
+                    self.node_dictionary, priority_level_target
+                )
+
+                # 2.5b - deactivate nodes to priority level if required
+                for node in list_of_nodes_to_deactivate:
+                    # mark as going down
+                    self.Status.NodeStatusMaster.update_directive(node, "Going_down")
+
+                    # set workers to zero
+                    tdarr.Tdarr_Orders.reset_workers_to_zero(
+                        self.Server, node, self.node_dictionary
+                    )
+
+                    # check if work exists on node - if it does pass this option until no work exists then shutdown
+                    ## check get list of nodes with work
+                    nodes_with_work_list, _ = tdarr.Tdarr_Logic.find_nodes_with_work(
+                        self.Server
+                    )
+
+                    if node not in nodes_with_work_list:
+                        shutdown_command = self.node_dictionary[node].shutdown_command
+                        node_interactions.HostCommands.stop_node(
+                            self.Configuration, shutdown_command
+                        )
+
+                # 2.5c - deal with incrementing of breaking from q loop, should only increment if all work is done
+                self.update_class()
+                continue_to_q3 = True
+                for node, Class in self.Status.NodeStatusMaster.node_status_dictionary:
+                    if Class.directive == "Going_down":
+                        continue_to_q3 = False
+
+                if continue_to_q3:
+                    q += 1
 
             elif q == 3:
                 print("PLACEHOLDER")
