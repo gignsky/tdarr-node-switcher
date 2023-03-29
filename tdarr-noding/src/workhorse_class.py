@@ -348,9 +348,29 @@ class Workhorse:
                 if continue_to_q3:
                     q += 1
 
-            elif q==3:
+            elif q == 3:
                 # 3 - should set active nodes to max worker levels #TODO in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
-                print("PLACEHOLDER")
+                # 3.a - loop over nodes to find list of alive nodes
+                list_of_alive_nodes = []
+                for node, Class in self.node_dictionary.items():
+                    if Class.online:
+                        list_of_alive_nodes.append(node)
+
+                # 3.b - loop over list of alive nodes and set worker levels to normal
+                for name in list_of_alive_nodes:
+                    normal_worker_levels = self.node_dictionary[
+                        name
+                    ].max_level_dict_creator()
+                    for worker_type, worker_level in normal_worker_levels.items():
+                        for i in range(worker_level):
+                            tdarr.Tdarr_Orders.set_worker_level(
+                                self.Server,
+                                self.node_dictionary[name],
+                                worker_level,
+                                worker_type,
+                            )
+
+                q += 1
 
             elif q == 4:
                 print("PLACEHOLDER")
