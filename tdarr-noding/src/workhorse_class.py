@@ -59,6 +59,10 @@ class Workhorse:
         self.Status.status_update(self.node_dictionary)
 
     def update_nodes(self):
+        """
+        update_nodes General update nodes
+        < Document Guardian | Protect >
+        """
         self.update_nodes_output()
 
         # refresh tdarr node classes
@@ -153,7 +157,7 @@ class Workhorse:
                     )
                     # order shutdown
                     node_interactions.HostLogic.kill_node(
-                        self.Configuration, self.node_dictionary, node
+                        self.Configuration, self.node_dictionary, node, self.Status
                     )
                     # set node status to offline
                     self.node_dictionary[node_dict_name].line_state("Offline")
@@ -234,7 +238,7 @@ class Workhorse:
 
                         # order shutdown
                         node_interactions.HostLogic.kill_node(
-                            self.Configuration, self.node_dictionary, node
+                            self.Configuration, self.node_dictionary, node, self.Status
                         )
 
                         # set node status to offline
@@ -304,9 +308,8 @@ class Workhorse:
                     )
 
                     if node not in nodes_with_work_list:
-                        shutdown_command = self.node_dictionary[node].shutdown
-                        node_interactions.HostCommands.shutdown_node(
-                            self.Configuration, shutdown_command
+                        node_interactions.HostLogic.kill_node(
+                            self.Configuration, self.node_dictionary, node, self.Status
                         )
 
                 # 2.5.a - get list of nodes to activate to priority level if required
@@ -316,13 +319,9 @@ class Workhorse:
 
                 # 2.5.b - activate and setup their class stuff
                 for node in list_of_nodes_to_activate:
-                    # set as active
-                    self.Status.NodeStatusMaster.update_directive(node, "Active")
-
                     # activate
-                    startup_command = self.node_dictionary[node].startup
-                    node_interactions.HostCommands.start_node(
-                        self.Configuration, startup_command
+                    node_interactions.HostLogic.start_node(
+                        self.Configuration, self.node_dictionary, node, self.Status
                     )
 
                     ###### commented out for normal level activation later on
@@ -358,17 +357,9 @@ class Workhorse:
 
                 # 3.b - loop over list of alive nodes and set worker levels to normal
                 for name in list_of_alive_nodes:
-                    normal_worker_levels = self.node_dictionary[
-                        name
-                    ].max_level_dict_creator()
-                    for worker_type, worker_level in normal_worker_levels.items():
-                        for i in range(worker_level):
-                            tdarr.Tdarr_Orders.set_worker_level(
-                                self.Server,
-                                self.node_dictionary[name],
-                                worker_level,
-                                worker_type,
-                            )
+                    tdarr.Tdarr_Orders.reset_workers_to_max_limits(
+                        self.Server, name, self.node_dictionary
+                    )
 
                 q += 1
 

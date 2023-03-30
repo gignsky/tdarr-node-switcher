@@ -5,6 +5,16 @@ import json
 class Tdarr_Logic:
     @staticmethod
     def generic_get_nodes(Server):
+        """
+        generic_get_nodes requests.get get_nodes_output
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            json_response: from requests.get
+        < Document Guardian | Protect >
+        """
         response = requests.get(Server.get_nodes)
 
         # loads response into json beautifier
@@ -65,6 +75,17 @@ class Tdarr_Logic:
     # find nodes with ongoing work
     @staticmethod
     def find_nodes_with_work(Server):
+        """
+        find_nodes_with_work find a list of nodes with and without work
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            list_of_nodes_with_work (list): list of nodes with work
+            list_of_nodes_without_work (list): list of nodes without work
+        < Document Guardian | Protect >
+        """
         json_response = Tdarr_Logic.generic_get_nodes(Server)
 
         list_of_nodes_with_work = []
@@ -86,6 +107,16 @@ class Tdarr_Logic:
     # searching...
     @staticmethod
     def search_for_failed_health_checks(Server):
+        """
+        search_for_failed_health_checks search for failed health checks
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            list_of_failed_health_checks
+        < Document Guardian | Protect >
+        """
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification("error")
 
         response = requests.post(
@@ -109,6 +140,16 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_failed_transcodes(Server):
+        """
+        search_for_failed_transcodes search for failed health checks
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            list_of_transcode_fails
+        < Document Guardian | Protect >
+        """
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification(
             "Transcode error"
         )
@@ -131,6 +172,16 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_successful_transcodes(Server):
+        """
+        search_for_successful_transcodes search for failed successful transcodes
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            transcodes successes (list)
+        < Document Guardian | Protect >
+        """
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification(
             "Transcode success"
         )
@@ -153,6 +204,16 @@ class Tdarr_Logic:
 
     @staticmethod
     def search_for_queued_transcodes(Server):
+        """
+        search_for_queued_transcodes search for transcodes still queued
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            transcodes_queued (list)
+        < Document Guardian | Protect >
+        """
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Queued")
 
         response = requests.post(
@@ -173,6 +234,16 @@ class Tdarr_Logic:
 
     @staticmethod
     def payload_and_headers_file_modification(string):
+        """
+        payload_and_headers_file_modification modify payloads and headers for most requests.post
+
+        Args:
+            string (str): string to insert into payload
+
+        Returns:
+            payload, headers: for request.post
+        < Document Guardian | Protect >
+        """
         payload = {
             "data": {
                 "string": string,

@@ -6,6 +6,13 @@ class Tdarr_Orders:
     # refreshing orders
     @staticmethod
     def refresh_health_checks(Server):
+        """
+        refresh_health_checks orders a refresh of health checks that have failed
+
+        Args:
+            Server (Class): basic server class
+        < Document Guardian | Protect >
+        """
         ids = Tdarr_Logic.search_for_failed_health_checks(Server)
 
         i = 0
@@ -27,27 +34,51 @@ class Tdarr_Orders:
 
     @staticmethod
     def update_transcodes(Server):
-        ids = Tdarr_Logic.search_for_failed_transcodes(Server)
+        """
+        update_transcodes update failed transcodes to queued
 
-        i = 0
+        Args:
+            Server (Class): basic server class
+        < Document Guardian | Protect >
+        """
+        failed_transcodes = Tdarr_Logic.search_for_failed_transcodes(Server)
+        succesful_transcodes = Tdarr_Logic.search_for_successful_transcodes_checks(
+            Server
+        )
 
-        for i in ids:
-            payload = {
-                "data": {
-                    "collection": "FileJSONDB",
-                    "mode": "update",
-                    "docID": i,
-                    "obj": {"TranscodeDecisionMaker": "Queued"},
+        lists_of_lists = [failed_transcodes, succesful_transcodes]
+        for transcode_list in lists_of_lists:
+            for id_number in transcode_list:
+                payload = {
+                    "data": {
+                        "collection": "FileJSONDB",
+                        "mode": "update",
+                        "docID": id_number,
+                        "obj": {"TranscodeDecisionMaker": "Queued"},
+                    }
                 }
-            }
-            headers = {"Content-Type": "application/json"}
+                headers = {"Content-Type": "application/json"}
 
-            requests.post(Server.update_url, json=payload, headers=headers, timeout=1.5)
+                requests.post(
+                    Server.update_url, json=payload, headers=headers, timeout=1.5
+                )
 
             # pprint(response)
 
     @staticmethod
     def mod_worker_limit(Server, headers, payload):
+        """
+        mod_worker_limit modify worker limit order
+
+        Args:
+            Server (Class): basic server class
+            headers (basic headers): basic headers
+            payload (basic payload): basic payload
+
+        Returns:
+            response (json_dict): response from requests.post
+        < Document Guardian | Protect >
+        """
         response = requests.post(
             Server.mod_worker_limit, json=payload, headers=headers, timeout=1.5
         )
@@ -127,6 +158,15 @@ class Tdarr_Orders:
 
     @staticmethod
     def reset_workers_to_max_limits(Server, node_name, node_dictionary):
+        """
+        reset_workers_to_max_limits set workers to their maximum limits inside of the node'c class
+
+        Args:
+            Server (Class): basic server class
+            node_name (str): node name to modify
+            node_dictionary (dict): dict with node names and their associated dicts
+        < Document Guardian | Protect >
+        """
         # iterate through nodes
         for name, NodeClass in node_dictionary.items():
             if node_name == name:

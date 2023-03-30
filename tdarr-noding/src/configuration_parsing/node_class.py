@@ -69,6 +69,14 @@ class Node:
         self.shutdown = shutdown_command
 
     def update_node(self, line_state, tdarr_inner_dictionary=None):
+        """
+        update_node updates a node with more current information
+
+        Args:
+            line_state (str): "Online" or "Offline" (Status of Node)
+            tdarr_inner_dictionary (json dict, optional): json dict section of the tdarr get_nodes_output. Defaults to None.
+        < Document Guardian | Protect >
+        """
         self.line_state(line_state)
         self.update_with_tdarr_dictionary(tdarr_inner_dictionary, "Expected")
 
@@ -110,6 +118,16 @@ class Node:
         current_cpu_healthcheck,
         current_gpu_healthcheck,
     ):
+        """
+        set_current_worker_levels set each worker type's current level in a specific instance of the node class
+
+        Args:
+            current_cpu_transcode (int): integer value of current_cpu_transcode
+            current_gpu_transcode (int): integer value of current_gpu_transcode
+            current_cpu_healthcheck (int): integer value of current_cpu_healthcheck
+            current_gpu_healthcheck (int): integer value of current_gpu_healthcheck
+        < Document Guardian | Protect >
+        """
         self.current_cpu_transcode = current_cpu_transcode
         self.current_gpu_transcode = current_gpu_transcode
         self.current_cpu_healthcheck = current_cpu_healthcheck
@@ -198,12 +216,3 @@ class Node:
         elif expected_or_not == "Unexpected":
             self.expected = False
             print(f"WARN: FROM NODE CLASS: `{self.node_name}` is Unexpected")
-
-    def max_level_dict_creator(self):
-        max_level_dict = {
-            "healthcheckcpu": self.healthcheck_max_cpu,
-            "healthcheckgpu": self.healthcheck_max_gpu,
-            "transcodecpu": self.transcode_max_cpu,
-            "transcodegpu": self.transcode_max_gpu,
-        }
-        return max_level_dict
