@@ -189,7 +189,7 @@ class Workhorse:
     def refresh(self):
         Logic.refresh_all(self.Server)
 
-    def normal(self):
+    def normal(self,q_level=None):
         """
         normal run normal workflow when startup has already been run
 
@@ -200,14 +200,20 @@ class Workhorse:
             2.5 find that quantity of work is less than required nodes and kill excess nodes
             3. Activate all alive nodes with total number of workers
             4. if all work is finished check for online status of primary node, if it is offline attempt to start, if started set all other nodes to zero workers then set workers to normal limits and run refresh
-            5. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
+            5. check if refresh is done
+            6. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
         """
 
         # update nodes
         self.update_nodes()
 
-        # start loop
-        q = 1
+        if q_level is not None:
+            # start loop
+            q = 1
+        else:
+            q=q_level
+            if "Normal" in q:
+                q=right(1,q)
 
         while q != 4:
             if q == 1:
@@ -256,6 +262,7 @@ class Workhorse:
 
                 if len(list_of_nodes_going_down_still) == 0:
                     q += 1
+                    self.Status.update_state(f"Normal_q{q}")
                 else:
                     break
 
@@ -346,6 +353,7 @@ class Workhorse:
 
                 if continue_to_q3:
                     q += 1
+                    self.Status.update_state(f"Normal_q{q}")
 
             elif q == 3:
                 # 3 - should set active nodes to max worker levels #TODO in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
@@ -362,21 +370,96 @@ class Workhorse:
                     )
 
                 q += 1
+                self.Status.update_state(f"Normal_q{q}")
+
 
             elif q == 4:
-                print("PLACEHOLDER")
                 # 4 - should only run once all work is done
-                # 4.a - find primary node name
+                # 4.a - find quantity of work to be done
+                queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
+                    self.Server
+                )
+                queued_transcode_quantity = len(queued_transcode_ids)
 
-                # 4.b - check if primary node is online
+                # 4.b find primary node name
+                primary_node = self.Server.primary_node_name
 
-                # 4.c - if node is offline attempt to start
+                # 4.d - check if primary node is online
+                if self.node_dictionary[primary_node].online:
+                    primary_online = True
+                else:
+                    primary_online = False
 
-                # 4.c.1 - if node is started or is already running, set workers to normal amounts
+                # 4.e - if node is offline attempt to start
+                if not primary_online:
+                    startup_command = self.node_dictionary[primary_node].startup
+                    if startup_command is not None:
+                        node_interactions.HostLogic.start_node(
+                            Self.Configuration,
+                            self.node_dictionary,
+                            primary_node,
+                            self.Status,
+                        )
+                        Logic.primary_node_just_started(
+                            self.Server, self.node_dictionary, primary_node
+                        )
+                    else:
+                        print(
+                            f"WARN: No Startup Command for Priamry Node '{primary_node}'"
+                        )
+                # 4.f.1 - if node is started or is already running, set workers to normal amounts
+                else:
+                    Logic.primary_node_just_started(
+                        self.Server, self.node_dictionary, primary_node
+                    )
 
-                # 4.c.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
+                    # 4.f.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
+                    list_of_living_nodes_excluding_primary = []
+                    for node, Class in self.node_dictionary.items():
+                        if not Class.primary:
+                            if Class.online:
+                                ###4.f.2.a - append online nodes to list of living nodes if not the primary node
+                                list_of_living_nodes_excluding_primary.append(node)
 
-                # 4.d - order refresh
+                    ##4.f.2.d - shutdown nodes if no work
+                    ####4.f.2.d.1 - deactivate nodes to priority level if required
+                    for node in list_of_living_nodes_excluding_primary:
+                        # mark as going down
+                        self.Status.NodeStatusMaster.update_directive(
+                            node, "Going_down"
+                        )
+
+                        # set workers to zero
+                        tdarr.Tdarr_Orders.reset_workers_to_zero(
+                            self.Server, node, self.node_dictionary
+                        )
+
+                        # check if work exists on node - if it does pass this option until no work exists then shutdown
+                        ## check get list of nodes with work
+                        (
+                            nodes_with_work_list,
+                            _,
+                        ) = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
+
+                        list_of_nodes_still_going_down=[]
+                        if node not in nodes_with_work_list:
+                            node_interactions.HostLogic.kill_node(
+                                self.Configuration,
+                                self.node_dictionary,
+                                node,
+                                self.Status,
+                            )
+                        else:
+                            list_of_nodes_still_going_down.append(node)
+
+                if len(list_of_nodes_still_going_down)==0:
+                    if primary_online:
+                    # 4.g - order refresh - and increment
+                        self.refresh()
+                        q+=1
+                        self.Status.update_state(f"Normal_q{q}")
+                    else:
+                        self.Status.update_state("Started")
 
                 # 4.e - check if all refresh work is done
 

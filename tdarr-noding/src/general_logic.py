@@ -254,3 +254,23 @@ class Logic:
                     nodes_to_deactivate.append(node)
 
         return nodes_to_deactivate
+
+    @staticmethod
+    def primary_node_just_started(Server,node_dictionary,primary_node_name):
+        """
+        primary_node_just_started does things that should be done after a node starts for primary node
+
+        Args:
+            Server (Class): basic server class
+            node_dictionary (dict): dict of names and their associated classes
+            primary_node_name (str): node name
+        < Document Guardian | Protect >
+        """
+        #reset node workers to none
+        tdarr.Tdarr_Logic.reset_worker_to_zero(Server,primary_node_name,node_dictionary)
+
+        #sleep for time to update
+        time.sleep(2.5)
+
+        #set workers to max
+        tdarr.Tdarr_Order.reset_workers_to_max_limits(Server,primary_node_name,node_dictionary)
