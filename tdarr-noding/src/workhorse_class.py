@@ -60,6 +60,10 @@ class Workhorse:
         self.Status.status_update(self.node_dictionary)
 
     def update_nodes(self):
+        """
+        update_nodes General update nodes
+        < Document Guardian | Protect >
+        """
         self.update_nodes_output()
 
         # refresh tdarr node classes

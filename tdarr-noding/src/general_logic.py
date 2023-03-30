@@ -9,6 +9,12 @@ from . import tdarr
 class Logic:
     @staticmethod
     def refresh_all(constants):
+        """
+        refresh_all health checks and transcodes
+
+        Args:
+            constants (_type_): _description_
+        """
         print("Refreshing...")
         tdarr.Tdarr_Orders.refresh_health_checks(constants)
         tdarr.Tdarr_Orders.update_transcodes(constants)
