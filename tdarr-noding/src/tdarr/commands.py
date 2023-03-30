@@ -1,4 +1,6 @@
 import requests
+from files_to_remove.src.backup.tdarr.logic import Tdarr_Logic
+from files_to_remove.old.orders import search_for_successful_transcodes_checks
 from . import Tdarr_Logic
 
 
@@ -41,22 +43,29 @@ class Tdarr_Orders:
             Server (Class): basic server class
         < Document Guardian | Protect >
         """
-        ids = Tdarr_Logic.search_for_failed_transcodes(Server)
+        failed_transcodes = Tdarr_Logic.search_for_failed_transcodes(Server)
+        succesful_transcodes = Tdarr_Logic.search_for_successful_transcodes_checks(
+            Server
+        )
 
-        i = 0
+        lists_of_lists = [failed_transcodes, succesful_transcodes]
+        for transcode_list in lists_of_lists:
+            id_number = 0
 
-        for i in ids:
-            payload = {
-                "data": {
-                    "collection": "FileJSONDB",
-                    "mode": "update",
-                    "docID": i,
-                    "obj": {"TranscodeDecisionMaker": "Queued"},
+            for id_number in transcode_list:
+                payload = {
+                    "data": {
+                        "collection": "FileJSONDB",
+                        "mode": "update",
+                        "docID": i,
+                        "obj": {"TranscodeDecisionMaker": "Queued"},
+                    }
                 }
-            }
-            headers = {"Content-Type": "application/json"}
+                headers = {"Content-Type": "application/json"}
 
-            requests.post(Server.update_url, json=payload, headers=headers, timeout=1.5)
+                requests.post(
+                    Server.update_url, json=payload, headers=headers, timeout=1.5
+                )
 
             # pprint(response)
 
