@@ -28,7 +28,7 @@ class Tdarr_Orders:
             }
             headers = {"Content-Type": "application/json"}
 
-            requests.post(Server.update_url, json=payload, headers=headers, timeout=1.5)
+            requests.post(Server.update_url, json=payload, headers=headers, timeout=10)
 
             # pprint(response)
 
@@ -60,7 +60,7 @@ class Tdarr_Orders:
                 headers = {"Content-Type": "application/json"}
 
                 requests.post(
-                    Server.update_url, json=payload, headers=headers, timeout=1.5
+                    Server.update_url, json=payload, headers=headers, timeout=10
                 )
 
             # pprint(response)
@@ -80,7 +80,7 @@ class Tdarr_Orders:
         < Document Guardian | Protect >
         """
         response = requests.post(
-            Server.mod_worker_limit, json=payload, headers=headers, timeout=1.5
+            Server.mod_worker_limit, json=payload, headers=headers, timeout=10
         )
 
         return response
