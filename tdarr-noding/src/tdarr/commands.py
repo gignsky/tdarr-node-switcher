@@ -48,14 +48,12 @@ class Tdarr_Orders:
 
         lists_of_lists = [failed_transcodes, succesful_transcodes]
         for transcode_list in lists_of_lists:
-            id_number = 0
-
             for id_number in transcode_list:
                 payload = {
                     "data": {
                         "collection": "FileJSONDB",
                         "mode": "update",
-                        "docID": i,
+                        "docID": id_number,
                         "obj": {"TranscodeDecisionMaker": "Queued"},
                     }
                 }
