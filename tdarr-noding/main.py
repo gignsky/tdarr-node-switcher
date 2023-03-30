@@ -7,6 +7,10 @@ import src
 
 
 def main():
+    """
+    main core logic for overall project
+    < Document Guardian | Protect >
+    """
     # establish classes
 
     current_directory = os.getcwd()
