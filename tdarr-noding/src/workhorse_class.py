@@ -207,15 +207,18 @@ class Workhorse:
         # update nodes
         self.update_nodes()
 
-        if q_level is not None:
+        if q_level is None:
             # start loop
             q = 1
         else:
             q = q_level
-            if "Normal" in q:
-                q = right(1, q)
+            if "Normal_q" in q:
+                q = int(q[-1])
+            else:
+                q = 1
 
         while q != 4:
+            print(f"Starting Q# {q}")
             if q == 1:
                 # 1
                 # 1.a - find nodes "going down"
@@ -262,7 +265,7 @@ class Workhorse:
 
                 if len(list_of_nodes_going_down_still) == 0:
                     q += 1
-                    self.Status.update_state(f"Normal_q{q}")
+                    self.Status.change_state(f"Normal_q{q}")
                 else:
                     break
 
@@ -353,7 +356,7 @@ class Workhorse:
 
                 if continue_to_q3:
                     q += 1
-                    self.Status.update_state(f"Normal_q{q}")
+                    self.Status.change_state(f"Normal_q{q}")
 
             elif q == 3:
                 # 3 - should set active nodes to max worker levels #TODO in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
@@ -370,7 +373,7 @@ class Workhorse:
                     )
 
                 q += 1
-                self.Status.update_state(f"Normal_q{q}")
+                self.Status.change_state(f"Normal_q{q}")
 
             elif q == 4:
                 # 4 - should only run once all work is done
@@ -456,9 +459,9 @@ class Workhorse:
                         # 4.g - order refresh - and increment
                         self.refresh()
                         q += 1
-                        self.Status.update_state(f"Normal_q{q}")
+                        self.Status.change_state(f"Normal_q{q}")
                     else:
-                        self.Status.update_state("Started")
+                        self.Status.change_state("Started")
             elif q == 5:
 
                 # 5.a - check if all refresh work is done
@@ -475,7 +478,7 @@ class Workhorse:
                 # 5.b - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
                 if refresh_finished:
                     q += 1
-                    self.Status.update_state(f"Normal_q{q}")
+                    self.Status.change_state(f"Normal_q{q}")
 
             elif q == 6:
                 print("PLACEHOLDER")
