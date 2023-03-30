@@ -52,6 +52,16 @@ class ConstantsSetup:
         return self.expected_nodes_dictionary
 
     def update_node_class_with_tdarr(self, get_nodes_output):
+        """
+        update_node_class_with_tdarr updates node classes with tdarr's get_node_output text by searching for online vs offline and expectedness in the configuration file
+
+        Args:
+            get_nodes_output (json dict): json dict output of the tdarr get_nodes_output function
+
+        Returns:
+            dict: a dictionary of node names and their associated classes
+        < Document Guardian | Protect >
+        """
         # get nodes from tdarr and compare
         get_nodes_output_keys = list(get_nodes_output.keys())
         get_nodes_output_names = []
@@ -104,6 +114,14 @@ class ConstantsSetup:
     def update_current_transcode_worker_amounts(
         self, node_dictionary, get_nodes_output
     ):
+        """
+        update_current_transcode_worker_amounts update's node classes with most current information from get_nodes_output
+
+        Args:
+            node_dictionary (dict): dict of node names and their associated classes
+            get_nodes_output (json dict): json dict response of the get_nodes_output function
+        < Document Guardian | Protect >
+        """
         for node_id in get_nodes_output:
             inner_node_dictionary = get_nodes_output[node_id]
             node_name = inner_node_dictionary["nodeName"]
