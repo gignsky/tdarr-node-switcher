@@ -189,7 +189,7 @@ class Workhorse:
     def refresh(self):
         Logic.refresh_all(self.Server)
 
-    def normal(self,q_level=None):
+    def normal(self, q_level=None):
         """
         normal run normal workflow when startup has already been run
 
@@ -211,9 +211,9 @@ class Workhorse:
             # start loop
             q = 1
         else:
-            q=q_level
+            q = q_level
             if "Normal" in q:
-                q=right(1,q)
+                q = right(1, q)
 
         while q != 4:
             if q == 1:
@@ -372,7 +372,6 @@ class Workhorse:
                 q += 1
                 self.Status.update_state(f"Normal_q{q}")
 
-
             elif q == 4:
                 # 4 - should only run once all work is done
                 # 4.a - find quantity of work to be done
@@ -441,7 +440,7 @@ class Workhorse:
                             _,
                         ) = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
 
-                        list_of_nodes_still_going_down=[]
+                        list_of_nodes_still_going_down = []
                         if node not in nodes_with_work_list:
                             node_interactions.HostLogic.kill_node(
                                 self.Configuration,
@@ -452,25 +451,38 @@ class Workhorse:
                         else:
                             list_of_nodes_still_going_down.append(node)
 
-                if len(list_of_nodes_still_going_down)==0:
+                if len(list_of_nodes_still_going_down) == 0:
                     if primary_online:
-                    # 4.g - order refresh - and increment
+                        # 4.g - order refresh - and increment
                         self.refresh()
-                        q+=1
+                        q += 1
                         self.Status.update_state(f"Normal_q{q}")
                     else:
                         self.Status.update_state("Started")
-
-                # 4.e - check if all refresh work is done
-
-                # 4.f - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
-
             elif q == 5:
+
+                # 5.a - check if all refresh work is done
+                queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
+                    self.Server
+                )
+                queued_transcode_quantity = len(queued_transcode_ids)
+
+                refresh_finished = False
+
+                if queued_transcode_quantity == 0:
+                    refresh_finished = True
+
+                # 5.b - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
+                if refresh_finished:
+                    q += 1
+                    self.Status.update_state(f"Normal_q{q}")
+
+            elif q == 6:
                 print("PLACEHOLDER")
-                # 5 - should only run after the end of a refresh
-                # 5.a - attempt shutdown of primary node if possible
-                # 5.a.1 - set workers on primary node to zero
+                # 6 - should only run after the end of a refresh
+                # 6.a - attempt shutdown of primary node if possible
+                # 6.a.1 - set workers on primary node to zero
 
-                # 5.a.2 - attempt shutdown of primary node
+                # 6.a.2 - attempt shutdown of primary node
 
-                # 5.b - increment q to 5 and end the loop all work is done
+                # 6.b - increment q to 5 and end the loop all work is done
