@@ -1,3 +1,4 @@
+from tdarr-noding.src.node_interactions.logic import HostLogic
 from . import Configuration as ConfigurationClass
 from . import StatusTracking
 from . import tdarr
@@ -153,7 +154,7 @@ class Workhorse:
                     )
                     # order shutdown
                     node_interactions.HostLogic.kill_node(
-                        self.Configuration, self.node_dictionary, node
+                        self.Configuration, self.node_dictionary, node, self.Status
                     )
                     # set node status to offline
                     self.node_dictionary[node_dict_name].line_state("Offline")
@@ -234,7 +235,7 @@ class Workhorse:
 
                         # order shutdown
                         node_interactions.HostLogic.kill_node(
-                            self.Configuration, self.node_dictionary, node
+                            self.Configuration, self.node_dictionary, node, self.Status
                         )
 
                         # set node status to offline
@@ -304,10 +305,7 @@ class Workhorse:
                     )
 
                     if node not in nodes_with_work_list:
-                        shutdown_command = self.node_dictionary[node].shutdown
-                        node_interactions.HostCommands.shutdown_node(
-                            self.Configuration, shutdown_command
-                        )
+                        node_interactions.HostLogic.kill_node(self.Configuration,self.node_dictionary,node,self.Status)
 
                 # 2.5.a - get list of nodes to activate to priority level if required
                 list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
@@ -316,14 +314,8 @@ class Workhorse:
 
                 # 2.5.b - activate and setup their class stuff
                 for node in list_of_nodes_to_activate:
-                    # set as active
-                    self.Status.NodeStatusMaster.update_directive(node, "Active")
-
                     # activate
-                    startup_command = self.node_dictionary[node].startup
-                    node_interactions.HostCommands.start_node(
-                        self.Configuration, startup_command
-                    )
+                    node_interactions.HostLogic.start_node(self.Configuration,self.node_dictionary,node,self.Status)
 
                     ###### commented out for normal level activation later on
                     # # set workers to normal levels

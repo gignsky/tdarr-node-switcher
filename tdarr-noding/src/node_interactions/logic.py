@@ -22,6 +22,16 @@ class HostLogic:
 
     @staticmethod
     def get_node_with_highest_priority(node_dictionary):
+        """
+        get_node_with_highest_priority find name of node with the highest priority number and therefor the one that should be shutdown first
+
+        Args:
+            node_dictionary (dict): dict of node names and their associated classes
+
+        Returns:
+            str: node name for highest priority node
+        < Document Guardian | Protect >
+        """
         max_priority_level = 0
         max_priority_online_node_name = ""
         for node_name in node_dictionary:
@@ -34,11 +44,67 @@ class HostLogic:
         return max_priority_online_node_name
 
     @staticmethod
-    def kill_node(configuration_class, node_dictionary, name):
+    def kill_node(configuration_class, node_dictionary, name, Status):
+        """
+        kill_node does the stuff to nicely shutdown a node
+
+        Args:
+            configuration_class (Class): basic configuration class
+            node_dictionary (dict): dict of node names and thier associated classes
+            name (str): node name string
+            Status (Class): basic status class
+        < Document Guardian | Protect >
+        """
         for node in node_dictionary:
             if name == node:
                 if node_dictionary[node].online:
-                    # order shutdown
+                    # print to console
                     print(f"Killing Node: '{name}'")
+
+                    # find shutdown command
                     shutdown_command = node_dictionary[node].shutdown
+
+                    # order shutdown
                     HostCommands.shutdown_node(configuration_class, shutdown_command)
+
+                    # change status to sleeping and offline
+                    ##change status to sleeping
+                    Status.NodeStatusMaster.node_status_dictionary[
+                        name
+                    ].update_directive("Sleeping")
+
+                    ##change state to offline
+                    node_dictionary[node].line_state("Offline")
+
+    @staticmethod
+    def start_node(configuration_class, node_dictionary, name, Status):
+        """
+        start_node does the stuff to nicely startup a node
+
+        Args:
+            configuration_class (Class): basic config class
+            node_dictionary (dict): dict of node names and their associated classes
+            name (str): node name to act upon
+            Status (Class): basic status class
+        < Document Guardian | Protect >
+        """
+        for node in node_dictionary:
+            if name == node:
+                if node_dictionary[node].offline:
+                    # print to console
+                    print(f"Starting Node: '{name}'")
+
+                    # find startup command
+                    startup_command = node_dictionary[node].startup
+
+                    # order startup
+                    HostCommands.startup_node(configuration_class, startup_command)
+
+                    # change status to active and online
+                    ##change status to active
+                    Status.NodeStatusMaster.node_status_dictionary[
+                        name
+                    ].update_directive("Active")
+
+                    ##change state to online
+                    node_dictionary[node].line_state("Online")
