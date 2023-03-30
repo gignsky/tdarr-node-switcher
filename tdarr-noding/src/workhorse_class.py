@@ -437,6 +437,8 @@ class Workhorse:
                         else:
                             self.Status.change_state("Started")
                             break
+                else:
+                    break
             elif q == 5:
 
                 # 5.a - check if all refresh work is done
