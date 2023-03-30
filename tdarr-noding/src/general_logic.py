@@ -257,7 +257,9 @@ class Logic:
         return nodes_to_deactivate
 
     @staticmethod
-    def primary_node_just_started(Server, node_dictionary, primary_node_name):
+    def primary_node_just_started(
+        Server, node_dictionary, primary_node_name, Status, Configuration
+    ):
         """
         primary_node_just_started does things that should be done after a node starts for primary node
 
@@ -279,3 +281,40 @@ class Logic:
         tdarr.Tdarr_Orders.reset_workers_to_max_limits(
             Server, primary_node_name, node_dictionary
         )
+
+        # 4.f.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
+        list_of_living_nodes_excluding_primary = []
+        for node, Class in node_dictionary.items():
+            if not Class.primary_node:
+                if Class.online:
+                    ###4.f.2.a - append online nodes to list of living nodes if not the primary node
+                    list_of_living_nodes_excluding_primary.append(node)
+
+        ##4.f.2.d - shutdown nodes if no work
+        ####4.f.2.d.1 - deactivate nodes to priority level if required
+        list_of_nodes_still_going_down = []
+        for node in list_of_living_nodes_excluding_primary:
+            # mark as going down
+            Status.NodeStatusMaster.update_directive(node, "Going_down")
+
+            # set workers to zero
+            tdarr.Tdarr_Orders.reset_workers_to_zero(Server, node, node_dictionary)
+
+            # check if work exists on node - if it does pass this option until no work exists then shutdown
+            ## check get list of nodes with work
+            (
+                nodes_with_work_list,
+                _,
+            ) = tdarr.Tdarr_Logic.find_nodes_with_work(Server)
+
+            if node not in nodes_with_work_list:
+                node_interactions.HostLogic.kill_node(
+                    Configuration,
+                    node_dictionary,
+                    node,
+                    Status,
+                )
+            else:
+                list_of_nodes_still_going_down.append(node)
+
+        return list_of_nodes_still_going_down

@@ -388,85 +388,55 @@ class Workhorse:
                 )
                 queued_transcode_quantity = len(queued_transcode_ids)
 
-                # 4.b find primary node name
-                primary_node = self.Server.primary_node
+                if queued_transcode_quantity == 0:
+                    # 4.b find primary node name
+                    primary_node = self.Server.primary_node
 
-                # 4.d - check if primary node is online
-                if self.node_dictionary[primary_node].online:
-                    primary_online = True
-                else:
-                    primary_online = False
-
-                # 4.e - if node is offline attempt to start
-                if not primary_online:
-                    startup_command = self.node_dictionary[primary_node].startup
-                    if startup_command is not None:
-                        node_interactions.HostLogic.start_node(
-                            Self.Configuration,
-                            self.node_dictionary,
-                            primary_node,
-                            self.Status,
-                        )
-                        Logic.primary_node_just_started(
-                            self.Server, self.node_dictionary, primary_node
-                        )
+                    # 4.d - check if primary node is online
+                    if self.node_dictionary[primary_node].online:
+                        primary_online = True
                     else:
-                        print(
-                            f"WARN: No Startup Command for Priamry Node '{primary_node}'"
-                        )
-                # 4.f.1 - if node is started or is already running, set workers to normal amounts
-                else:
-                    Logic.primary_node_just_started(
-                        self.Server, self.node_dictionary, primary_node
-                    )
+                        primary_online = False
 
-                    # 4.f.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
-                    list_of_living_nodes_excluding_primary = []
-                    for node, Class in self.node_dictionary.items():
-                        if not Class.primary_node:
-                            if Class.online:
-                                ###4.f.2.a - append online nodes to list of living nodes if not the primary node
-                                list_of_living_nodes_excluding_primary.append(node)
-
-                    ##4.f.2.d - shutdown nodes if no work
-                    ####4.f.2.d.1 - deactivate nodes to priority level if required
-                    for node in list_of_living_nodes_excluding_primary:
-                        # mark as going down
-                        self.Status.NodeStatusMaster.update_directive(
-                            node, "Going_down"
-                        )
-
-                        # set workers to zero
-                        tdarr.Tdarr_Orders.reset_workers_to_zero(
-                            self.Server, node, self.node_dictionary
-                        )
-
-                        # check if work exists on node - if it does pass this option until no work exists then shutdown
-                        ## check get list of nodes with work
-                        (
-                            nodes_with_work_list,
-                            _,
-                        ) = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
-
-                        list_of_nodes_still_going_down = []
-                        if node not in nodes_with_work_list:
-                            node_interactions.HostLogic.kill_node(
-                                self.Configuration,
+                    # 4.e - if node is offline attempt to start
+                    if not primary_online:
+                        startup_command = self.node_dictionary[primary_node].startup
+                        if startup_command is not None:
+                            node_interactions.HostLogic.start_node(
+                                Self.Configuration,
                                 self.node_dictionary,
-                                node,
+                                primary_node,
                                 self.Status,
                             )
+                            Logic.primary_node_just_started(
+                                self.Server, self.node_dictionary, primary_node
+                            )
                         else:
-                            list_of_nodes_still_going_down.append(node)
-
-                if len(list_of_nodes_still_going_down) == 0:
-                    if primary_online:
-                        # 4.g - order refresh - and increment
-                        self.refresh()
-                        q += 1
-                        self.Status.change_state(f"Normal_q{q}")
+                            print(
+                                f"WARN: No Startup Command for Priamry Node '{primary_node}'"
+                            )
+                            break
+                    # 4.f.1 - if node is started or is already running, set workers to normal amounts
                     else:
-                        self.Status.change_state("Started")
+                        list_of_nodes_still_going_down = (
+                            Logic.primary_node_just_started(
+                                self.Server,
+                                self.node_dictionary,
+                                primary_node,
+                                self.Status,
+                                self.Configuration,
+                            )
+                        )
+
+                    if len(list_of_nodes_still_going_down) == 0:
+                        if primary_online:
+                            # 4.g - order refresh - and increment
+                            self.refresh()
+                            q += 1
+                            self.Status.change_state(f"Normal_q{q}")
+                        else:
+                            self.Status.change_state("Started")
+                            break
             elif q == 5:
 
                 # 5.a - check if all refresh work is done
