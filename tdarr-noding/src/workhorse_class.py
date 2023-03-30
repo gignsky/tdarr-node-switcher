@@ -38,6 +38,11 @@ class Workhorse:
 
         self.node_dictionary = self.Configuration.setup_configuration_node_dictionary()
 
+        # set primary node name in node class
+        for node, Class in self.node_dictionary.items():
+            if Class.primary_node:
+                self.Server.add_primary_node(node)
+
     def update_nodes_output(self):
         """
         update_nodes_output updates self.get_nodes_output to most current pull from tdarr server
@@ -217,7 +222,7 @@ class Workhorse:
             else:
                 q = 1
 
-        while q != 4:
+        while q != 7:
             print(f"Starting Q# {q}")
             if q == 1:
                 # 1
@@ -384,7 +389,7 @@ class Workhorse:
                 queued_transcode_quantity = len(queued_transcode_ids)
 
                 # 4.b find primary node name
-                primary_node = self.Server.primary_node_name
+                primary_node = self.Server.primary_node
 
                 # 4.d - check if primary node is online
                 if self.node_dictionary[primary_node].online:
@@ -418,7 +423,7 @@ class Workhorse:
                     # 4.f.2 - if node is started or is already running, set all other online nodes to zero workers and goind_down
                     list_of_living_nodes_excluding_primary = []
                     for node, Class in self.node_dictionary.items():
-                        if not Class.primary:
+                        if not Class.primary_node:
                             if Class.online:
                                 ###4.f.2.a - append online nodes to list of living nodes if not the primary node
                                 list_of_living_nodes_excluding_primary.append(node)
