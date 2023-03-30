@@ -120,7 +120,7 @@ class Tdarr_Logic:
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification("error")
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=1.5
+            Server.search, json=payload, headers=headers, timeout=10
         )
 
         response = json.loads(response.text)
@@ -155,7 +155,7 @@ class Tdarr_Logic:
         )
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=1.5
+            Server.search, json=payload, headers=headers, timeout=10
         )
 
         response = json.loads(response.text)
@@ -187,7 +187,7 @@ class Tdarr_Logic:
         )
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=1.5
+            Server.search, json=payload, headers=headers, timeout=10
         )
 
         response = json.loads(response.text)
@@ -217,7 +217,7 @@ class Tdarr_Logic:
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Queued")
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=1.5
+            Server.search, json=payload, headers=headers, timeout=10
         )
 
         response = json.loads(response.text)
