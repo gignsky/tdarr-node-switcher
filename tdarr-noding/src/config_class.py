@@ -28,8 +28,8 @@ class Configuration:
         """
 
         # constant path for configuration file
-        self.CONFIGURATION_PATH = f"{tdarr_noding_path}/tdarr-noding/configuration.yml"
-        self.STATUS_PATH = f"{tdarr_noding_path}/tdarr-noding/status.yml"
+        self.CONFIGURATION_PATH = f"{tdarr_noding_path}/configuration.yml"
+        self.STATUS_PATH = f"{tdarr_noding_path}/status.yml"
 
         # load config file into yaml json dict
         with open(self.CONFIGURATION_PATH, "r") as file:
