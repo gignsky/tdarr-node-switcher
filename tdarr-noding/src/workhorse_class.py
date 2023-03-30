@@ -350,17 +350,7 @@ class Workhorse:
 
                 # 3.b - loop over list of alive nodes and set worker levels to normal
                 for name in list_of_alive_nodes:
-                    normal_worker_levels = self.node_dictionary[
-                        name
-                    ].max_level_dict_creator()
-                    for worker_type, worker_level in normal_worker_levels.items():
-                        for i in range(worker_level):
-                            tdarr.Tdarr_Orders.set_worker_level(
-                                self.Server,
-                                self.node_dictionary[name],
-                                worker_level,
-                                worker_type,
-                            )
+                    tdarr.Tdarr_Orders.reset_workers_to_max_limits(self.Server,name,self.node_dictionary)
 
                 q += 1
 
