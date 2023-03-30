@@ -1,6 +1,4 @@
 import requests
-from files_to_remove.src.backup.tdarr.logic import Tdarr_Logic
-from files_to_remove.old.orders import search_for_successful_transcodes_checks
 from . import Tdarr_Logic
 
 

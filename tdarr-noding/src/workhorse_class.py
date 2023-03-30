@@ -1,4 +1,3 @@
-from tdarr-noding.src.node_interactions.logic import HostLogic
 from . import Configuration as ConfigurationClass
 from . import StatusTracking
 from . import tdarr
@@ -309,7 +308,9 @@ class Workhorse:
                     )
 
                     if node not in nodes_with_work_list:
-                        node_interactions.HostLogic.kill_node(self.Configuration,self.node_dictionary,node,self.Status)
+                        node_interactions.HostLogic.kill_node(
+                            self.Configuration, self.node_dictionary, node, self.Status
+                        )
 
                 # 2.5.a - get list of nodes to activate to priority level if required
                 list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
@@ -319,7 +320,9 @@ class Workhorse:
                 # 2.5.b - activate and setup their class stuff
                 for node in list_of_nodes_to_activate:
                     # activate
-                    node_interactions.HostLogic.start_node(self.Configuration,self.node_dictionary,node,self.Status)
+                    node_interactions.HostLogic.start_node(
+                        self.Configuration, self.node_dictionary, node, self.Status
+                    )
 
                     ###### commented out for normal level activation later on
                     # # set workers to normal levels
@@ -354,7 +357,9 @@ class Workhorse:
 
                 # 3.b - loop over list of alive nodes and set worker levels to normal
                 for name in list_of_alive_nodes:
-                    tdarr.Tdarr_Orders.reset_workers_to_max_limits(self.Server,name,self.node_dictionary)
+                    tdarr.Tdarr_Orders.reset_workers_to_max_limits(
+                        self.Server, name, self.node_dictionary
+                    )
 
                 q += 1
 
