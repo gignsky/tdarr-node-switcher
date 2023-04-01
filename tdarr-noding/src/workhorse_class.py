@@ -222,7 +222,7 @@ class Workhorse:
         #         q = int(q[-1])
         #     else:
         #         q = 1
-        q=1
+        q = 1
 
         while q != 7:
             print(f"Starting Q# {q}")
@@ -300,8 +300,12 @@ class Workhorse:
                     self.node_dictionary, self.Server.max_nodes
                 )
 
-                print(f"INFO: Max Quantity of Work able to be done: {max_quantity_of_work}")
-                print(f"INFO: Primary Node is included in above statement: {includes_primary_node}")
+                print(
+                    f"INFO: Max Quantity of Work able to be done: {max_quantity_of_work}"
+                )
+                print(
+                    f"INFO: Primary Node is included in above statement: {includes_primary_node}"
+                )
 
                 # 2.c - compare quantity of work to be done with able to be done, should set var with priority level capable of taking on the load
                 priority_level_target = Logic.find_priority_target_level(
@@ -311,8 +315,7 @@ class Workhorse:
                     self.node_dictionary,
                     self.Server.max_nodes,
                 )
-                print(f"INFO: ")
-
+                print(f"INFO: priority level target = {priority_level_target}")
                 # 2.d - get list of nodes to deactivate
                 list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
                     self.node_dictionary, priority_level_target
@@ -343,6 +346,7 @@ class Workhorse:
                 list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
                     self.node_dictionary, priority_level_target
                 )
+                print("list_of_nodes_to_activate = " + f"{list_of_nodes_to_activate}")
 
                 # 2.5.b - activate and setup their class stuff
                 for node in list_of_nodes_to_activate:
@@ -362,6 +366,7 @@ class Workhorse:
                     #             )
 
                 # 2.5c - deal with incrementing of breaking from q loop, should only increment if all work is done
+                print("INFO: Updating classes")
                 self.update_classes()
                 continue_to_q3 = True
                 for (
@@ -382,6 +387,7 @@ class Workhorse:
                 for node, Class in self.node_dictionary.items():
                     if Class.online:
                         list_of_alive_nodes.append(node)
+                print(f"INFO: List of living nodes: {list_of_alive_nodes}")
 
                 # 3.b - loop over list of alive nodes and set worker levels to normal
                 for name in list_of_alive_nodes:
@@ -395,6 +401,7 @@ class Workhorse:
             elif q == 4:
                 # 4 - should only run once all work is done
                 # 4.a - find quantity of work to be done
+                print("INFO: Finding list and quantity of queued work")
                 queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
                     self.Server
                 )
