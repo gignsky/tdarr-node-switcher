@@ -78,7 +78,7 @@ pandas==1.5.3
 pip-autoremove==0.10.0
   pip==23.0.1
   setuptools==67.6.1
-pipdeptree==2.3.3
+pipdeptree==2.7.0
 pylint==2.16.2
   astroid==2.14.2
     lazy-object-proxy==1.9.0
