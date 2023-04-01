@@ -119,7 +119,7 @@ class Tdarr_Orders:
             #     for payload in list_of_payload:
             #         response=Tdarr_Orders.mod_worker_limit(Server, headers, payload)
             # else:
-            response = Tdarr_Orders.mod_worker_limit(Server, headers, payload)
+            Tdarr_Orders.mod_worker_limit(Server, headers, payload)
 
     @staticmethod
     def reset_workers_to_zero(Server, node_name, node_dictionary):
