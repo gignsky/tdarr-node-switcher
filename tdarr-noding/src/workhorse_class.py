@@ -427,13 +427,18 @@ class Workhorse:
                         startup_command = self.node_dictionary[primary_node].startup
                         if startup_command is not None:
                             node_interactions.HostLogic.start_node(
-                                Self.Configuration,
+                                self.Configuration,
                                 self.node_dictionary,
                                 primary_node,
                                 self.Status,
                             )
                             Logic.primary_node_just_started(
-                                self.Server, self.node_dictionary, primary_node, self
+                                self.Server,
+                                self.node_dictionary,
+                                primary_node,
+                                self.Status,
+                                self.Configuration,
+                                self,
                             )
                         else:
                             print(
