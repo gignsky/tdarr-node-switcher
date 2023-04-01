@@ -1,13 +1,13 @@
 program:
-  folder_path: "/home/gig/local_repos/tdarr-node-switcher/tdarr-noding"
-  ansible_path: "/home/gig/local_repos/tdarr-node-switcher/tdarr-noding/ansible_files"
+  folder_path: "{PATH_TO_TDARR_NODING}/tdarr-noding"
+  ansible_path: "{PATH_TO_ANSIBLE_FILES}"
 tdarr_server:
-  url: "http://192.168.51.30:8265"
+  url: "http://{TDARR_SERVER_IP}:8265"
   api_string: "/api/v2"
   max_nodes: 4
   default_priority_level: 1
 tdarr_nodes:
-  ganosLal:
+  NAME_OF_PRIMARY_NODE:
     primary_node: true
     priority: 0
     healthcheck_worker_limits:
@@ -20,52 +20,10 @@ tdarr_nodes:
       max_cpu: 2
       min_gpu: 0
       max_gpu: 3
-  server-node:
+  NAME_OF_NON_PRIMARY_NODE:
     priority: 1
-    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook server_node_startup.yml"
-    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook server_node_shutdown.yml"
-    healthcheck_worker_limits:
-      min_cpu: 0
-      max_cpu: 5
-      min_gpu: 0
-      max_gpu: 0
-    transcode_worker_limits:
-      min_cpu: 0
-      max_cpu: 3
-      min_gpu: 0
-      max_gpu: 0
-  node-a:
-    priority: 2
-    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook startup-node-a.yml"
-    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook shutdown-node-a.yml"
-    healthcheck_worker_limits:
-      min_cpu: 0
-      max_cpu: 5
-      min_gpu: 0
-      max_gpu: 0
-    transcode_worker_limits:
-      min_cpu: 0
-      max_cpu: 3
-      min_gpu: 0
-      max_gpu: 0
-  node-b:
-    priority: 3
-    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook startup-node-b.yml"
-    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook shutdown-node-b.yml"
-    healthcheck_worker_limits:
-      min_cpu: 0
-      max_cpu: 5
-      min_gpu: 0
-      max_gpu: 0
-    transcode_worker_limits:
-      min_cpu: 0
-      max_cpu: 3
-      min_gpu: 0
-      max_gpu: 0
-  node-c:
-    priority: 4
-    startup_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook startup-node-c.yml"
-    shutdown_command: "/home/gig/local_repos/tdarr-node-switcher/.venv/bin/ansible-playbook shutdown-node-c.yml"
+    startup_command: "{PATH_TO_FOLDER_ABOVE_VENV}/.venv/bin/ansible-playbook server_node_startup.yml"
+    shutdown_command: "{PATH_TO_FOLDER_ABOVE_VENV}/.venv/bin/ansible-playbook server_node_shutdown.yml"
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 5
