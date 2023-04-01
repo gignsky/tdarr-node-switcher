@@ -1,2 +1,8 @@
-__pycache__/*
+__pycache__/
 .venv/*
+.vscode/*
+# tdarr-noding/status.yml
+ansible_files/become_pass
+ansible_files/inventory.ini
+**/defaults/main.yml
+tdarr-noding/status.yml

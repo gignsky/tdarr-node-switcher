@@ -1,0 +1,10 @@
+---
+# tasks file for roles/shutdown
+
+- name: Signal Node-B to Stop
+  debug:
+    msg: ''
+  changed_when: true
+  notify: Stop_Node_B
+  tags:
+    - node-b

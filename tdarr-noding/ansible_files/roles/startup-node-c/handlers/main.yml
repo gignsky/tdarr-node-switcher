@@ -1,0 +1,10 @@
+---
+# handlers file for roles/startup
+- name: Start_Node_C
+  community.general.proxmox:
+    api_user: "{{ api_user }}"
+    api_password: "{{ api_password }}"
+    api_host: "{{ node_c_host }}"
+    state: started
+    vmid: "{{ node_c_vmid }}"
+  delay: 10

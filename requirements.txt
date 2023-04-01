@@ -1,11 +1,29 @@
+ansible==7.4.0
+  ansible-core==2.14.4
+    cryptography==40.0.1
+      cffi==1.15.1
+        pycparser==2.21
+    Jinja2==3.1.2
+      MarkupSafe==2.1.2
+    packaging==23.0
+    PyYAML==6.0
+    resolvelib==0.8.1
+lightrun==1.10.0
+  cryptography==40.0.1
+    cffi==1.15.1
+      pycparser==2.21
+  httplib2==0.20.4
+    pyparsing==3.0.9
+  psutil==5.9.4
+  PyYAML==6.0
+  six==1.16.0
 pip==23.0.1
-pipdeptree==2.3.3
-setuptools==67.4.0
-touch==2020.12.3
-  values==2020.12.3
-wheel==0.38.4
 requests==2.28.2
   certifi==2022.12.7
   charset-normalizer==3.0.1
   idna==3.4
   urllib3==1.26.14
+setuptools==65.5.1
+touch==2020.12.3
+  values==2020.12.3
+wheel==0.38.4

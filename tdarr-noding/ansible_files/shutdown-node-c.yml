@@ -1,0 +1,31 @@
+- name: Shutdown selected node on promox host
+  hosts: proxmox-host
+  become: true
+  tags:
+    - always
+  pre_tasks:
+    - name: Install Apt Packages.
+      apt:
+        update_cache: true
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - pip
+
+    - name: Install Pip Packages.
+      pip:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - proxmoxer
+
+  roles:
+    - shutdown-node-c
+
+  post_tasks:
+    - name: Remove Pip Packagee
+      pip:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - proxmoxer
