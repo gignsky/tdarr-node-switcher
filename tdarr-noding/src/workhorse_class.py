@@ -210,17 +210,19 @@ class Workhorse:
         """
 
         # update nodes
+        print("INFO: Updating nodes...")
         self.update_nodes()
 
-        if q_level is None:
-            # start loop
-            q = 1
-        else:
-            q = q_level
-            if "Normal_q" in q:
-                q = int(q[-1])
-            else:
-                q = 1
+        # if q_level is None:
+        #     # start loop
+        #     q = 1
+        # else:
+        #     q = q_level
+        #     if "Normal_q" in q:
+        #         q = int(q[-1])
+        #     else:
+        #         q = 1
+        q=1
 
         while q != 7:
             print(f"Starting Q# {q}")
@@ -235,11 +237,15 @@ class Workhorse:
                 ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
                     if Class.directive == "Going_down":
                         list_of_nodes_going_down.append(node)
+                        print(f"INFO: {node} is already marked as 'Going_down'")
 
                 # 1.b - find nodes with active work
+                print("INFO: Finding nodes without work")
                 _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(
                     self.Server
                 )
+                for node in nodes_without_work_list:
+                    print(f"INFO: The following nodes have no work: {node}")
 
                 # 1.c - check if nodes going down have no work & shutdown if found to be true
                 for node in list_of_nodes_going_down:
@@ -270,15 +276,17 @@ class Workhorse:
 
                 if len(list_of_nodes_going_down_still) == 0:
                     q += 1
-                    self.Status.change_state(f"Normal_q{q}")
+                    # self.Status.change_state(f"Normal_q{q}")
                 else:
                     break
 
+                print("INFO: Updating classes...")
                 self.update_classes()
 
             elif q == 2:
                 # 2
                 # 2.a - find quantity of work to be done
+                print("INFO: Finding list and quantity of queued work")
                 queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
                     self.Server
                 )
@@ -292,6 +300,9 @@ class Workhorse:
                     self.node_dictionary, self.Server.max_nodes
                 )
 
+                print(f"INFO: Max Quantity of Work able to be done: {max_quantity_of_work}")
+                print(f"INFO: Primary Node is included in above statement: {includes_primary_node}")
+
                 # 2.c - compare quantity of work to be done with able to be done, should set var with priority level capable of taking on the load
                 priority_level_target = Logic.find_priority_target_level(
                     queued_transcode_quantity,
@@ -300,6 +311,7 @@ class Workhorse:
                     self.node_dictionary,
                     self.Server.max_nodes,
                 )
+                print(f"INFO: ")
 
                 # 2.d - get list of nodes to deactivate
                 list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
@@ -361,7 +373,7 @@ class Workhorse:
 
                 if continue_to_q3:
                     q += 1
-                    self.Status.change_state(f"Normal_q{q}")
+                    # self.Status.change_state(f"Normal_q{q}")
 
             elif q == 3:
                 # 3 - should set active nodes to max worker levels #TODO in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
@@ -433,7 +445,7 @@ class Workhorse:
                             # 4.g - order refresh - and increment
                             self.refresh()
                             q += 1
-                            self.Status.change_state(f"Normal_q{q}")
+                            # self.Status.change_state(f"Normal_q{q}")
                         else:
                             self.Status.change_state("Started")
                             break
@@ -455,7 +467,7 @@ class Workhorse:
                 # 5.b - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
                 if refresh_finished:
                     q += 1
-                    self.Status.change_state(f"Normal_q{q}")
+                    # self.Status.change_state(f"Normal_q{q}")
 
             elif q == 6:
                 print("PLACEHOLDER")
