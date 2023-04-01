@@ -192,6 +192,9 @@ class NodeStatusMaster:
         for node_name, NodeClass in self.node_status_dictionary.items():
             if name == node_name:
                 NodeClass.update_directive(directive)
+                print(
+                    f"INFO: FROM NODE CLASS: '{name}' directive changed to '{directive}'"
+                )
 
 
 class NodeStatus:

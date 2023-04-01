@@ -245,7 +245,7 @@ class Workhorse:
                     self.Server
                 )
                 for node in nodes_without_work_list:
-                    print(f"INFO: The following nodes have no work: {node}")
+                    print(f"INFO: The following nodes has no work: {node}")
 
                 # 1.c - check if nodes going down have no work & shutdown if found to be true
                 for node in list_of_nodes_going_down:
@@ -278,6 +278,8 @@ class Workhorse:
                     q += 1
                     # self.Status.change_state(f"Normal_q{q}")
                 else:
+                    print("INFO: Updating classes...")
+                    self.update_classes()
                     break
 
                 print("INFO: Updating classes...")
@@ -291,6 +293,7 @@ class Workhorse:
                     self.Server
                 )
                 queued_transcode_quantity = len(queued_transcode_ids)
+                print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
 
                 # 2.b - find total amount of work able to be done by all transcode nodes at once
                 (
@@ -323,6 +326,7 @@ class Workhorse:
 
                 # 2.e - deactivate nodes to priority level if required
                 for node in list_of_nodes_to_deactivate:
+                    print(f"INFO: Deactivating node: {node}")
                     # mark as going down
                     self.Status.NodeStatusMaster.update_directive(node, "Going_down")
 
@@ -381,7 +385,7 @@ class Workhorse:
                     # self.Status.change_state(f"Normal_q{q}")
 
             elif q == 3:
-                # 3 - should set active nodes to max worker levels #TODO in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
+                # 3 - should set active nodes to max worker levels #* in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
                 # 3.a - loop over nodes to find list of alive nodes
                 list_of_alive_nodes = []
                 for node, Class in self.node_dictionary.items():
@@ -406,6 +410,7 @@ class Workhorse:
                     self.Server
                 )
                 queued_transcode_quantity = len(queued_transcode_ids)
+                print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
 
                 if queued_transcode_quantity == 0:
                     # 4.b find primary node name
@@ -428,7 +433,7 @@ class Workhorse:
                                 self.Status,
                             )
                             Logic.primary_node_just_started(
-                                self.Server, self.node_dictionary, primary_node
+                                self.Server, self.node_dictionary, primary_node, self
                             )
                         else:
                             print(
@@ -444,6 +449,7 @@ class Workhorse:
                                 primary_node,
                                 self.Status,
                                 self.Configuration,
+                                self,
                             )
                         )
 
@@ -465,6 +471,7 @@ class Workhorse:
                     self.Server
                 )
                 queued_transcode_quantity = len(queued_transcode_ids)
+                print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
 
                 refresh_finished = False
 

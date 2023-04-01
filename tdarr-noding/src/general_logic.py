@@ -215,9 +215,12 @@ class Logic:
         for priority_level, quantity in priority_array.items():
             if queued_quantity <= quantity:
                 target_priority = priority_level
+                break
             elif queued_quantity >= quantity:
                 cumulative_quantity += quantity
-                target_priority = priority_level
+                if queued_quantity <= cumulative_quantity:
+                    target_priority = priority_level
+                    break
 
         return target_priority
 
@@ -258,7 +261,7 @@ class Logic:
 
     @staticmethod
     def primary_node_just_started(
-        Server, node_dictionary, primary_node_name, Status, Configuration
+        Server, node_dictionary, primary_node_name, Status, Configuration,Workhorse
     ):
         """
         primary_node_just_started does things that should be done after a node starts for primary node
@@ -269,14 +272,19 @@ class Logic:
             primary_node_name (str): node name
         < Document Guardian | Protect >
         """
+        print("INFO: Updating nodes")
+        Workhorse.update_nodes()
         # reset node workers to none
         tdarr.Tdarr_Orders.reset_workers_to_zero(
             Server, primary_node_name, node_dictionary
         )
 
         # sleep for time to update
-        time.sleep(2.5)
+        print("INFO: Sleeping for 5 seconds to allow nodes to update")
+        time.sleep(5)
 
+        print("INFO: Updating nodes")
+        Workhorse.update_nodes()
         # set workers to max
         tdarr.Tdarr_Orders.reset_workers_to_max_limits(
             Server, primary_node_name, node_dictionary
