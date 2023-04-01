@@ -90,7 +90,7 @@ class HostLogic:
         """
         for node in node_dictionary:
             if name == node:
-                if node_dictionary[node].offline:
+                if not node_dictionary[node].online:
                     # print to console
                     print(f"Starting Node: '{name}'")
 
