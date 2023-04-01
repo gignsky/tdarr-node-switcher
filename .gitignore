@@ -1,10 +1,7 @@
 __pycache__/
 .venv/*
 .vscode/*
-files_to_remove/*
-# ansible_files/*
 # tdarr-noding/status.yml
-.env
 ansible_files/become_pass
 ansible_files/inventory.ini
 **/defaults/main.yml
