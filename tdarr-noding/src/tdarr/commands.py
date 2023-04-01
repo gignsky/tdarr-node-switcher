@@ -136,24 +136,36 @@ class Tdarr_Orders:
             if node_name == name:
                 if NodeClass.online:
                     if NodeClass.current_cpu_transcode != 0:
-                        for _ in range(NodeClass.current_cpu_transcode):
+                        for i in range(NodeClass.current_cpu_transcode):
                             Tdarr_Orders.set_worker_level(
                                 Server, NodeClass, 0, "transcodecpu"
                             )
+                            print(
+                                f"INFO: Ordering '{name}' to decrease transcodecpu workers to 0; try #{i}"
+                            )
                     if NodeClass.current_gpu_transcode != 0:
-                        for _ in range(NodeClass.current_gpu_transcode):
+                        for i in range(NodeClass.current_gpu_transcode):
                             Tdarr_Orders.set_worker_level(
                                 Server, NodeClass, 0, "transcodegpu"
                             )
+                            print(
+                                f"INFO: Ordering '{name}' to decrease transcodegpu workers to 0; try #{i}"
+                            )
                     if NodeClass.current_cpu_healthcheck != 0:
-                        for _ in range(NodeClass.current_cpu_healthcheck):
+                        for i in range(NodeClass.current_cpu_healthcheck):
                             Tdarr_Orders.set_worker_level(
                                 Server, NodeClass, 0, "healthcheckcpu"
                             )
+                            print(
+                                f"INFO: Ordering '{name}' to decrease healthcheckcpu workers to 0; try #{i}"
+                            )
                     if NodeClass.current_gpu_healthcheck != 0:
-                        for _ in range(NodeClass.current_gpu_healthcheck):
+                        for i in range(NodeClass.current_gpu_healthcheck):
                             Tdarr_Orders.set_worker_level(
                                 Server, NodeClass, 0, "healthcheckgpu"
+                            )
+                            print(
+                                f"INFO: Ordering '{name}' to decrease healthcheckgpu workers to 0; try #{i}"
                             )
 
     @staticmethod
@@ -172,34 +184,46 @@ class Tdarr_Orders:
             if node_name == name:
                 if NodeClass.online:
                     if NodeClass.transcode_max_cpu != 0:
-                        for _ in range(NodeClass.transcode_max_cpu):
+                        for i in range(NodeClass.transcode_max_cpu):
                             Tdarr_Orders.set_worker_level(
                                 Server,
                                 NodeClass,
                                 NodeClass.transcode_max_cpu,
                                 "transcodecpu",
                             )
+                            print(
+                                f"INFO: Ordering '{name}' to increase transcodecpu workers from {NodeClass.current_cpu_transcode} to {NodeClass.transcode_max_cpu}; try #{i}"
+                            )
                     if NodeClass.transcode_max_gpu != 0:
-                        for _ in range(NodeClass.transcode_max_gpu):
+                        for i in range(NodeClass.transcode_max_gpu):
                             Tdarr_Orders.set_worker_level(
                                 Server,
                                 NodeClass,
                                 NodeClass.transcode_max_gpu,
                                 "transcodegpu",
                             )
+                            print(
+                                f"INFO: Ordering '{name}' to increase transcodegpu workers from {NodeClass.current_gpu_transcode} to {NodeClass.transcode_max_gpu}; try #{i}"
+                            )
                     if NodeClass.healthcheck_max_cpu != 0:
-                        for _ in range(NodeClass.healthcheck_max_cpu):
+                        for i in range(NodeClass.healthcheck_max_cpu):
                             Tdarr_Orders.set_worker_level(
                                 Server,
                                 NodeClass,
                                 NodeClass.healthcheck_max_cpu,
                                 "healthcheckcpu",
                             )
+                            print(
+                                f"INFO: Ordering '{name}' to increase healthcheckcpu workers from {NodeClass.current_cpu_healthcheck} to {NodeClass.healthcheck_max_cpu}; try #{i}"
+                            )
                     if NodeClass.healthcheck_max_gpu != 0:
-                        for _ in range(NodeClass.healthcheck_max_gpu):
+                        for i in range(NodeClass.healthcheck_max_gpu):
                             Tdarr_Orders.set_worker_level(
                                 Server,
                                 NodeClass,
                                 NodeClass.healthcheck_max_gpu,
                                 "healthcheckgpu",
+                            )
+                            print(
+                                f"INFO: Ordering '{name}' to increase healthcheckgpu workers from {NodeClass.current_gpu_healthcheck} to {NodeClass.healthcheck_max_gpu}; try #{i}"
                             )
