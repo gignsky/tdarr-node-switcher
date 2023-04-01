@@ -2,9 +2,8 @@ import requests
 import yaml
 from pathlib import Path
 from . import tdarr
+from . import node_interactions
 import time
-
-# from . import status_tracking
 
 
 class Logic:
@@ -39,36 +38,6 @@ class Logic:
                 return status_file
         else:
             return "Empty"
-
-    #     @staticmethod
-    #     def reset_node_workers(Server,node_dictionary,node_name=None):
-    #         if node_name is None:
-    #             for node in node_dictionary:
-    #                 node_class = node_dictionary[node]
-    #                 line_state = node_class.online
-    #                 if line_state:
-    #                     #reset node to zero workers
-    #                     tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
-    #
-    #                     #wait for workers to set to zero
-    #                     time.sleep(2.5)
-    #
-    #                     #reset node to max worker levels
-    #                     tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
-    #         else:
-    #             for node in node_dictionary:
-    #                 node_class = node_dictionary[node]
-    #                 if node_name==node:
-    #                     line_state = node_class.online
-    #                     if line_state:
-    #                         #reset node to zero workers
-    #                         tdarr.Tdarr_Orders.reset_workers_to_zero(Server,node,node_dictionary)
-    #
-    #                         #wait for workers to set to zero
-    #                         time.sleep(2.5)
-    #
-    #                         #reset node to max worker levels
-    #                         tdarr.Tdarr_Orders.reset_workers_to_max_limits(Server,node,node_dictionary)
 
     @staticmethod
     def find_quant_living_nodes(node_dictionary):
@@ -116,7 +85,7 @@ class Logic:
 
             if priority_number > highest_priority_number:
                 highest_priority_transcode_workers = node_max_transcode_workers
-                highest_priority_transcode_workers_priority_number = priority_number
+                # highest_priority_transcode_workers_priority_number = priority_number
 
             if primary_node_bool:
                 if Class.online:
@@ -179,7 +148,7 @@ class Logic:
 
         current_priority_level = 0
         while current_priority_level <= cap:
-            for node, Class in node_dictionary.items():
+            for _, Class in node_dictionary.items():
                 node_priority = Class.priority
                 node_transcode_workers = (
                     Class.transcode_max_cpu + Class.transcode_max_gpu
@@ -261,7 +230,7 @@ class Logic:
 
     @staticmethod
     def primary_node_just_started(
-        Server, node_dictionary, primary_node_name, Status, Configuration,Workhorse
+        Server, node_dictionary, primary_node_name, Status, Configuration, Workhorse
     ):
         """
         primary_node_just_started does things that should be done after a node starts for primary node
