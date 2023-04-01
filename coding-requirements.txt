@@ -9,7 +9,7 @@ ansible==7.0.0
       pyparsing==3.0.9
     PyYAML==6.0
     resolvelib==0.8.1
-ansible-compat==2.2.4
+ansible-compat==3.0.1
   jsonschema==4.17.0
     attrs==22.2.0
     pyrsistent==0.19.2
