@@ -142,15 +142,6 @@ class ServerStatus:
         """
         self.status_dict = {"state": server_status}
 
-    # add tdarr_nodes_dictionary
-    #     def add_tdarr_nodes(self,tdarr_nodes_dictionary):
-    #         self.tdarr_nodes_section={}
-    #
-    #         for name, Class in tdarr_nodes_dictionary.items():
-    #             self.tdarr_nodes_section[name]={"state": Class.state, "directive": Class.directive}
-    #
-    #         self.status_dict["tdarr_nodes"]=self.tdarr_nodes_section
-
     # update stuff
     def update_server_dict(self, node_status_dictionary, regular_node_dictionary):
         """
@@ -200,7 +191,7 @@ class NodeStatusMaster:
 class NodeStatus:
     def __init__(self, name, node_status_section):
         self.name = name
-        if type(node_status_section) == dict:
+        if isinstance(node_status_section, dict):
             self.node_status_section = node_status_section
             self.state = self.node_status_section["state"]
             self.directive = self.node_status_section["directive"]
