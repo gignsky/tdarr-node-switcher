@@ -1,0 +1,8 @@
+- name: Shutdown server-node
+  hosts: server-node
+  become: true
+  tasks:
+    - name: Start server-node systemctl service...
+      service:
+        name: tdarrNodeStartStop.service
+        state: started
