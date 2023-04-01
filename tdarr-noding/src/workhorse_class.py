@@ -137,7 +137,7 @@ class Workhorse:
                 )
                 highest_priority_node_name = (
                     node_interactions.HostLogic.kill_smallest_priority_node(
-                        self.Configuration, self.node_dictionary
+                        self.Configuration, self.node_dictionary, self.Status
                     )
                 )
 

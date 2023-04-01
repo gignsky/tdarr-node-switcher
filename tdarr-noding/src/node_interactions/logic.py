@@ -3,7 +3,7 @@ from . import HostCommands
 
 class HostLogic:
     @staticmethod
-    def kill_smallest_priority_node(configuration_class, node_dictionary):
+    def kill_smallest_priority_node(configuration_class, node_dictionary,Status):
         """
         kill_smallest_priority_node kills the node with the highest priority number
 
@@ -15,7 +15,7 @@ class HostLogic:
             node_dictionary
         )
         HostLogic.kill_node(
-            configuration_class, node_dictionary, high_priority_node_name
+            configuration_class, node_dictionary, high_priority_node_name,Status
         )
 
         return high_priority_node_name
