@@ -22,8 +22,8 @@ def main():
     # establish classes
     current_directory = os.getcwd()
 
-    #debug line
-    current_directory=f"{current_directory}/tdarr-noding"
+    # # debug line
+    # current_directory = f"{current_directory}/tdarr-noding"
 
     Workhorse = src.Workhorse(current_directory)
 
@@ -45,5 +45,6 @@ def main():
             Workhorse.Status.change_state("Started")
 
     Workhorse.Status.print_status_file()
+
 
 main()
