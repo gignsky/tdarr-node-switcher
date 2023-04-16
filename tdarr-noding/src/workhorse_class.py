@@ -174,27 +174,12 @@ class Workhorse:
         # primary_node = self.Server.primary_node
         # primary_node_class = self.node_dictionary[primary_node]
 
-    #         if primary_node_class.online:
-    #             print(f"Primary NODE: `{primary_node}` is ONLINE")
-    #             # TODO CHECK FOR ACTIVE WORK ON OTHER ONLINE NODES THEN PAUSE UNTIL EMPTY BEFORE SHUTTING DOWN AFTER RECHECK
-    #
-    #             number_of_working_nodes = len(nodes_with_work_list)
-    #
-    #             if number_of_working_nodes == 1:
-    #                 print("PLACEHOLDER")
-    #                 if quantity_of_living_nodes > 1:
-    #                     print("INFO: Shutting/Pausing down all nodes except primary")
-    #                     # TODO shutdown all online nodes except primary
-    #                 else:
-    #                     self.refresh()
-    #             else:
-    #                 # TODO Same function as above on line 59 looping
-    #                 print("PLACEHOLDER")
+        self.normal()
 
     def refresh(self):
         Logic.refresh_all(self.Server)
 
-    def normal(self, q_level=None):
+    def normal(self):
         """
         normal run normal workflow when startup has already been run
 
@@ -213,21 +198,12 @@ class Workhorse:
         print("INFO: Updating nodes...")
         self.update_nodes()
 
-        # if q_level is None:
-        #     # start loop
-        #     q = 1
-        # else:
-        #     q = q_level
-        #     if "Normal_q" in q:
-        #         q = int(q[-1])
-        #     else:
-        #         q = 1
-        q = 1
+        q=1
 
         while q != 7:
-            print(f"Starting Q# {q}")
             if q == 1:
                 # 1
+                print("Starting Q1: Checking for nodes going down")
                 # 1.a - find nodes "going down"
                 list_of_nodes_going_down = []
                 list_of_nodes_going_down_still = []

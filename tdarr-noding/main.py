@@ -36,9 +36,8 @@ def main():
         Workhorse.Status.ServerStatus.set_server_status("Online")
 
         if Workhorse.status_exists:
-            status_state = Workhorse.Status.state
             if "Started" or "Normal" in status_state:
-                Workhorse.normal(status_state)
+                Workhorse.normal()
         else:
             Workhorse.update_classes()
             Workhorse.startup()
