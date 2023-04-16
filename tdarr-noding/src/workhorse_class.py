@@ -201,9 +201,9 @@ class Workhorse:
         q=1
 
         while q != 7:
-            print(f"Starting Q# {q}")
             if q == 1:
                 # 1
+                print("Starting Q1: Checking for nodes going down")
                 # 1.a - find nodes "going down"
                 list_of_nodes_going_down = []
                 list_of_nodes_going_down_still = []
