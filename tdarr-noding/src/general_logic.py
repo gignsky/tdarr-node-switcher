@@ -137,7 +137,6 @@ class Logic:
         node_dictionary,
         max_nodes,
     ):
-
         # create two arrays with priority number and total transcode workers
         priority_array_without_primary = {}
         priority_array_with_primary = {}
@@ -190,6 +189,8 @@ class Logic:
                 if queued_quantity <= cumulative_quantity:
                     target_priority = priority_level
                     break
+                else:
+                    target_priority = priority_level
 
         return target_priority
 
