@@ -300,6 +300,10 @@ class Workhorse:
                     self.node_dictionary, priority_level_target
                 )
 
+                print(
+                    f"INFO: List of nodes to deactivate: {list_of_nodes_to_deactivate}"
+                )
+
                 # 2.e - deactivate nodes to priority level if required
                 for node in list_of_nodes_to_deactivate:
                     print(f"INFO: Deactivating node: {node}")

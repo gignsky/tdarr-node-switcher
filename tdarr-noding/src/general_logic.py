@@ -158,7 +158,6 @@ class Logic:
                             node_priority
                         ] = node_transcode_workers
                         current_priority_level += 1
-                        break
                     else:
                         if includes_primary_node:
                             priority_array_with_primary[
@@ -169,10 +168,6 @@ class Logic:
                                 node_priority
                             ] = node_transcode_workers
                         current_priority_level += 1
-                        break
-                elif node_priority == cap:
-                    current_priority_level += 1
-                    break
 
         if includes_primary_node:
             priority_array = priority_array_with_primary
