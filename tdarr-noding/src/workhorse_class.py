@@ -198,9 +198,10 @@ class Workhorse:
         print("INFO: Updating nodes...")
         self.update_nodes()
 
-        q=1
+        q = 1
 
         while q != 7:
+            print(f"INFO: Starting Q{q}")
             if q == 1:
                 # 1
                 print("Starting Q1: Checking for nodes going down")
@@ -231,7 +232,6 @@ class Workhorse:
                     )
 
                     if node in nodes_without_work_list:
-
                         # order shutdown
                         node_interactions.HostLogic.kill_node(
                             self.Configuration, self.node_dictionary, node, self.Status
@@ -446,7 +446,6 @@ class Workhorse:
                 else:
                     break
             elif q == 5:
-
                 # 5.a - check if all refresh work is done
                 queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
                     self.Server
