@@ -359,6 +359,7 @@ class Workhorse:
                     Class,
                 ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
                     if Class.directive == "Going_down":
+                        break  #! TEMPOARY FIX MIGHT NEED TO BE REMOVED
                         continue_to_q3 = False
 
                 if continue_to_q3:
