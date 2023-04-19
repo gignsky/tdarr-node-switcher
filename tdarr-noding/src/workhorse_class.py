@@ -257,7 +257,7 @@ class Workhorse:
                     print("INFO: Updating classes...")
                     q += 1  #! TEMPORARY FIX MIGHT NEED TO BE REMOVED
                     self.update_classes()
-                    break
+                    # break #! TEMPORARY FIX MIGHT NEED TO BE REMOVED - THESE CHANGES BYPASS SAFTEYS
 
                 print("INFO: Updating classes...")
                 self.update_classes()
