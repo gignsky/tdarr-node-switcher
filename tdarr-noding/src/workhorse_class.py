@@ -255,6 +255,7 @@ class Workhorse:
                     # self.Status.change_state(f"Normal_q{q}")
                 else:
                     print("INFO: Updating classes...")
+                    q += 1  #! TEMPORARY FIX MIGHT NEED TO BE REMOVED
                     self.update_classes()
                     break
 
