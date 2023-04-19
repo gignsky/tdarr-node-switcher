@@ -42,9 +42,7 @@ class Tdarr_Orders:
         < Document Guardian | Protect >
         """
         failed_transcodes = Tdarr_Logic.search_for_failed_transcodes(Server)
-        succesful_transcodes = Tdarr_Logic.search_for_successful_transcodes_checks(
-            Server
-        )
+        succesful_transcodes = Tdarr_Logic.search_for_successful_transcodes(Server)
 
         lists_of_lists = [failed_transcodes, succesful_transcodes]
         for transcode_list in lists_of_lists:
