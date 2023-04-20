@@ -198,9 +198,10 @@ class Workhorse:
         print("INFO: Updating nodes...")
         self.update_nodes()
 
-        q=1
+        q = 1
 
         while q != 7:
+            print(f"INFO: Starting Q{q}")
             if q == 1:
                 # 1
                 print("Starting Q1: Checking for nodes going down")
@@ -231,7 +232,6 @@ class Workhorse:
                     )
 
                     if node in nodes_without_work_list:
-
                         # order shutdown
                         node_interactions.HostLogic.kill_node(
                             self.Configuration, self.node_dictionary, node, self.Status
@@ -255,8 +255,9 @@ class Workhorse:
                     # self.Status.change_state(f"Normal_q{q}")
                 else:
                     print("INFO: Updating classes...")
+                    # q += 1  #* TEMPORARY FIX MIGHT NEED TO BE REMOVED - removed by commented out
                     self.update_classes()
-                    break
+                    break  # * TEMPORARY FIX MIGHT NEED TO BE REMOVED - THESE CHANGES BYPASS SAFTEYS - removed by uncommenting
 
                 print("INFO: Updating classes...")
                 self.update_classes()
@@ -298,6 +299,10 @@ class Workhorse:
                 # 2.d - get list of nodes to deactivate
                 list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
                     self.node_dictionary, priority_level_target
+                )
+
+                print(
+                    f"INFO: List of nodes to deactivate: {list_of_nodes_to_deactivate}"
                 )
 
                 # 2.e - deactivate nodes to priority level if required
@@ -354,6 +359,7 @@ class Workhorse:
                     Class,
                 ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
                     if Class.directive == "Going_down":
+                        # break  #* TEMPOARY FIX MIGHT NEED TO BE REMOVED - removed by commenting out
                         continue_to_q3 = False
 
                 if continue_to_q3:
@@ -446,7 +452,6 @@ class Workhorse:
                 else:
                     break
             elif q == 5:
-
                 # 5.a - check if all refresh work is done
                 queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
                     self.Server
