@@ -255,9 +255,9 @@ class Workhorse:
                     # self.Status.change_state(f"Normal_q{q}")
                 else:
                     print("INFO: Updating classes...")
-                    q += 1  #! TEMPORARY FIX MIGHT NEED TO BE REMOVED
+                    # q += 1  #* TEMPORARY FIX MIGHT NEED TO BE REMOVED - removed by commented out
                     self.update_classes()
-                    # break #! TEMPORARY FIX MIGHT NEED TO BE REMOVED - THESE CHANGES BYPASS SAFTEYS
+                    break  # * TEMPORARY FIX MIGHT NEED TO BE REMOVED - THESE CHANGES BYPASS SAFTEYS - removed by uncommenting
 
                 print("INFO: Updating classes...")
                 self.update_classes()
@@ -359,7 +359,7 @@ class Workhorse:
                     Class,
                 ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
                     if Class.directive == "Going_down":
-                        break  #! TEMPOARY FIX MIGHT NEED TO BE REMOVED
+                        # break  #* TEMPOARY FIX MIGHT NEED TO BE REMOVED - removed by commenting out
                         continue_to_q3 = False
 
                 if continue_to_q3:
