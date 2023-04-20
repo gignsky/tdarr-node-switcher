@@ -426,6 +426,9 @@ class Workhorse:
                             print(
                                 f"WARN: No Startup Command for Priamry Node '{primary_node}'"
                             )
+                            tdarr.Tdarr_Orders.update_transcodes(
+                                self.Server, True
+                            )  # * Don't know if this line even works, added in without testing as a fix for refreshing successful transcodes when primary node is offline
                             break
                     # 4.f.1 - if node is started or is already running, set workers to normal amounts
                     else:

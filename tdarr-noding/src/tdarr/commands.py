@@ -33,7 +33,7 @@ class Tdarr_Orders:
             # pprint(response)
 
     @staticmethod
-    def update_transcodes(Server):
+    def update_transcodes(Server, only_successful=None):
         """
         update_transcodes update failed transcodes to queued
 
@@ -44,7 +44,11 @@ class Tdarr_Orders:
         failed_transcodes = Tdarr_Logic.search_for_failed_transcodes(Server)
         succesful_transcodes = Tdarr_Logic.search_for_successful_transcodes(Server)
 
-        lists_of_lists = [failed_transcodes, succesful_transcodes]
+        if not only_successful:
+            lists_of_lists = [failed_transcodes, succesful_transcodes]
+        else:
+            lists_of_lists = [succesful_transcodes]
+
         for transcode_list in lists_of_lists:
             for id_number in transcode_list:
                 payload = {
