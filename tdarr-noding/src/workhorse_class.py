@@ -186,17 +186,55 @@ class Workhorse:
         steps to take:
             1. Check for the following
                 1.a. nodes going down
-                1.b. nodes with work
-                1.c. quantity of work
+                1.b. nodes with and without work
+                1.c. quantity of work to be done and to be able to be done
                 1.d. check if primary node is online
             2. Calculate if nodes need to be activated or deactivated
             3. Activate or deactivate nodes
             4. Check if all work is finished
         """
 
+        #initalize NormalHelpers class
+        NormalHelpers = NormalHelpers(self.Server, self.Status, self.node_dictionary)
+
         # update nodes
         print("INFO: Updating nodes...")
         self.update_nodes()
+
+        print("INFO: Gathering General Information...")
+
+        #1.a
+        # find list of nodes going down
+        list_of_nodes_going_down = []
+        for (
+            node,
+            Class,
+        ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
+            if Class.directive == "Going_down":
+                list_of_nodes_going_down.append(node)
+
+        print(f"The following nodes are already marked as 'going_down' {list_of_nodes_going_down}")
+
+        #1.b
+        # find nodes with current work
+        nodes_without_work_list, nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
+
+        print(f"The following nodes have work: {nodes_with_work_list}")
+        print(f"The following nodes do NOT have work: {nodes_without_work_list}")
+
+        #1.c
+        # find quantity of work
+        quantity_of_work, max_quantity_of_work, max_quantity_includes_primary = NormalHelpers.find_quantity_of_work()
+
+        print(f"Quantity of work: {quantity_of_work}")
+        print(f"Max quantity of work: {max_quantity_of_work}")
+        print(f"Max quantity of work includes primary node: {max_quantity_includes_primary}")
+
+        #1.d
+        # check if primary node is online
+        primary_node = self.Server.primary_node
+
+        print(f"Primary node: {primary_node}")
 
 
 #         q = 1
@@ -482,3 +520,31 @@ class Workhorse:
 #                 # 6.a.2 - attempt shutdown of primary node
 #
 #                 # 6.b - increment q to 5 and end the loop all work is done
+
+class NormalHelpers:
+    def __init__(self, Server, Status, Configuration, node_dictionary):
+        self.Server = Server
+        self.Status = Status
+        self.Configuration = Configuration
+        self.node_dictionary = node_dictionary
+
+    def work_quantity_finder(self):
+        # 2
+        # 2.a - find quantity of work to be done
+        print("INFO: Finding list and quantity of queued work")
+        queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
+            self.Server
+        )
+        queued_transcode_quantity = len(queued_transcode_ids)
+        print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
+
+        # 2.b - find total amount of work able to be done by all transcode nodes at once
+        (
+            max_quantity_of_work,
+            includes_primary_node,
+        ) = Logic.find_quantity_of_transcode_workers(
+            self.node_dictionary, self.Server.max_nodes
+        )
+
+        return queued_transcode_quantity, max_quantity_of_work, includes_primary_node
+
