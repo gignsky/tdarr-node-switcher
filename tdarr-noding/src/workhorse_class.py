@@ -522,6 +522,9 @@ class Workhorse:
 #                 # 6.b - increment q to 5 and end the loop all work is done
 
 class NormalHelpers:
+    """
+    logic extracted from the normal function for cleanlyness's sake
+    """
     def __init__(self, Server, Status, Configuration, node_dictionary):
         self.Server = Server
         self.Status = Status
@@ -529,6 +532,15 @@ class NormalHelpers:
         self.node_dictionary = node_dictionary
 
     def work_quantity_finder(self):
+        """
+        work_quantity_finder find quantity of work to be done and max quantity of work able to be done by all transcode nodes at once
+
+        Returns:
+            queued_transcode_quantity (int): int value of quantity of queued work
+            max_quantity_of_work (int): int value of max quantity of work able to be done by all transcode nodes at once
+            includes_primary_node (bool): bool value of whether or not the max_quantity_of_work includes the primary node
+        < Document Guardian | Protect >
+        """
         # 2
         # 2.a - find quantity of work to be done
         print("INFO: Finding list and quantity of queued work")
