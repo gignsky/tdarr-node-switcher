@@ -7,7 +7,7 @@ ansible==7.6.0
       MarkupSafe==2.1.2
     packaging==23.1
     PyYAML==6.0
-    resolvelib==0.8.1
+    resolvelib==1.0.1
 ansible-compat==4.1.0
   ansible-core==2.14.6
     cryptography==40.0.2
