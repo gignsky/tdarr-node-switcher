@@ -23,7 +23,7 @@ requests==2.31.0
   charset-normalizer==3.1.0
   idna==3.4
   urllib3==2.0.2
-setuptools==59.6.0
+setuptools==67.8.0
 touch==2020.12.3
   values==2020.12.3
 wheel==0.40.0
