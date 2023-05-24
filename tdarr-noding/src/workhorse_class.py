@@ -89,6 +89,9 @@ class Workhorse:
             else:
                 Class.update_node("Offline")
 
+    def refresh(self):
+        Logic.refresh_all(self.Server)
+
     def startup(self):
         """
         startup function: this will run at the inital start of the script when no status file exists
@@ -175,9 +178,6 @@ class Workhorse:
         # primary_node_class = self.node_dictionary[primary_node]
 
         self.normal()
-
-    def refresh(self):
-        Logic.refresh_all(self.Server)
 
     def normal(self):
         """
