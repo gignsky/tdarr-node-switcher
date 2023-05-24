@@ -9,7 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
-
+    target-branch: "dependabot-updates"
     ignore:
       - dependency-name: "resolvelib"
         versions: ">0.9.0"
