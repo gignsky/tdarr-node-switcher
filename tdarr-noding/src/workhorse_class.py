@@ -195,6 +195,13 @@ class Workhorse:
             3. Activate or deactivate nodes
                 3.a. deactivate nodes
                 3.b. activate nodes
+            4. Ensure all nodes are at correct worker count
+                4.a. update values
+                    4.a.1. update list_of_nodes_going_down
+                    4.a.2. update or create list of living nodes
+                4.b. update worker count
+                    4.b.1. skip nodes going down
+                    4.b.2. update worker counts on all living nodes
         """
 
         #initalize NormalHelpers class
@@ -287,6 +294,52 @@ class Workhorse:
             for node in nodes_to_activate:
                 print(f"INFO: Activating node: {node}")
                 NormalHelpers.activate_node(node)
+
+        # 4
+        # ensure all nodes are at correct worker count
+
+        # 4.a
+        # update values
+
+        # 4.a.1
+        # update list_of_nodes_going_down
+        list_of_nodes_going_down = []
+        for (
+            node,
+            Class,
+        ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
+            if Class.directive == "Going_down":
+                list_of_nodes_going_down.append(node)
+
+        # 4.a.2
+        # update or create list of living nodes
+        list_of_living_nodes = []
+        for node, Class in self.node_dictionary.items():
+            if Class.status == "Online":
+                list_of_living_nodes.append(node)
+
+        # 4.b
+        # update worker count
+
+        for node in list_of_living_nodes:
+            # 4.b.1
+            # skip nodes going down
+            if node in list_of_nodes_going_down:
+                print(
+                    f"INFO: {node} is marked as 'Going_down'. Skipping Worker Count Update..."
+                )
+
+            # 4.b.2
+            # update worker counts on all living nodes
+            else:
+                print(f"INFO: Checking worker count on: {node}...")
+
+                # reset worker count to worker limit
+                tdarr.Tdarr_Orders.reset_workers_to_max_limits(
+                    self.Server, node, self.node_dictionary
+                )
+
+                print(f"INFO: Worker count on {node} has been updated.")
 
 #         q = 1
 #
