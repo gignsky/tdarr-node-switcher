@@ -51,7 +51,7 @@ ansible-lint==6.16.2
     markdown-it-py==2.2.0
       mdurl==0.1.2
     Pygments==2.15.1
-  ruamel.yaml==0.17.26
+  ruamel.yaml==0.17.27
     ruamel.yaml.clib==0.2.7
   subprocess-tee==0.4.1
   wcmatch==8.4.1
