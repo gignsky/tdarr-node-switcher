@@ -202,6 +202,7 @@ class Workhorse:
                 4.b. update worker count
                     4.b.1. skip nodes going down
                     4.b.2. update worker counts on all living nodes
+            5. Check if all work is finished
         """
 
         #initalize NormalHelpers class
@@ -340,6 +341,23 @@ class Workhorse:
                 )
 
                 print(f"INFO: Worker count on {node} has been updated.")
+
+        # 5
+        # check if all work is finished
+
+        if quantity_of_work == 0:
+            print(
+                "INFO: All work is finished. Shutting down all nodes except primary..."
+            )
+            for node in list_of_living_nodes:
+                if node != primary_node:
+                    NormalHelpers.shutdown_node(node)
+
+            # update status to Normal_Finished
+            self.Status.change_state("Normal_Finished")
+
+            # 5.a
+            # check if primary node is online & continue to post Normal
 
 #         q = 1
 #
