@@ -193,7 +193,8 @@ class Workhorse:
                 2.a. find current priority level
                 2.b. gather list of nodes to be activated and deactivated
             3. Activate or deactivate nodes
-            4. Check if all work is finished
+                3.a. deactivate nodes
+                3.b. activate nodes
         """
 
         #initalize NormalHelpers class
@@ -256,6 +257,36 @@ class Workhorse:
 
         print(f"Nodes to be activated: {nodes_to_activate}")
         print(f"Nodes to be deactivated: {nodes_to_deactivate}")
+
+        # 3
+        # activate or deactivate nodes
+
+        # 3.a
+        # deactivate nodes
+        if len(nodes_to_deactivate) > 0:
+            for node in nodes_to_deactivate:
+                print("INFO: Deactivating node: {node}")
+
+                if node in list_of_nodes_going_down:
+                    if node in nodes_without_work_list:
+                        print(
+                            f"INFO: {node} is already marked as 'Going_down' and has completed its work. Shutting down node..."
+                        )
+                        NormalHelpers.shutdown_node(node)
+                    else:
+                        print(
+                            f"INFO: {node} is already marked as 'Going_down'. Waiting for node to complete work..."
+                        )
+                else:
+                    # set directive to going_down
+                    NormalHelpers.set_node_going_down(node, nodes_without_work_list)
+
+        # 3.b
+        # activate nodes
+        if len(nodes_to_activate) > 0:
+            for node in nodes_to_activate:
+                print(f"INFO: Activating node: {node}")
+                NormalHelpers.activate_node(node)
 
 #         q = 1
 #
@@ -640,3 +671,58 @@ class NormalHelpers:
         )
 
         return list_of_nodes_to_activate, list_of_nodes_to_deactivate
+
+    def set_node_going_down(self, node, nodes_without_work_list):
+        """
+        set_node_going_down set node to going down
+
+        Args:
+            node (str): name of node
+            nodes_without_work_list (list): list of nodes without work
+        < Document Guardian | Protect >
+        """
+        self.Status.NodeStatusMaster.update_directive(node, "Going_down")
+
+        # set workers to zero
+        tdarr.Tdarr_Orders.reset_workers_to_zero(
+            self.Server, node, self.node_dictionary
+        )
+
+        # check if node has no work
+        if node in nodes_without_work_list:
+            # order shutdown
+            self.shutdown_node(node)
+
+    def shutdown_node(self, node):
+        """
+        shutdown_node shuts node down gracefully
+
+        Args:
+            node (str): node name
+        < Document Guardian | Protect >
+        """
+        node_interactions.HostLogic.kill_node(
+            self.Configuration, self.node_dictionary, node, self.Status
+        )
+        # set node status to offline
+        self.node_dictionary[node].line_state("Offline")
+
+        # set node directive to sleep
+        self.Status.NodeStatusMaster.update_directive(node, "Sleeping")
+
+    def activate_node(self, node):
+        """
+        activate_node
+
+        Args:
+            node (str): node name
+        < Document Guardian | Protect >
+        """
+        node_interactions.HostLogic.start_node(
+            self.Configuration, self.node_dictionary, node, self.Status
+        )
+        # set node status to online
+        self.node_dictionary[node].line_state("Online")
+
+        # set node directive to normal
+        self.Status.NodeStatusMaster.update_directive(node, "Normal")
