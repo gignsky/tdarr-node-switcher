@@ -38,6 +38,10 @@ def main():
         if Workhorse.status_exists:
             if "Started" or "Normal" in status_state:
                 Workhorse.normal()
+            elif "Normal_Finished" in status_state:
+                Workhorse.verify_primary_running()
+            elif "Refreshed" in status_state:
+                Workhorse.post_refresh()
         else:
             Workhorse.update_classes()
             Workhorse.startup()

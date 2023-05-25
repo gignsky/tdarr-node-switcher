@@ -43,6 +43,11 @@ class Workhorse:
             if Class.primary_node:
                 self.Server.add_primary_node(node)
 
+        # initalize NormalHelpers class
+        self.NormalHelpers = NormalHelpers(
+            self.Server, self.Status, self.node_dictionary
+        )
+
     def update_nodes_output(self):
         """
         update_nodes_output updates self.get_nodes_output to most current pull from tdarr server
@@ -179,6 +184,58 @@ class Workhorse:
 
         self.normal()
 
+    def verify_primary_running(self):
+        """
+        verify_primary_running verifies that primary node is running and modifies the status file accordingly
+        """
+        # check if primary node is running
+        primary_node = self.Server.primary_node
+
+        # check if primary node is offline
+        if not self.node_dictionary[primary_node].online:
+            print(
+                "Placeholder, primary node is offline, and no functionality exists to bring it online"
+            )
+
+            # revert status back to normal
+            self.Status.change_state("Normal")
+
+            # print status again
+            self.Status.print_status_file()
+
+        # if primary node is online
+        else:
+            # Call Refresh
+            self.refresh()
+
+            # Set status to refreshed
+            self.Status.change_state("Refreshed")
+
+            # print status again
+            self.Status.print_status_file()
+
+            self.post_refresh()
+
+    def post_refresh(self):
+        # 1. get quantity of work
+        quantity_of_work, _, _ = self.NormalHelpers.find_quantity_of_work()
+
+        # 2. check if quantity of work is greater than zero
+        if quantity_of_work > 0:
+            print(f"INFO: Quantity of work is {quantity_of_work}")
+            print("INFO: Quitting until next instance")
+
+        else:
+            print("INFO: Quantity of work is zero, continuing to normal workflow")
+
+            # change status to normal
+            self.Status.change_state("Normal")
+
+            # print status again
+            self.Status.print_status_file()
+
+            print("INFO: Post Refresh Workflow Complete... Quitting...")
+
     def normal(self):
         """
         normal running NEW workflow for concise operations
@@ -204,9 +261,6 @@ class Workhorse:
                     4.b.2. update worker counts on all living nodes
             5. Check if all work is finished
         """
-
-        # initalize NormalHelpers class
-        NormalHelpers = NormalHelpers(self.Server, self.Status, self.node_dictionary)
 
         # update nodes
         print("INFO: Updating nodes...")
@@ -244,7 +298,7 @@ class Workhorse:
             quantity_of_work,
             max_quantity_of_work,
             max_quantity_includes_primary,
-        ) = NormalHelpers.find_quantity_of_work()
+        ) = self.NormalHelpers.find_quantity_of_work()
 
         print(f"Quantity of work: {quantity_of_work}")
         print(f"Max quantity of work: {max_quantity_of_work}")
@@ -263,7 +317,7 @@ class Workhorse:
 
         # 2.a
         # find current priority level
-        current_priority_level = NormalHelpers.find_current_priority_level()
+        current_priority_level = self.NormalHelpers.find_current_priority_level()
 
         print(f"Current Running Priority Level: {current_priority_level}")
 
@@ -272,7 +326,7 @@ class Workhorse:
         (
             nodes_to_activate,
             nodes_to_deactivate,
-        ) = NormalHelpers.calculate_nodes_to_activate_deactivate()
+        ) = self.NormalHelpers.calculate_nodes_to_activate_deactivate()
 
         print(f"Nodes to be activated: {nodes_to_activate}")
         print(f"Nodes to be deactivated: {nodes_to_deactivate}")
@@ -291,21 +345,23 @@ class Workhorse:
                         print(
                             f"INFO: {node} is already marked as 'Going_down' and has completed its work. Shutting down node..."
                         )
-                        NormalHelpers.shutdown_node(node)
+                        self.NormalHelpers.shutdown_node(node)
                     else:
                         print(
                             f"INFO: {node} is already marked as 'Going_down'. Waiting for node to complete work..."
                         )
                 else:
                     # set directive to going_down
-                    NormalHelpers.set_node_going_down(node, nodes_without_work_list)
+                    self.NormalHelpers.set_node_going_down(
+                        node, nodes_without_work_list
+                    )
 
         # 3.b
         # activate nodes
         if len(nodes_to_activate) > 0:
             for node in nodes_to_activate:
                 print(f"INFO: Activating node: {node}")
-                NormalHelpers.activate_node(node)
+                self.NormalHelpers.activate_node(node)
 
         # 4
         # ensure all nodes are at correct worker count
@@ -362,13 +418,17 @@ class Workhorse:
             )
             for node in list_of_living_nodes:
                 if node != primary_node:
-                    NormalHelpers.shutdown_node(node)
+                    self.NormalHelpers.shutdown_node(node)
 
             # update status to Normal_Finished
             self.Status.change_state("Normal_Finished")
 
+            # print status
+            self.Status.print_status_file()
+
             # 5.a
             # check if primary node is online & continue to post Normal
+            self.verify_primary_running()
 
 
 #         q = 1
