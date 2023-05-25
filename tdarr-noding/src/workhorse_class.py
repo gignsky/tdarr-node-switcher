@@ -541,6 +541,10 @@ class NormalHelpers:
             self.node_dictionary, priority_level_target
         )
 
+        # set nodes to activate to empty if there is no work to be done
+        if queued_transcode_quantity == 0:
+            list_of_nodes_to_activate = []
+
         return list_of_nodes_to_activate, list_of_nodes_to_deactivate
 
     def set_node_going_down(self, node, nodes_without_work_list):
