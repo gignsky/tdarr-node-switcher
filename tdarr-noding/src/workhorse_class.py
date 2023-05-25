@@ -190,6 +190,8 @@ class Workhorse:
                 1.c. quantity of work to be done and to be able to be done
                 1.d. check if primary node is online
             2. Calculate if nodes need to be activated or deactivated
+                2.a. find current priority level
+                2.b. gather list of nodes to be activated and deactivated
             3. Activate or deactivate nodes
             4. Check if all work is finished
         """
@@ -236,6 +238,24 @@ class Workhorse:
 
         print(f"Primary node: {primary_node}")
 
+        # 2
+        # calculate if nodes need to be activated or deactivated
+
+        # 2.a
+        # find current priority level
+        current_priority_level = NormalHelpers.find_current_priority_level()
+
+        print(f"Current Running Priority Level: {current_priority_level}")
+
+        # 2.b
+        # gather list of nodes to be activated and deactivated
+        (
+            nodes_to_activate,
+            nodes_to_deactivate,
+        ) = NormalHelpers.calculate_nodes_to_activate_deactivate()
+
+        print(f"Nodes to be activated: {nodes_to_activate}")
+        print(f"Nodes to be deactivated: {nodes_to_deactivate}")
 
 #         q = 1
 #
@@ -560,3 +580,63 @@ class NormalHelpers:
 
         return queued_transcode_quantity, max_quantity_of_work, includes_primary_node
 
+    def find_current_priority_level(self):
+        """
+        find_current_priority_level find priority level of online nodes
+
+        Returns:
+            current_priority_level (int): int value of current priority level of online nodes
+        < Document Guardian | Protect >
+        """
+
+        # find list of online node names
+        online_node_names = []
+        for node_name in self.node_dictionary:
+            if self.node_dictionary[node_name].online:
+                online_node_names.append(node_name)
+
+        # find current priority level
+        current_priority_level = 0
+        for node_name in online_node_names:
+            if self.node_dictionary[node_name].priority_level > current_priority_level:
+                current_priority_level = self.node_dictionary[node_name].priority_level
+
+        return current_priority_level
+
+    def calculate_nodes_to_activate_deactivate(
+        self, queued_transcode_quantity, max_quantity_of_work, includes_primary_node
+    ):
+        """
+        calculate_nodes_to_activate_deactivate
+
+        Args:
+            queued_transcode_quantity (int): quantity of queued work
+            max_quantity_of_work (int): max quantity of work able to be done by all transcode nodes at once
+            includes_primary_node (bool): bool value of whether or not the max_quantity_of_work includes the primary node
+
+        Returns:
+            list_of_nodes_to_activate (list): list of node names to activate
+            list_of_nodes_to_deactivate (list): list of node names to deactivate
+        < Document Guardian | Protect >
+        """
+
+        priority_level_target = Logic.find_priority_target_level(
+            queued_transcode_quantity,
+            max_quantity_of_work,
+            includes_primary_node,
+            self.node_dictionary,
+            self.Server.max_nodes,
+        )
+
+        print(f"INFO: Priority Level Target: {priority_level_target}")
+
+        # find list of nodes to activate/deactivate
+        list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
+            self.node_dictionary, priority_level_target
+        )
+
+        list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
+            self.node_dictionary, priority_level_target
+        )
+
+        return list_of_nodes_to_activate, list_of_nodes_to_deactivate
