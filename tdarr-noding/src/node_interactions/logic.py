@@ -3,7 +3,7 @@ from . import HostCommands
 
 class HostLogic:
     @staticmethod
-    def kill_smallest_priority_node(configuration_class, node_dictionary,Status):
+    def kill_smallest_priority_node(configuration_class, node_dictionary, Status):
         """
         kill_smallest_priority_node kills the node with the highest priority number
 
@@ -15,7 +15,7 @@ class HostLogic:
             node_dictionary
         )
         HostLogic.kill_node(
-            configuration_class, node_dictionary, high_priority_node_name,Status
+            configuration_class, node_dictionary, high_priority_node_name, Status
         )
 
         return high_priority_node_name
@@ -98,13 +98,16 @@ class HostLogic:
                     startup_command = node_dictionary[node].startup
 
                     # order startup
-                    HostCommands.startup_node(configuration_class, startup_command)
+                    did_i_fail = HostCommands.startup_node(
+                        configuration_class, startup_command
+                    )
 
-                    # change status to active and online
-                    ##change status to active
-                    Status.NodeStatusMaster.node_status_dictionary[
-                        name
-                    ].update_directive("Active")
+                    if not did_i_fail:
+                        # change status to active and online
+                        ##change status to active
+                        Status.NodeStatusMaster.node_status_dictionary[
+                            name
+                        ].update_directive("Active")
 
-                    ##change state to online
-                    node_dictionary[node].line_state("Online")
+                        ##change state to online
+                        node_dictionary[node].line_state("Online")
