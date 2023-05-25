@@ -349,7 +349,7 @@ class Workhorse:
         # deactivate nodes
         if len(nodes_to_deactivate) > 0:
             for node in nodes_to_deactivate:
-                print("INFO: Deactivating node: {node}")
+                print(f"INFO: Deactivating node: {node}")
 
                 if node in list_of_nodes_going_down:
                     if node in nodes_without_work_list:
