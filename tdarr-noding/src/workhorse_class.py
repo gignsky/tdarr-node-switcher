@@ -205,7 +205,7 @@ class Workhorse:
             5. Check if all work is finished
         """
 
-        #initalize NormalHelpers class
+        # initalize NormalHelpers class
         NormalHelpers = NormalHelpers(self.Server, self.Status, self.node_dictionary)
 
         # update nodes
@@ -214,7 +214,7 @@ class Workhorse:
 
         print("INFO: Gathering General Information...")
 
-        #1.a
+        # 1.a
         # find list of nodes going down
         list_of_nodes_going_down = []
         for (
@@ -224,24 +224,35 @@ class Workhorse:
             if Class.directive == "Going_down":
                 list_of_nodes_going_down.append(node)
 
-        print(f"The following nodes are already marked as 'going_down' {list_of_nodes_going_down}")
+        print(
+            f"The following nodes are already marked as 'going_down' {list_of_nodes_going_down}"
+        )
 
-        #1.b
+        # 1.b
         # find nodes with current work
-        nodes_without_work_list, nodes_with_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
+        (
+            nodes_without_work_list,
+            nodes_with_work_list,
+        ) = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
 
         print(f"The following nodes have work: {nodes_with_work_list}")
         print(f"The following nodes do NOT have work: {nodes_without_work_list}")
 
-        #1.c
+        # 1.c
         # find quantity of work
-        quantity_of_work, max_quantity_of_work, max_quantity_includes_primary = NormalHelpers.find_quantity_of_work()
+        (
+            quantity_of_work,
+            max_quantity_of_work,
+            max_quantity_includes_primary,
+        ) = NormalHelpers.find_quantity_of_work()
 
         print(f"Quantity of work: {quantity_of_work}")
         print(f"Max quantity of work: {max_quantity_of_work}")
-        print(f"Max quantity of work includes primary node: {max_quantity_includes_primary}")
+        print(
+            f"Max quantity of work includes primary node: {max_quantity_includes_primary}"
+        )
 
-        #1.d
+        # 1.d
         # check if primary node is online
         primary_node = self.Server.primary_node
 
@@ -358,6 +369,7 @@ class Workhorse:
 
             # 5.a
             # check if primary node is online & continue to post Normal
+
 
 #         q = 1
 #
@@ -643,10 +655,12 @@ class Workhorse:
 #
 #                 # 6.b - increment q to 5 and end the loop all work is done
 
+
 class NormalHelpers:
     """
     logic extracted from the normal function for cleanlyness's sake
     """
+
     def __init__(self, Server, Status, Configuration, node_dictionary):
         self.Server = Server
         self.Status = Status
