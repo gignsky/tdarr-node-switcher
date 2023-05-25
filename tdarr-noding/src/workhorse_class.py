@@ -43,12 +43,21 @@ class Workhorse:
             if Class.primary_node:
                 self.Server.add_primary_node(node)
 
+        # initalize NormalHelpers class
+        self.NormalHelpersClass = NormalHelpers(
+            self.Server, self.Status, self.Configuration, self.node_dictionary
+        )
+
     def update_nodes_output(self):
         """
         update_nodes_output updates self.get_nodes_output to most current pull from tdarr server
         < Document Guardian | Protect >
         """
         self.get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
+
+        self.Configuration.startup_update_nodes_with_tdarr_info(
+            self.node_dictionary, self.get_nodes_output
+        )
 
     def update_classes(self):
         """
@@ -62,6 +71,10 @@ class Workhorse:
         # update node master
         # refresh status class & print output
         self.Status.status_update(self.node_dictionary)
+
+        self.Configuration.startup_update_nodes_with_tdarr_info(
+            self.node_dictionary, self.get_nodes_output
+        )
 
     def update_nodes(self):
         """
@@ -89,6 +102,9 @@ class Workhorse:
             else:
                 Class.update_node("Offline")
 
+    def refresh(self):
+        Logic.refresh_all(self.Server)
+
     def startup(self):
         """
         startup function: this will run at the inital start of the script when no status file exists
@@ -109,11 +125,6 @@ class Workhorse:
         ## 1
         ### 1.a get_nodes output
         self.update_nodes_output()
-
-        ### 1.b update configuration class with tdarr info
-        self.Configuration.startup_update_nodes_with_tdarr_info(
-            self.node_dictionary, self.get_nodes_output
-        )
 
         ## 2
         for node_name, node_class in self.node_dictionary.items():
@@ -176,308 +187,403 @@ class Workhorse:
 
         self.normal()
 
-    def refresh(self):
-        Logic.refresh_all(self.Server)
+    def verify_primary_running(self):
+        """
+        verify_primary_running verifies that primary node is running and modifies the status file accordingly
+        """
+
+        self.update_classes()
+
+        # check if primary node is running
+        primary_node = self.Server.primary_node
+
+        # check if primary node is offline
+        if not self.node_dictionary[primary_node].online:
+            print(
+                "Placeholder, primary node is offline, and no functionality exists to bring it online"
+            )
+
+            # revert status back to normal
+            self.Status.change_state("Normal")
+
+            # print status again
+            self.Status.print_status_file()
+
+        # if primary node is online
+        else:
+            # Call Refresh
+            self.refresh()
+
+            # Set status to refreshed
+            self.Status.change_state("Refreshed")
+
+            # print status again
+            self.Status.print_status_file()
+
+            self.post_refresh()
+
+    def post_refresh(self):
+        self.update_classes()
+
+        # 1. get quantity of work
+        quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
+
+        # 2. check if quantity of work is greater than zero
+        if quantity_of_work > 0:
+            print(f"INFO: Quantity of work is {quantity_of_work}")
+            print("INFO: Quitting until next instance")
+            self.Status.change_state("Refreshed")
+
+        else:
+            print("INFO: Quantity of work is zero, continuing to normal workflow")
+
+            # change status to normal
+            self.Status.change_state("Normal")
+
+            # print status again
+            self.Status.print_status_file()
+
+            print("INFO: Post Refresh Workflow Complete... Quitting...")
 
     def normal(self):
         """
-        normal run normal workflow when startup has already been run
+        normal running NEW workflow for concise operations
 
-        all of these steps will function on a "if previous step fails, do not continue" order
         steps to take:
-            1. Check for nodes that are going down and see if they have work, if they do not kill these nodes, if and only if this check passes continue with the process if not end the loop and allow for rerunning
-            2. Find quantity of work to be done and activate the appropriate number of nodes (while checking to make sure not to go over the max_nodes amount)
-            2.5 find that quantity of work is less than required nodes and kill excess nodes
-            3. Activate all alive nodes with total number of workers
-            4. if all work is finished check for online status of primary node, if it is offline attempt to start, if started set all other nodes to zero workers then set workers to normal limits and run refresh
-            5. check if refresh is done
-            6. after refresh is complete shutdown primary node if possible and reset regular nodes to workers then rerun function to determine proper number of nodes to be running
+            1. Check for the following
+                1.a. nodes going down
+                1.b. nodes with and without work
+                1.c. quantity of work to be done and to be able to be done
+                1.d. check if primary node is online
+            2. Calculate if nodes need to be activated or deactivated
+                2.a. find current priority level
+                2.b. gather list of nodes to be activated and deactivated
+            3. Activate or deactivate nodes
+                3.a. deactivate nodes
+                3.b. activate nodes
+            4. Ensure all nodes are at correct worker count
+                4.a. update values
+                    4.a.1. update list_of_nodes_going_down
+                    4.a.2. update or create list of living nodes
+                4.b. update worker count
+                    4.b.1. skip nodes going down
+                    4.b.2. update worker counts on all living nodes
+            5. Check if all work is finished
         """
 
         # update nodes
         print("INFO: Updating nodes...")
-        self.update_nodes()
+        self.update_classes()
 
-        q = 1
+        print("INFO: Gathering General Information...")
 
-        while q != 7:
-            print(f"INFO: Starting Q{q}")
-            if q == 1:
-                # 1
-                print("Starting Q1: Checking for nodes going down")
-                # 1.a - find nodes "going down"
-                list_of_nodes_going_down = []
-                list_of_nodes_going_down_still = []
-                for (
-                    node,
-                    Class,
-                ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
-                    if Class.directive == "Going_down":
-                        list_of_nodes_going_down.append(node)
-                        print(f"INFO: {node} is already marked as 'Going_down'")
+        # 1.a
+        # find list of nodes going down
+        list_of_nodes_going_down = []
+        for (
+            node,
+            Class,
+        ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
+            if Class.directive == "Going_down":
+                list_of_nodes_going_down.append(node)
 
-                # 1.b - find nodes with active work
-                print("INFO: Finding nodes without work")
-                _, nodes_without_work_list = tdarr.Tdarr_Logic.find_nodes_with_work(
-                    self.Server
-                )
-                for node in nodes_without_work_list:
-                    print(f"INFO: The following nodes has no work: {node}")
+        print(
+            f"The following nodes are already marked as 'going_down' {list_of_nodes_going_down}"
+        )
 
-                # 1.c - check if nodes going down have no work & shutdown if found to be true
-                for node in list_of_nodes_going_down:
-                    # ensure workers are set to zero
-                    tdarr.Tdarr_Orders.reset_workers_to_zero(
-                        self.Server, node, self.node_dictionary
-                    )
+        # 1.b
+        # find nodes with current work
+        (
+            nodes_with_work_list,
+            nodes_without_work_list,
+        ) = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
 
+        print(f"The following nodes have work: {nodes_with_work_list}")
+        print(f"The following nodes do NOT have work: {nodes_without_work_list}")
+
+        # 1.c
+        # find quantity of work
+        (
+            quantity_of_work,
+            max_quantity_of_work,
+            max_quantity_includes_primary,
+        ) = self.NormalHelpersClass.work_quantity_finder()
+
+        print(f"Quantity of work: {quantity_of_work}")
+        print(f"Max quantity of work: {max_quantity_of_work}")
+        print(
+            f"Max quantity of work includes primary node: {max_quantity_includes_primary}"
+        )
+
+        # 1.d
+        # check if primary node is online
+        primary_node = self.Server.primary_node
+
+        print(f"Primary node: {primary_node}")
+
+        # 2
+        # calculate if nodes need to be activated or deactivated
+
+        # 2.a
+        # find current priority level
+        current_priority_level = self.NormalHelpersClass.find_current_priority_level()
+
+        print(f"Current Running Priority Level: {current_priority_level}")
+
+        # 2.b
+        # gather list of nodes to be activated and deactivated
+        (
+            nodes_to_activate,
+            nodes_to_deactivate,
+        ) = self.NormalHelpersClass.calculate_nodes_to_activate_deactivate(
+            quantity_of_work, max_quantity_of_work, max_quantity_includes_primary
+        )
+
+        print(f"Nodes to be activated: {nodes_to_activate}")
+        print(f"Nodes to be deactivated: {nodes_to_deactivate}")
+
+        # 3
+        # activate or deactivate nodes
+
+        # 3.a
+        # deactivate nodes
+        if len(nodes_to_deactivate) > 0:
+            for node in nodes_to_deactivate:
+                print("INFO: Deactivating node: {node}")
+
+                if node in list_of_nodes_going_down:
                     if node in nodes_without_work_list:
-                        # order shutdown
-                        node_interactions.HostLogic.kill_node(
-                            self.Configuration, self.node_dictionary, node, self.Status
+                        print(
+                            f"INFO: {node} is already marked as 'Going_down' and has completed its work. Shutting down node..."
                         )
-
-                        # set node status to offline
-                        self.node_dictionary[node].line_state("Offline")
-
-                        # set node directive to sleep
-                        self.Status.NodeStatusMaster.update_directive(node, "Sleeping")
-
+                        self.NormalHelpersClass.shutdown_node(node)
                     else:
-                        # set node directive to going_down
-                        self.Status.NodeStatusMaster.update_directive(
-                            node, "Going_down"
+                        print(
+                            f"INFO: {node} is already marked as 'Going_down'. Waiting for node to complete work..."
                         )
-                        list_of_nodes_going_down_still.append(node)
-
-                if len(list_of_nodes_going_down_still) == 0:
-                    q += 1
-                    # self.Status.change_state(f"Normal_q{q}")
                 else:
-                    print("INFO: Updating classes...")
-                    # q += 1  #* TEMPORARY FIX MIGHT NEED TO BE REMOVED - removed by commented out
-                    self.update_classes()
-                    break  # * TEMPORARY FIX MIGHT NEED TO BE REMOVED - THESE CHANGES BYPASS SAFTEYS - removed by uncommenting
+                    # set directive to going_down
+                    self.NormalHelpersClass.set_node_going_down(
+                        node, nodes_without_work_list
+                    )
 
-                print("INFO: Updating classes...")
-                self.update_classes()
+        # 3.b
+        # activate nodes
+        if len(nodes_to_activate) > 0:
+            for node in nodes_to_activate:
+                print(f"INFO: Activating node: {node}")
+                self.NormalHelpersClass.activate_node(node)
 
-            elif q == 2:
-                # 2
-                # 2.a - find quantity of work to be done
-                print("INFO: Finding list and quantity of queued work")
-                queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
-                    self.Server
-                )
-                queued_transcode_quantity = len(queued_transcode_ids)
-                print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
+        # 4
+        # ensure all nodes are at correct worker count
 
-                # 2.b - find total amount of work able to be done by all transcode nodes at once
-                (
-                    max_quantity_of_work,
-                    includes_primary_node,
-                ) = Logic.find_quantity_of_transcode_workers(
-                    self.node_dictionary, self.Server.max_nodes
-                )
+        # 4.a
+        # update values
 
+        # 4.a.1
+        # update list_of_nodes_going_down
+        list_of_nodes_going_down = []
+        for (
+            node,
+            Class,
+        ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
+            if Class.directive == "Going_down":
+                list_of_nodes_going_down.append(node)
+
+        # 4.a.2
+        # update or create list of living nodes
+        list_of_living_nodes = []
+        for node, Class in self.node_dictionary.items():
+            if Class.online:
+                list_of_living_nodes.append(node)
+
+        # 4.b
+        # update worker count
+
+        for node in list_of_living_nodes:
+            # 4.b.1
+            # skip nodes going down
+            if node in list_of_nodes_going_down:
                 print(
-                    f"INFO: Max Quantity of Work able to be done: {max_quantity_of_work}"
-                )
-                print(
-                    f"INFO: Primary Node is included in above statement: {includes_primary_node}"
+                    f"INFO: {node} is marked as 'Going_down'. Skipping Worker Count Update..."
                 )
 
-                # 2.c - compare quantity of work to be done with able to be done, should set var with priority level capable of taking on the load
-                priority_level_target = Logic.find_priority_target_level(
-                    queued_transcode_quantity,
-                    max_quantity_of_work,
-                    includes_primary_node,
-                    self.node_dictionary,
-                    self.Server.max_nodes,
-                )
-                print(f"INFO: priority level target = {priority_level_target}")
-                # 2.d - get list of nodes to deactivate
-                list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
-                    self.node_dictionary, priority_level_target
+            # 4.b.2
+            # update worker counts on all living nodes
+            else:
+                print(f"INFO: Checking worker count on: {node}...")
+
+                # reset worker count to worker limit
+                tdarr.Tdarr_Orders.reset_workers_to_max_limits(
+                    self.Server, node, self.node_dictionary
                 )
 
-                print(
-                    f"INFO: List of nodes to deactivate: {list_of_nodes_to_deactivate}"
-                )
+                print(f"INFO: Worker count on {node} has been updated.")
 
-                # 2.e - deactivate nodes to priority level if required
-                for node in list_of_nodes_to_deactivate:
-                    print(f"INFO: Deactivating node: {node}")
-                    # mark as going down
-                    self.Status.NodeStatusMaster.update_directive(node, "Going_down")
+        # 5
+        # check if all work is finished
 
-                    # set workers to zero
-                    tdarr.Tdarr_Orders.reset_workers_to_zero(
-                        self.Server, node, self.node_dictionary
-                    )
+        if quantity_of_work == 0:
+            print(
+                "INFO: All work is finished. Shutting down all nodes except primary..."
+            )
+            for node in list_of_living_nodes:
+                if node != primary_node:
+                    self.NormalHelpersClass.shutdown_node(node)
 
-                    # check if work exists on node - if it does pass this option until no work exists then shutdown
-                    ## check get list of nodes with work
-                    nodes_with_work_list, _ = tdarr.Tdarr_Logic.find_nodes_with_work(
-                        self.Server
-                    )
+            # update status to Normal_Finished
+            self.Status.change_state("Normal_Finished")
 
-                    if node not in nodes_with_work_list:
-                        node_interactions.HostLogic.kill_node(
-                            self.Configuration, self.node_dictionary, node, self.Status
-                        )
+            # print status
+            self.Status.print_status_file()
 
-                # 2.5.a - get list of nodes to activate to priority level if required
-                list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
-                    self.node_dictionary, priority_level_target
-                )
-                print("list_of_nodes_to_activate = " + f"{list_of_nodes_to_activate}")
+            # 5.a
+            # check if primary node is online & continue to post Normal
+            self.verify_primary_running()
 
-                # 2.5.b - activate and setup their class stuff
-                for node in list_of_nodes_to_activate:
-                    # activate
-                    node_interactions.HostLogic.start_node(
-                        self.Configuration, self.node_dictionary, node, self.Status
-                    )
 
-                    ###### commented out for normal level activation later on
-                    # # set workers to normal levels
-                    # for node_name, Class in self.node_dictionary:
-                    #     if node == node_name:
-                    #         dict_of_max_levels = Class.max_level_dict_creator()
-                    #         for worker_type, max_level in dict_of_max_levels.items():
-                    #             tdarr.Tdarr_Orders.set_worker_level(
-                    #                 self.Server, Class, max_level, worker_type
-                    #             )
+class NormalHelpers:
+    """
+    logic extracted from the normal function for cleanlyness's sake
+    """
 
-                # 2.5c - deal with incrementing of breaking from q loop, should only increment if all work is done
-                print("INFO: Updating classes")
-                self.update_classes()
-                continue_to_q3 = True
-                for (
-                    node,
-                    Class,
-                ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
-                    if Class.directive == "Going_down":
-                        # break  #* TEMPOARY FIX MIGHT NEED TO BE REMOVED - removed by commenting out
-                        continue_to_q3 = False
+    def __init__(self, Server, Status, Configuration, node_dictionary):
+        self.Server = Server
+        self.Status = Status
+        self.Configuration = Configuration
+        self.node_dictionary = node_dictionary
 
-                if continue_to_q3:
-                    q += 1
-                    # self.Status.change_state(f"Normal_q{q}")
+    def work_quantity_finder(self):
+        """
+        work_quantity_finder find quantity of work to be done and max quantity of work able to be done by all transcode nodes at once
 
-            elif q == 3:
-                # 3 - should set active nodes to max worker levels #* in the future consider limiting this amount to smaller numbers in the case of less than max work level being what is required
-                # 3.a - loop over nodes to find list of alive nodes
-                list_of_alive_nodes = []
-                for node, Class in self.node_dictionary.items():
-                    if Class.online:
-                        list_of_alive_nodes.append(node)
-                print(f"INFO: List of living nodes: {list_of_alive_nodes}")
+        Returns:
+            queued_transcode_quantity (int): int value of quantity of queued work
+            max_quantity_of_work (int): int value of max quantity of work able to be done by all transcode nodes at once
+            includes_primary_node (bool): bool value of whether or not the max_quantity_of_work includes the primary node
+        < Document Guardian | Protect >
+        """
+        # 2
+        # 2.a - find quantity of work to be done
+        print("INFO: Finding list and quantity of queued work")
+        queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
+            self.Server
+        )
+        queued_transcode_quantity = len(queued_transcode_ids)
+        print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
 
-                # 3.b - loop over list of alive nodes and set worker levels to normal
-                for name in list_of_alive_nodes:
-                    tdarr.Tdarr_Orders.reset_workers_to_max_limits(
-                        self.Server, name, self.node_dictionary
-                    )
+        # 2.b - find total amount of work able to be done by all transcode nodes at once
+        (
+            max_quantity_of_work,
+            includes_primary_node,
+        ) = Logic.find_quantity_of_transcode_workers(
+            self.node_dictionary, self.Server.max_nodes
+        )
 
-                q += 1
-                self.Status.change_state(f"Normal_q{q}")
+        return queued_transcode_quantity, max_quantity_of_work, includes_primary_node
 
-            elif q == 4:
-                # 4 - should only run once all work is done
-                # 4.a - find quantity of work to be done
-                print("INFO: Finding list and quantity of queued work")
-                queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
-                    self.Server
-                )
-                queued_transcode_quantity = len(queued_transcode_ids)
-                print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
+    def find_current_priority_level(self):
+        """
+        find_current_priority_level find priority level of online nodes
 
-                if queued_transcode_quantity == 0:
-                    # 4.b find primary node name
-                    primary_node = self.Server.primary_node
+        Returns:
+            current_priority_level (int): int value of current priority level of online nodes
+        < Document Guardian | Protect >
+        """
 
-                    # 4.d - check if primary node is online
-                    if self.node_dictionary[primary_node].online:
-                        primary_online = True
-                    else:
-                        primary_online = False
+        # find list of online node names
+        online_node_names = []
+        for node_name in self.node_dictionary:
+            if self.node_dictionary[node_name].online:
+                online_node_names.append(node_name)
 
-                    # 4.e - if node is offline attempt to start
-                    if not primary_online:
-                        startup_command = self.node_dictionary[primary_node].startup
-                        if startup_command is not None:
-                            node_interactions.HostLogic.start_node(
-                                self.Configuration,
-                                self.node_dictionary,
-                                primary_node,
-                                self.Status,
-                            )
-                            Logic.primary_node_just_started(
-                                self.Server,
-                                self.node_dictionary,
-                                primary_node,
-                                self.Status,
-                                self.Configuration,
-                                self,
-                            )
-                        else:
-                            print(
-                                f"WARN: No Startup Command for Priamry Node '{primary_node}'"
-                            )
-                            tdarr.Tdarr_Orders.update_transcodes(
-                                self.Server, True
-                            )  # * Don't know if this line even works, added in without testing as a fix for refreshing successful transcodes when primary node is offline
-                            break
-                    # 4.f.1 - if node is started or is already running, set workers to normal amounts
-                    else:
-                        list_of_nodes_still_going_down = (
-                            Logic.primary_node_just_started(
-                                self.Server,
-                                self.node_dictionary,
-                                primary_node,
-                                self.Status,
-                                self.Configuration,
-                                self,
-                            )
-                        )
+        # find current priority level
+        current_priority_level = 0
+        for node_name in online_node_names:
+            if self.node_dictionary[node_name].priority > current_priority_level:
+                current_priority_level = self.node_dictionary[node_name].priority
 
-                    if len(list_of_nodes_still_going_down) == 0:
-                        if primary_online:
-                            # 4.g - order refresh - and increment
-                            self.refresh()
-                            q += 1
-                            # self.Status.change_state(f"Normal_q{q}")
-                        else:
-                            self.Status.change_state("Started")
-                            break
-                else:
-                    break
-            elif q == 5:
-                # 5.a - check if all refresh work is done
-                queued_transcode_ids = tdarr.Tdarr_Logic.search_for_queued_transcodes(
-                    self.Server
-                )
-                queued_transcode_quantity = len(queued_transcode_ids)
-                print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
+        return current_priority_level
 
-                refresh_finished = False
+    def calculate_nodes_to_activate_deactivate(
+        self, queued_transcode_quantity, max_quantity_of_work, includes_primary_node
+    ):
+        """
+        calculate_nodes_to_activate_deactivate
 
-                if queued_transcode_quantity == 0:
-                    refresh_finished = True
+        Args:
+            queued_transcode_quantity (int): quantity of queued work
+            max_quantity_of_work (int): max quantity of work able to be done by all transcode nodes at once
+            includes_primary_node (bool): bool value of whether or not the max_quantity_of_work includes the primary node
 
-                # 5.b - deal with incrementing of breaking a q loop, should only increment if all of the refresh is done
-                if refresh_finished:
-                    q += 1
-                    # self.Status.change_state(f"Normal_q{q}")
+        Returns:
+            list_of_nodes_to_activate (list): list of node names to activate
+            list_of_nodes_to_deactivate (list): list of node names to deactivate
+        < Document Guardian | Protect >
+        """
 
-            elif q == 6:
-                print("PLACEHOLDER")
-                # 6 - should only run after the end of a refresh
-                # 6.a - attempt shutdown of primary node if possible
-                # 6.a.1 - set workers on primary node to zero
+        priority_level_target = Logic.find_priority_target_level(
+            queued_transcode_quantity,
+            max_quantity_of_work,
+            includes_primary_node,
+            self.node_dictionary,
+            self.Server.max_nodes,
+        )
 
-                # 6.a.2 - attempt shutdown of primary node
+        print(f"INFO: Priority Level Target: {priority_level_target}")
 
-                # 6.b - increment q to 5 and end the loop all work is done
+        # find list of nodes to activate/deactivate
+        list_of_nodes_to_deactivate = Logic.deactivate_node_to_priority_level(
+            self.node_dictionary, priority_level_target
+        )
+
+        list_of_nodes_to_activate = Logic.activate_node_to_priority_level(
+            self.node_dictionary, priority_level_target
+        )
+
+        return list_of_nodes_to_activate, list_of_nodes_to_deactivate
+
+    def set_node_going_down(self, node, nodes_without_work_list):
+        """
+        set_node_going_down set node to going down
+
+        Args:
+            node (str): name of node
+            nodes_without_work_list (list): list of nodes without work
+        < Document Guardian | Protect >
+        """
+        self.Status.NodeStatusMaster.update_directive(node, "Going_down")
+
+        # set workers to zero
+        tdarr.Tdarr_Orders.reset_workers_to_zero(
+            self.Server, node, self.node_dictionary
+        )
+
+        # check if node has no work
+        if node in nodes_without_work_list:
+            # order shutdown
+            self.shutdown_node(node)
+
+    def shutdown_node(self, node):
+        """
+        shutdown_node shuts node down gracefully
+
+        Args:
+            node (str): node name
+        < Document Guardian | Protect >
+        """
+        node_interactions.HostLogic.kill_node(
+            self.Configuration, self.node_dictionary, node, self.Status
+        )
+
+    def activate_node(self, node):
+        """
+        activate_node
+
+        Args:
+            node (str): node name
+        < Document Guardian | Protect >
+        """
+        node_interactions.HostLogic.start_node(
+            self.Configuration, self.node_dictionary, node, self.Status
+        )

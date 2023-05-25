@@ -32,5 +32,7 @@ class HostCommands:
         os.chdir(Configuration.Constants.ansible_folder_path)
         if startup_command is not None:
             subprocess.call(startup_command)
+            return False
         else:
             print("ERROR: Cannot start node as there is no startup command")
+            return True
