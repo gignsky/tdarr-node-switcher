@@ -44,8 +44,8 @@ class Workhorse:
                 self.Server.add_primary_node(node)
 
         # initalize NormalHelpers class
-        self.NormalHelpers = NormalHelpers(
-            self.Server, self.Status, self.node_dictionary
+        self.NormalHelpersClass = NormalHelpers(
+            self.Server, self.Status, self.Configuration, self.node_dictionary
         )
 
     def update_nodes_output(self):
@@ -54,6 +54,10 @@ class Workhorse:
         < Document Guardian | Protect >
         """
         self.get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
+
+        self.Configuration.startup_update_nodes_with_tdarr_info(
+            self.node_dictionary, self.get_nodes_output
+        )
 
     def update_classes(self):
         """
@@ -67,6 +71,10 @@ class Workhorse:
         # update node master
         # refresh status class & print output
         self.Status.status_update(self.node_dictionary)
+
+        self.Configuration.startup_update_nodes_with_tdarr_info(
+            self.node_dictionary, self.get_nodes_output
+        )
 
     def update_nodes(self):
         """
@@ -117,11 +125,6 @@ class Workhorse:
         ## 1
         ### 1.a get_nodes output
         self.update_nodes_output()
-
-        ### 1.b update configuration class with tdarr info
-        self.Configuration.startup_update_nodes_with_tdarr_info(
-            self.node_dictionary, self.get_nodes_output
-        )
 
         ## 2
         for node_name, node_class in self.node_dictionary.items():
@@ -188,6 +191,9 @@ class Workhorse:
         """
         verify_primary_running verifies that primary node is running and modifies the status file accordingly
         """
+
+        self.update_classes()
+
         # check if primary node is running
         primary_node = self.Server.primary_node
 
@@ -217,13 +223,16 @@ class Workhorse:
             self.post_refresh()
 
     def post_refresh(self):
+        self.update_classes()
+
         # 1. get quantity of work
-        quantity_of_work, _, _ = self.NormalHelpers.find_quantity_of_work()
+        quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
 
         # 2. check if quantity of work is greater than zero
         if quantity_of_work > 0:
             print(f"INFO: Quantity of work is {quantity_of_work}")
             print("INFO: Quitting until next instance")
+            self.Status.change_state("Refreshed")
 
         else:
             print("INFO: Quantity of work is zero, continuing to normal workflow")
@@ -264,7 +273,7 @@ class Workhorse:
 
         # update nodes
         print("INFO: Updating nodes...")
-        self.update_nodes()
+        self.update_classes()
 
         print("INFO: Gathering General Information...")
 
@@ -285,8 +294,8 @@ class Workhorse:
         # 1.b
         # find nodes with current work
         (
-            nodes_without_work_list,
             nodes_with_work_list,
+            nodes_without_work_list,
         ) = tdarr.Tdarr_Logic.find_nodes_with_work(self.Server)
 
         print(f"The following nodes have work: {nodes_with_work_list}")
@@ -298,7 +307,7 @@ class Workhorse:
             quantity_of_work,
             max_quantity_of_work,
             max_quantity_includes_primary,
-        ) = self.NormalHelpers.find_quantity_of_work()
+        ) = self.NormalHelpersClass.work_quantity_finder()
 
         print(f"Quantity of work: {quantity_of_work}")
         print(f"Max quantity of work: {max_quantity_of_work}")
@@ -317,7 +326,7 @@ class Workhorse:
 
         # 2.a
         # find current priority level
-        current_priority_level = self.NormalHelpers.find_current_priority_level()
+        current_priority_level = self.NormalHelpersClass.find_current_priority_level()
 
         print(f"Current Running Priority Level: {current_priority_level}")
 
@@ -326,7 +335,9 @@ class Workhorse:
         (
             nodes_to_activate,
             nodes_to_deactivate,
-        ) = self.NormalHelpers.calculate_nodes_to_activate_deactivate()
+        ) = self.NormalHelpersClass.calculate_nodes_to_activate_deactivate(
+            quantity_of_work, max_quantity_of_work, max_quantity_includes_primary
+        )
 
         print(f"Nodes to be activated: {nodes_to_activate}")
         print(f"Nodes to be deactivated: {nodes_to_deactivate}")
@@ -345,14 +356,14 @@ class Workhorse:
                         print(
                             f"INFO: {node} is already marked as 'Going_down' and has completed its work. Shutting down node..."
                         )
-                        self.NormalHelpers.shutdown_node(node)
+                        self.NormalHelpersClass.shutdown_node(node)
                     else:
                         print(
                             f"INFO: {node} is already marked as 'Going_down'. Waiting for node to complete work..."
                         )
                 else:
                     # set directive to going_down
-                    self.NormalHelpers.set_node_going_down(
+                    self.NormalHelpersClass.set_node_going_down(
                         node, nodes_without_work_list
                     )
 
@@ -361,7 +372,7 @@ class Workhorse:
         if len(nodes_to_activate) > 0:
             for node in nodes_to_activate:
                 print(f"INFO: Activating node: {node}")
-                self.NormalHelpers.activate_node(node)
+                self.NormalHelpersClass.activate_node(node)
 
         # 4
         # ensure all nodes are at correct worker count
@@ -383,7 +394,7 @@ class Workhorse:
         # update or create list of living nodes
         list_of_living_nodes = []
         for node, Class in self.node_dictionary.items():
-            if Class.status == "Online":
+            if Class.online:
                 list_of_living_nodes.append(node)
 
         # 4.b
@@ -418,7 +429,7 @@ class Workhorse:
             )
             for node in list_of_living_nodes:
                 if node != primary_node:
-                    self.NormalHelpers.shutdown_node(node)
+                    self.NormalHelpersClass.shutdown_node(node)
 
             # update status to Normal_Finished
             self.Status.change_state("Normal_Finished")
@@ -774,8 +785,8 @@ class NormalHelpers:
         # find current priority level
         current_priority_level = 0
         for node_name in online_node_names:
-            if self.node_dictionary[node_name].priority_level > current_priority_level:
-                current_priority_level = self.node_dictionary[node_name].priority_level
+            if self.node_dictionary[node_name].priority > current_priority_level:
+                current_priority_level = self.node_dictionary[node_name].priority
 
         return current_priority_level
 
@@ -849,11 +860,6 @@ class NormalHelpers:
         node_interactions.HostLogic.kill_node(
             self.Configuration, self.node_dictionary, node, self.Status
         )
-        # set node status to offline
-        self.node_dictionary[node].line_state("Offline")
-
-        # set node directive to sleep
-        self.Status.NodeStatusMaster.update_directive(node, "Sleeping")
 
     def activate_node(self, node):
         """
@@ -866,8 +872,3 @@ class NormalHelpers:
         node_interactions.HostLogic.start_node(
             self.Configuration, self.node_dictionary, node, self.Status
         )
-        # set node status to online
-        self.node_dictionary[node].line_state("Online")
-
-        # set node directive to normal
-        self.Status.NodeStatusMaster.update_directive(node, "Normal")
