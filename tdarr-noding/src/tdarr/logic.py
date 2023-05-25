@@ -228,7 +228,7 @@ class Tdarr_Logic:
             node_id = i.get("_id")
             if i.get("TranscodeDecisionMaker") == "Queued":
                 transcode_queued.append(node_id)
-        print(transcode_queued)
+        # print(transcode_queued)
 
         return transcode_queued
 

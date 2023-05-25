@@ -32,3 +32,5 @@ tdarr-noding/ansible_files/roles/startup-node-c/handlers/main.yml
 tdarr-noding/ansible_files/roles/startup-node-c/tasks/main.yml
 tdarr-noding/configuration.yml
 tdarr-noding/status.yml
+.coding_venv/*
+.general_venv/*
