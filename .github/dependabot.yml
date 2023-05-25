@@ -13,3 +13,4 @@ updates:
     ignore:
       - dependency-name: "resolvelib"
       - dependency-name: "ansible-core"
+      - dependency-name: "httplib2"
