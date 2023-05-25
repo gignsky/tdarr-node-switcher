@@ -13,3 +13,5 @@ updates:
     ignore:
       - dependency-name: "resolvelib"
         versions: ">0.9.0"
+      - dependency-name: "ansible-core"
+        versions: ">2.14.6"
