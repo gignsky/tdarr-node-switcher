@@ -1,5 +1,5 @@
 ansible==7.6.0
-  ansible-core==2.15.0
+  ansible-core==2.14.6
     cryptography==40.0.2
       cffi==1.15.1
         pycparser==2.21
@@ -9,7 +9,7 @@ ansible==7.6.0
     PyYAML==6.0
     resolvelib==0.8.1
 ansible-compat==4.1.0
-  ansible-core==2.15.0
+  ansible-core==2.14.6
     cryptography==40.0.2
       cffi==1.15.1
         pycparser==2.21
@@ -25,7 +25,7 @@ ansible-compat==4.1.0
   PyYAML==6.0
   subprocess-tee==0.4.1
 ansible-lint==6.16.2
-  ansible-core==2.15.0
+  ansible-core==2.14.6
     cryptography==40.0.2
       cffi==1.15.1
         pycparser==2.21
