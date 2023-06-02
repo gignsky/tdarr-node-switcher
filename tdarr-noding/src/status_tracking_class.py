@@ -11,6 +11,7 @@ class StatusTracking:
         else:
             self.status_file = status_file
             self.state = status_file["state"]
+            self.status_dict["state"] = status_file["state"]
             self.import_server_status()
             self.import_node_status()
 
