@@ -241,12 +241,12 @@ class Workhorse:
             current_time = time.time()
             refreshed_time = self.Status.refreshed_time
 
-            # check if refreshed time is less then 15 minutes ago
+            # check if refreshed time is less then 60 minutes ago
             if refreshed_time is not None:
-                if current_time - refreshed_time < 900:
+                if current_time - refreshed_time < 3600:
                     # do nothing as refresh probobly just finished
                     print(
-                        "INFO: Refreshed time is less than 15 minutes ago, doing nothing"
+                        "INFO: Refreshed time is less than 60 minutes ago, doing nothing"
                     )
                 else:
                     # change status to normal
