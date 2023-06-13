@@ -364,7 +364,7 @@ class Workhorse:
                         print(
                             f"INFO: {node} is already marked as 'Going_down' and has completed its work. Shutting down node..."
                         )
-                        self.NormalHelpersClass.shutdown_node(node)
+                        self.NormalHelpersClass.deactivate_node(node)
                     else:
                         print(
                             f"INFO: {node} is already marked as 'Going_down'. Waiting for node to complete work..."
@@ -437,7 +437,7 @@ class Workhorse:
             )
             for node in list_of_living_nodes:
                 if node != primary_node:
-                    self.NormalHelpersClass.shutdown_node(node)
+                    self.NormalHelpersClass.deactivate_node(node)
 
             # update status to Normal_Finished
             self.Status.change_state("Normal_Finished")
@@ -574,9 +574,9 @@ class NormalHelpers:
         # check if node has no work
         if node in nodes_without_work_list:
             # order shutdown
-            self.shutdown_node(node)
+            self.deactivate_node(node)
 
-    def shutdown_node(self, node):
+    def deactivate_node(self, node):
         """
         shutdown_node shuts node down gracefully
 
