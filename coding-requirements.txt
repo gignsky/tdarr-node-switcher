@@ -24,7 +24,7 @@ ansible-compat==4.1.0
   packaging==23.1
   PyYAML==6.0
   subprocess-tee==0.4.1
-ansible-lint==6.16.2
+ansible-lint==6.17.0
   ansible-core==2.15.0
     cryptography==41.0.1
       cffi==1.15.1
