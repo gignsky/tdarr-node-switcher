@@ -8,7 +8,7 @@ import time
 
 class Logic:
     @staticmethod
-    def refresh_all(constants):
+    def refresh_all(constants, refresh_type=None):
         """
         refresh_all health checks and transcodes
 
@@ -17,7 +17,7 @@ class Logic:
         """
         print("Refreshing...")
         tdarr.Tdarr_Orders.refresh_health_checks(constants)
-        tdarr.Tdarr_Orders.update_transcodes(constants)
+        tdarr.Tdarr_Orders.update_transcodes(constants, refresh_type)
 
     @staticmethod
     def server_status_check(Server):
