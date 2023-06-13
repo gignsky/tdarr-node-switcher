@@ -11,13 +11,14 @@ def main():
     main core logic for overall project
     < Document Guardian | Protect >
     """
-    # import lightrun
-    try:
-        import lightrun
-
-        lightrun.enable(company_key="3fae1797-5c14-498b-80fb-774720b4a8e5")
-    except ImportError as e:
-        print("Error importing Lightrun: ", e)
+    # ? REMOVED FOR POSSIBLE LATER REIMPLEMENTATION
+    #     # import lightrun
+    #     try:
+    #         import lightrun
+    #
+    #         lightrun.enable(company_key="3fae1797-5c14-498b-80fb-774720b4a8e5")
+    #     except ImportError as e:
+    #         print("Error importing Lightrun: ", e)
 
     # establish classes
     current_directory = os.getcwd()
