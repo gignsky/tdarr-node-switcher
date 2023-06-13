@@ -19,6 +19,7 @@ class ConstantsSetup:
         self.configuration_file = configuration_file
         self.program_folder_path = configuration_file["program"]["folder_path"]
         self.ansible_folder_path = configuration_file["program"]["ansible_path"]
+        self.cache_folder_path = configuration_file["program"]["cache_path"]
 
     def setup_server_class(self):
         """
