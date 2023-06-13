@@ -105,8 +105,11 @@ class Workhorse:
             else:
                 Class.update_node("Offline")
 
-    def refresh(self):
-        Logic.refresh_all(self.Server)
+    def refresh(self, refresh_type=None):
+        if refresh_type is None:
+            Logic.refresh_all(self.Server)
+        elif refresh_type == "succesful":
+            Logic.refresh_all(self.Server, True)
 
     def startup(self):
         """
@@ -242,46 +245,54 @@ class Workhorse:
             self.Status.change_state("Refreshed")
 
         else:
-            print("INFO: Quantity of work is zero, continuing to normal workflow")
+            # refresh succesful transcodes only then check if quantity of work is still zero
+            print("INFO: Refresh Complete, refreshing succesful transcodes again")
 
-            # check if primary node is online if so deactivate it
-            if self.node_dictionary[primary_node].online:
-                self.NormalHelpersClass.deactivate_node(primary_node)
+            self.refresh("succesful")
 
-            current_time = time.time()
-            refreshed_time = self.Status.refreshed_time
+            quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
 
-            # check if refreshed time is less then 15 minutes ago
-            if refreshed_time is not None:
-                if current_time - refreshed_time < 900:
-                    # do nothing as refresh probobly just finished
-                    print(
-                        "INFO: Refreshed time is less than 15 minutes ago, doing nothing"
-                    )
+            if quantity_of_work == 0:
+                print("INFO: Quantity of work is zero, continuing to normal workflow")
+
+                # check if primary node is online if so deactivate it
+                if self.node_dictionary[primary_node].online:
+                    self.NormalHelpersClass.deactivate_node(primary_node)
+
+                current_time = time.time()
+                refreshed_time = self.Status.refreshed_time
+
+                # check if refreshed time is less then 15 minutes ago
+                if refreshed_time is not None:
+                    if current_time - refreshed_time < 900:
+                        # do nothing as refresh probobly just finished
+                        print(
+                            "INFO: Refreshed time is less than 15 minutes ago, doing nothing"
+                        )
+                    else:
+                        # change status to normal
+                        self.Status.change_state("Normal")
+                        print("INFO: Post Refresh Workflow Complete... Quitting...")
                 else:
-                    # change status to normal
-                    self.Status.change_state("Normal")
-                    print("INFO: Post Refresh Workflow Complete... Quitting...")
-            else:
-                self.Status.add_refreshed_time(time.time())
+                    self.Status.add_refreshed_time(time.time())
 
-            # remove all files in the cache directory
-            print("Clearing Cache")
-            for filename in os.listdir(self.cache_folder_path):
-                file_path = os.path.join(self.cache_folder_path, filename)
+                # remove all files in the cache directory
+                print("Clearing Cache")
+                for filename in os.listdir(self.cache_folder_path):
+                    file_path = os.path.join(self.cache_folder_path, filename)
 
-                try:
-                    if os.path.isfile(file_path) or os.path.islink(file_path):
-                        os.unlink(file_path)
-                    elif os.path.isdir(file_path):
-                        shutil.rmtree(file_path)
+                    try:
+                        if os.path.isfile(file_path) or os.path.islink(file_path):
+                            os.unlink(file_path)
+                        elif os.path.isdir(file_path):
+                            shutil.rmtree(file_path)
 
-                    print(f"Removed {filename} from Cache")
-                except Exception as e:
-                    print(f"Failed to delete {file_path}. Reason: {e}")
+                        print(f"Removed {filename} from Cache")
+                    except Exception as e:
+                        print(f"Failed to delete {file_path}. Reason: {e}")
 
-            # print status again
-            self.Status.print_status_file()
+                # print status again
+                self.Status.print_status_file()
 
     def normal(self):
         """
