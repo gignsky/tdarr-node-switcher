@@ -11,6 +11,14 @@ class StatusTracking:
         else:
             self.status_file = status_file
             self.state = status_file["state"]
+            self.status_dict["state"] = status_file["state"]
+
+            try:
+                self.refreshed_time = status_file["refreshed_time"]
+                self.status_dict["refreshed_time"] = status_file["refreshed_time"]
+            except KeyError:
+                self.refreshed_time = None
+
             self.import_server_status()
             self.import_node_status()
 
@@ -36,6 +44,17 @@ class StatusTracking:
         """
         self.state = state
         self.status_dict["state"] = state
+
+    def add_refreshed_time(self, time):
+        """
+        add_refreshed_time adds time to status file
+
+        Args:
+            time (str): time
+        < Document Guardian | Protect >
+        """
+        self.refreshed_time = time
+        self.status_dict["refreshed_time"] = time
 
     # importing
     def import_server_status(self):

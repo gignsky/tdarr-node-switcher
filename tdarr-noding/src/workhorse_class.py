@@ -1,3 +1,4 @@
+import time
 from . import Configuration as ConfigurationClass
 from . import StatusTracking
 from . import tdarr
@@ -245,13 +246,25 @@ class Workhorse:
             if self.node_dictionary[primary_node].online:
                 self.NormalHelpersClass.deactivate_node(primary_node)
 
-            # change status to normal
-            self.Status.change_state("Normal")
+            current_time = time.time()
+            refreshed_time = self.Status.refreshed_time
+
+            # check if refreshed time is less then 15 minutes ago
+            if refreshed_time is not None:
+                if current_time - refreshed_time < 900:
+                    # do nothing as refresh probobly just finished
+                    print(
+                        "INFO: Refreshed time is less than 15 minutes ago, doing nothing"
+                    )
+                else:
+                    # change status to normal
+                    self.Status.change_state("Normal")
+                    print("INFO: Post Refresh Workflow Complete... Quitting...")
+            else:
+                self.Status.add_refreshed_time(time.time())
 
             # print status again
             self.Status.print_status_file()
-
-            print("INFO: Post Refresh Workflow Complete... Quitting...")
 
     def normal(self):
         """
