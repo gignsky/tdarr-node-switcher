@@ -24,7 +24,7 @@ ansible-compat==4.1.0
   packaging==23.1
   PyYAML==6.0
   subprocess-tee==0.4.1
-ansible-lint==6.16.2
+ansible-lint==6.17.0
   ansible-core==2.15.0
     cryptography==41.0.1
       cffi==1.15.1
@@ -39,7 +39,7 @@ ansible-lint==6.16.2
     mypy-extensions==1.0.0
     packaging==23.1
     pathspec==0.11.1
-    platformdirs==3.5.1
+    platformdirs==3.5.3
     tomli==2.0.1
   filelock==3.12.0
   jsonschema==4.17.3
@@ -47,8 +47,8 @@ ansible-lint==6.16.2
     pyrsistent==0.19.3
   packaging==23.1
   PyYAML==6.0
-  rich==13.3.5
-    markdown-it-py==2.2.0
+  rich==13.4.2
+    markdown-it-py==3.0.0
       mdurl==0.1.2
     Pygments==2.15.1
   ruamel.yaml==0.17.31
@@ -64,8 +64,8 @@ bandit==1.7.5
     gitdb==4.0.10
       smmap==5.0.0
   PyYAML==6.0
-  rich==13.3.5
-    markdown-it-py==2.2.0
+  rich==13.4.2
+    markdown-it-py==3.0.0
       mdurl==0.1.2
     Pygments==2.15.1
   stevedore==5.1.0
@@ -89,7 +89,7 @@ pandas==2.0.1
 pip-autoremove==0.10.0
   pip==23.1.2
   setuptools==67.8.0
-pipdeptree==2.7.1
+pipdeptree==2.9.0
 pylint==2.17.4
   astroid==2.15.5
     lazy-object-proxy==1.9.0
@@ -98,7 +98,7 @@ pylint==2.17.4
   dill==0.3.6
   isort==5.12.0
   mccabe==0.7.0
-  platformdirs==3.5.1
+  platformdirs==3.5.3
   tomli==2.0.1
   tomlkit==0.11.8
 pytest-cov==4.1.0
