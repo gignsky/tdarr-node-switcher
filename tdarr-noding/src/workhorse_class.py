@@ -199,28 +199,25 @@ class Workhorse:
 
         # check if primary node is offline
         if not self.node_dictionary[primary_node].online:
-            print(
-                "Placeholder, primary node is offline, and no functionality exists to bring it online"
-            )
+            self.NormalHelpersClass.activate_node(primary_node)
 
-            # revert status back to normal
-            self.Status.change_state("Normal")
+        #             # revert status back to normal
+        #             self.Status.change_state("Normal")
+        #
+        #             # print status again
+        #             self.Status.print_status_file()
 
-            # print status again
-            self.Status.print_status_file()
+        # when primary node is online
+        # Call Refresh
+        self.refresh()
 
-        # if primary node is online
-        else:
-            # Call Refresh
-            self.refresh()
+        # Set status to refreshed
+        self.Status.change_state("Refreshed")
 
-            # Set status to refreshed
-            self.Status.change_state("Refreshed")
+        # print status again
+        self.Status.print_status_file()
 
-            # print status again
-            self.Status.print_status_file()
-
-            self.post_refresh()
+        self.post_refresh()
 
     def post_refresh(self):
         self.update_classes()
