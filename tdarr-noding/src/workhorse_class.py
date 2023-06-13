@@ -200,28 +200,25 @@ class Workhorse:
 
         # check if primary node is offline
         if not self.node_dictionary[primary_node].online:
-            print(
-                "Placeholder, primary node is offline, and no functionality exists to bring it online"
-            )
+            self.NormalHelpersClass.activate_node(primary_node)
 
-            # revert status back to normal
-            self.Status.change_state("Normal")
+        #             # revert status back to normal
+        #             self.Status.change_state("Normal")
+        #
+        #             # print status again
+        #             self.Status.print_status_file()
 
-            # print status again
-            self.Status.print_status_file()
+        # when primary node is online
+        # Call Refresh
+        self.refresh()
 
-        # if primary node is online
-        else:
-            # Call Refresh
-            self.refresh()
+        # Set status to refreshed
+        self.Status.change_state("Refreshed")
 
-            # Set status to refreshed
-            self.Status.change_state("Refreshed")
+        # print status again
+        self.Status.print_status_file()
 
-            # print status again
-            self.Status.print_status_file()
-
-            self.post_refresh()
+        self.post_refresh()
 
     def post_refresh(self):
         self.update_classes()
@@ -229,14 +226,25 @@ class Workhorse:
         # 1. get quantity of work
         quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
 
+        primary_node = self.Server.primary_node
+
         # 2. check if quantity of work is greater than zero
         if quantity_of_work > 0:
+            # check if primary node is online, if not activate it
+
+            if not self.node_dictionary[primary_node].online:
+                self.NormalHelpersClass.activate_node(primary_node)
+
             print(f"INFO: Quantity of work is {quantity_of_work}")
             print("INFO: Quitting until next instance")
             self.Status.change_state("Refreshed")
 
         else:
             print("INFO: Quantity of work is zero, continuing to normal workflow")
+
+            # check if primary node is online if so deactivate it
+            if self.node_dictionary[primary_node].online:
+                self.NormalHelpersClass.deactivate_node(primary_node)
 
             current_time = time.time()
             refreshed_time = self.Status.refreshed_time
@@ -369,7 +377,7 @@ class Workhorse:
                         print(
                             f"INFO: {node} is already marked as 'Going_down' and has completed its work. Shutting down node..."
                         )
-                        self.NormalHelpersClass.shutdown_node(node)
+                        self.NormalHelpersClass.deactivate_node(node)
                     else:
                         print(
                             f"INFO: {node} is already marked as 'Going_down'. Waiting for node to complete work..."
@@ -442,7 +450,7 @@ class Workhorse:
             )
             for node in list_of_living_nodes:
                 if node != primary_node:
-                    self.NormalHelpersClass.shutdown_node(node)
+                    self.NormalHelpersClass.deactivate_node(node)
 
             # update status to Normal_Finished
             self.Status.change_state("Normal_Finished")
@@ -579,9 +587,9 @@ class NormalHelpers:
         # check if node has no work
         if node in nodes_without_work_list:
             # order shutdown
-            self.shutdown_node(node)
+            self.deactivate_node(node)
 
-    def shutdown_node(self, node):
+    def deactivate_node(self, node):
         """
         shutdown_node shuts node down gracefully
 
