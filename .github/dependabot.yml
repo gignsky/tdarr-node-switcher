@@ -9,5 +9,8 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
-  
-    
+    target-branch: "dependabot-updates"
+    ignore:
+      - dependency-name: "resolvelib"
+      - dependency-name: "ansible-core"
+      - dependency-name: "httplib2"
