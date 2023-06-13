@@ -47,6 +47,7 @@ def main():
             Workhorse.startup()
             Workhorse.Status.change_state("Started")
 
+    Workhorse.update_classes()
     Workhorse.Status.print_status_file()
 
 
