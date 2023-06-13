@@ -118,6 +118,7 @@ class Logic:
                         max_transcode_workers -= highest_priority_transcode_workers
                         max_transcode_workers += primary_node_transcode_workers
                 else:
+                    #! LOOK AT ME AT SOME POINT
                     print(
                         "WARN: POSSIBLE ERROR, unaccounted for possibility in find_quantity_of_transcode_workers function in general_logic.py"
                     )
