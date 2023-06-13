@@ -26,6 +26,7 @@ class Workhorse:
         print("SECTION INFO: Starting workhorse '__init__'")
         self.root_dir = current_directory
         self.Configuration = ConfigurationClass(self.root_dir)
+        self.cache_folder_path = self.Configuration.Constants.cache_folder_path
 
         self.Server = self.Configuration.setup_server_class()
 
@@ -262,6 +263,8 @@ class Workhorse:
                     print("INFO: Post Refresh Workflow Complete... Quitting...")
             else:
                 self.Status.add_refreshed_time(time.time())
+
+            # remove all files in the cache directory
 
             # print status again
             self.Status.print_status_file()
