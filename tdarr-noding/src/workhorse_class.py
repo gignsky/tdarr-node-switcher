@@ -225,14 +225,25 @@ class Workhorse:
         # 1. get quantity of work
         quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
 
+        primary_node = self.Server.primary_node
+
         # 2. check if quantity of work is greater than zero
         if quantity_of_work > 0:
+            # check if primary node is online, if not activate it
+
+            if not self.node_dictionary[primary_node].online:
+                self.NormalHelpersClass.activate_node(primary_node)
+
             print(f"INFO: Quantity of work is {quantity_of_work}")
             print("INFO: Quitting until next instance")
             self.Status.change_state("Refreshed")
 
         else:
             print("INFO: Quantity of work is zero, continuing to normal workflow")
+
+            # check if primary node is online if so deactivate it
+            if self.node_dictionary[primary_node].online:
+                self.NormalHelpersClass.deactivate_node(primary_node)
 
             # change status to normal
             self.Status.change_state("Normal")
