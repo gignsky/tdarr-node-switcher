@@ -51,9 +51,12 @@ class Tdarr_Orders:
 
         Tdarr_Orders.send_update_order(Server, lists_of_lists)
 
-        skipped_transcodes = Tdarr_Logic.search_for_skipped_transcodes(Server, "mp4")
+        if not only_successful:
+            skipped_transcodes = Tdarr_Logic.search_for_skipped_transcodes(
+                Server, "mp4"
+            )  #! WARNING, hardcoded mp4 should be part of the config file
 
-        Tdarr_Orders.send_update_order(Server, [skipped_transcodes])
+            Tdarr_Orders.send_update_order(Server, [skipped_transcodes])
 
     @staticmethod
     def send_update_order(Server, lists_of_lists):
