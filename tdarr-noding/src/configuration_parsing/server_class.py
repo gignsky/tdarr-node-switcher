@@ -58,7 +58,8 @@ class Server:
 
         self.max_nodes = self.config_server_inner_dict["max_nodes"]
 
-        self.priority_level = self.config_server_inner_dict["default_priority_level"]
+        #! commented out as this appears unused
+        # self.priority_level = self.config_server_inner_dict["default_priority_level"]
 
     def set_up_urls(self):
         """

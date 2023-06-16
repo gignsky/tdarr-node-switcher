@@ -357,14 +357,10 @@ class Workhorse:
         (
             quantity_of_work,
             max_quantity_of_work,
-            max_quantity_includes_primary,
         ) = self.NormalHelpersClass.work_quantity_finder()
 
         print(f"Quantity of work: {quantity_of_work}")
         print(f"Max quantity of work: {max_quantity_of_work}")
-        print(
-            f"Max quantity of work includes primary node: {max_quantity_includes_primary}"
-        )
 
         # 1.d
         # check if primary node is online
@@ -387,7 +383,7 @@ class Workhorse:
             nodes_to_activate,
             nodes_to_deactivate,
         ) = self.NormalHelpersClass.calculate_nodes_to_activate_deactivate(
-            quantity_of_work, max_quantity_of_work, max_quantity_includes_primary
+            quantity_of_work, max_quantity_of_work
         )
 
         print(f"Nodes to be activated: {nodes_to_activate}")
@@ -524,14 +520,11 @@ class NormalHelpers:
         print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
 
         # 2.b - find total amount of work able to be done by all transcode nodes at once
-        (
-            max_quantity_of_work,
-            includes_primary_node,
-        ) = Logic.find_quantity_of_transcode_workers(
+        max_quantity_of_work = Logic.find_quantity_of_transcode_workers(
             self.node_dictionary, self.Server.max_nodes
         )
 
-        return queued_transcode_quantity, max_quantity_of_work, includes_primary_node
+        return queued_transcode_quantity, max_quantity_of_work
 
     def find_current_priority_level(self):
         """
@@ -551,13 +544,16 @@ class NormalHelpers:
         # find current priority level
         current_priority_level = 0
         for node_name in online_node_names:
-            if self.node_dictionary[node_name].priority > current_priority_level:
-                current_priority_level = self.node_dictionary[node_name].priority
+            try:
+                if self.node_dictionary[node_name].priority > current_priority_level:
+                    current_priority_level = self.node_dictionary[node_name].priority
+            except TypeError:
+                pass
 
         return current_priority_level
 
     def calculate_nodes_to_activate_deactivate(
-        self, queued_transcode_quantity, max_quantity_of_work, includes_primary_node
+        self, queued_transcode_quantity, max_quantity_of_work
     ):
         """
         calculate_nodes_to_activate_deactivate
@@ -576,7 +572,6 @@ class NormalHelpers:
         priority_level_target = Logic.find_priority_target_level(
             queued_transcode_quantity,
             max_quantity_of_work,
-            includes_primary_node,
             self.node_dictionary,
             self.Server.max_nodes,
         )
