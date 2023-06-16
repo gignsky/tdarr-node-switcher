@@ -53,8 +53,8 @@ class Tdarr_Orders:
 
         if not only_successful:
             skipped_transcodes = Tdarr_Logic.search_for_skipped_transcodes(
-                Server, "mp4"
-            )  #! WARNING, hardcoded mp4 should be part of the config file
+                Server, Server.container_type
+            )
 
             Tdarr_Orders.send_update_order(Server, [skipped_transcodes])
 

@@ -58,6 +58,8 @@ class Server:
 
         self.max_nodes = self.config_server_inner_dict["max_nodes"]
 
+        self.container_type = self.config_server_inner_dict["container_type"]
+
         #! commented out as this appears unused
         # self.priority_level = self.config_server_inner_dict["default_priority_level"]
 
