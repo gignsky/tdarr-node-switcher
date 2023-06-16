@@ -66,86 +66,33 @@ class Logic:
 
     @staticmethod
     def find_quantity_of_transcode_workers(node_dictionary, max_nodes):
-        # does not count work to be done on primary node unless node is alive
         max_transcode_workers = 0
-        is_primary_alive = None
-        primary_node_transcode_workers = 0
-        is_primary_killable = None
-        highest_priority_number = 0
-        highest_priority_transcode_workers = 0
 
         for _, Class in node_dictionary.items():
-            primary_node_bool = Class.primary_node
-
             node_max_transcode_workers = (
                 Class.transcode_max_cpu + Class.transcode_max_gpu
             )
 
             priority_number = Class.priority
 
-            if priority_number > highest_priority_number:
-                highest_priority_transcode_workers = node_max_transcode_workers
-                # highest_priority_transcode_workers_priority_number = priority_number
+            if priority_number is not None:
+                if priority_number <= max_nodes:
+                    max_transcode_workers += node_max_transcode_workers
 
-            if primary_node_bool:
-                if Class.online:
-                    is_primary_alive = True
-                else:
-                    is_primary_alive = False
-
-                primary_node_transcode_workers = node_max_transcode_workers
-
-                if Class.shutdown is None:
-                    is_primary_killable = False
-                else:
-                    is_primary_killable = True
-
-            else:
-                max_transcode_workers += node_max_transcode_workers
-
-        quantity_of_nodes = len(node_dictionary)
-        quantity_of_nodes_minus_primary = quantity_of_nodes - 1
-
-        if quantity_of_nodes > max_nodes:
-            if is_primary_alive:
-                if quantity_of_nodes_minus_primary > max_nodes:
-                    print("ERROR: more than one node over max")
-                elif max_nodes == quantity_of_nodes_minus_primary:
-                    if is_primary_killable:
-                        print("ERROR: Not yet implemented")
-                        # TODO Consider implementing functionality for killable primary node
-                    else:
-                        max_transcode_workers -= highest_priority_transcode_workers
-                        max_transcode_workers += primary_node_transcode_workers
-                else:
-                    print(
-                        "WARN: POSSIBLE ERROR, unaccounted for possibility in find_quantity_of_transcode_workers function in general_logic.py"
-                    )
-
-        if is_primary_alive:
-            includes_primary_node = True
-        else:
-            includes_primary_node = False
-
-        return max_transcode_workers, includes_primary_node
+        return max_transcode_workers
 
     @staticmethod
     def find_priority_target_level(
         queued_quantity,
         max_transcode_workers,
-        includes_primary_node,
         node_dictionary,
         max_nodes,
     ):
         # create two arrays with priority number and total transcode workers
-        priority_array_without_primary = {}
-        priority_array_with_primary = {}
+        priority_array = {}
         cap = max_nodes
 
-        if includes_primary_node:
-            cap -= 1
-
-        current_priority_level = 0
+        current_priority_level = 1
         while current_priority_level <= cap:
             for _, Class in node_dictionary.items():
                 node_priority = Class.priority
@@ -153,26 +100,8 @@ class Logic:
                     Class.transcode_max_cpu + Class.transcode_max_gpu
                 )
                 if node_priority == current_priority_level:
-                    if node_priority == 0:
-                        priority_array_with_primary[
-                            node_priority
-                        ] = node_transcode_workers
-                        current_priority_level += 1
-                    else:
-                        if includes_primary_node:
-                            priority_array_with_primary[
-                                node_priority
-                            ] = node_transcode_workers
-                        else:
-                            priority_array_without_primary[
-                                node_priority
-                            ] = node_transcode_workers
-                        current_priority_level += 1
-
-        if includes_primary_node:
-            priority_array = priority_array_with_primary
-        else:
-            priority_array = priority_array_without_primary
+                    priority_array[node_priority] = node_transcode_workers
+                    current_priority_level += 1
 
         cumulative_quantity = 0
         for priority_level, quantity in priority_array.items():
