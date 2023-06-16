@@ -34,3 +34,5 @@ tdarr-noding/configuration.yml
 tdarr-noding/status.yml
 .coding_venv/*
 .general_venv/*
+tdarr-noding/ansible_files/shutdown-ganoslal.yml
+tdarr-noding/ansible_files/startup-ganoslal.yml
