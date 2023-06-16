@@ -9,7 +9,6 @@ tdarr_server:
 tdarr_nodes:
   NAME_OF_PRIMARY_NODE:
     primary_node: true
-    priority: 0
     healthcheck_worker_limits:
       min_cpu: 0
       max_cpu: 5
