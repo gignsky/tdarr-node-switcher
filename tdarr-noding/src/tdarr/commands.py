@@ -49,6 +49,14 @@ class Tdarr_Orders:
         else:
             lists_of_lists = [succesful_transcodes]
 
+        Tdarr_Orders.send_update_order(Server, lists_of_lists)
+
+        skipped_transcodes = Tdarr_Logic.search_for_skipped_transcodes(Server, "mp4")
+
+        Tdarr_Orders.send_update_order(Server, [skipped_transcodes])
+
+    @staticmethod
+    def send_update_order(Server, lists_of_lists):
         for transcode_list in lists_of_lists:
             for id_number in transcode_list:
                 payload = {
