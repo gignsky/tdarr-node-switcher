@@ -37,9 +37,12 @@ class HostLogic:
         for node_name in node_dictionary:
             if node_dictionary[node_name].online:
                 current_priority = node_dictionary[node_name].priority
-                if current_priority > max_priority_level:
-                    max_priority_level = current_priority
-                    max_priority_online_node_name = node_name
+                try:
+                    if current_priority > max_priority_level:
+                        max_priority_level = current_priority
+                        max_priority_online_node_name = node_name
+                except TypeError:
+                    pass
 
         return max_priority_online_node_name
 
