@@ -89,6 +89,27 @@ class Tdarr_Logic:
         return fails
 
     @staticmethod
+    def search_for_skipped_transcodes(Server, container_type):
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("")
+
+        response = requests.post(
+            Server.search, json=payload, headers=headers, timeout=10
+        )
+
+        response = json.loads(response.text)
+
+        skipped_transcodes = []
+        for i in response:
+            container = i.get("container")
+
+            if container_type != container:
+                if i.get("TranscodeDecisionMaker") != "Queued":
+                    node_id = i.get("_id")
+                    skipped_transcodes.append(node_id)
+
+        return skipped_transcodes
+
+    @staticmethod
     def search_for_failed_transcodes(Server):
         """
         search_for_failed_transcodes search for failed health checks
