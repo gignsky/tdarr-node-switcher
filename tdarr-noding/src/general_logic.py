@@ -60,8 +60,12 @@ class Logic:
             priority_level = node_class.priority
             if line_state:
                 quantity_of_living_nodes += 1
-                if priority_level >= current_priority_level:
-                    current_priority_level = priority_level
+                try:
+                    if priority_level >= current_priority_level:
+                        current_priority_level = priority_level
+                except TypeError:
+                    pass
+
         return quantity_of_living_nodes
 
     @staticmethod
@@ -99,9 +103,12 @@ class Logic:
                 node_transcode_workers = (
                     Class.transcode_max_cpu + Class.transcode_max_gpu
                 )
-                if node_priority == current_priority_level:
-                    priority_array[node_priority] = node_transcode_workers
-                    current_priority_level += 1
+                try:
+                    if node_priority == current_priority_level:
+                        priority_array[node_priority] = node_transcode_workers
+                        current_priority_level += 1
+                except TypeError:
+                    pass
 
         cumulative_quantity = 0
         for priority_level, quantity in priority_array.items():
@@ -137,9 +144,12 @@ class Logic:
     def activate_node_to_priority_level(node_dictionary, priority_target):
         nodes_to_activate = []
         for node, Class in node_dictionary.items():
-            if Class.priority <= priority_target:
-                if not Class.online:
-                    nodes_to_activate.append(node)
+            try:
+                if Class.priority <= priority_target:
+                    if not Class.online:
+                        nodes_to_activate.append(node)
+            except TypeError:
+                pass
 
         return nodes_to_activate
 
@@ -147,9 +157,12 @@ class Logic:
     def deactivate_node_to_priority_level(node_dictionary, priority_target):
         nodes_to_deactivate = []
         for node, Class in node_dictionary.items():
-            if Class.priority > priority_target:
-                if Class.online:
-                    nodes_to_deactivate.append(node)
+            try:
+                if Class.priority > priority_target:
+                    if Class.online:
+                        nodes_to_deactivate.append(node)
+            except TypeError:
+                pass
 
         return nodes_to_deactivate
 

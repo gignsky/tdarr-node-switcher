@@ -493,8 +493,11 @@ class NormalHelpers:
         # find current priority level
         current_priority_level = 0
         for node_name in online_node_names:
-            if self.node_dictionary[node_name].priority > current_priority_level:
-                current_priority_level = self.node_dictionary[node_name].priority
+            try:
+                if self.node_dictionary[node_name].priority > current_priority_level:
+                    current_priority_level = self.node_dictionary[node_name].priority
+            except TypeError:
+                pass
 
         return current_priority_level
 

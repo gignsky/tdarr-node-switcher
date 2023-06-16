@@ -18,7 +18,11 @@ class Node:
         self.config_node_inner_dictionary = config_node_inner_dictionary
 
         if config_node_inner_dictionary is not None:
-            self.priority = self.config_node_inner_dictionary["priority"]
+            try:
+                self.priority = self.config_node_inner_dictionary["priority"]
+            except KeyError:
+                self.priority = None
+
             try:
                 self.primary_node = bool(config_node_inner_dictionary["primary_node"])
             except KeyError:
