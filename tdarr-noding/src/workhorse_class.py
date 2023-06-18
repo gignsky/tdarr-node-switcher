@@ -214,16 +214,21 @@ class Workhorse:
         #             self.Status.print_status_file()
 
         # when primary node is online
-        # Call Refresh
-        self.refresh()
 
-        # Set status to refreshed
-        self.Status.change_state("Refreshed")
+        current_errored_transcodes_quantity=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+        previously_errored_transcode_quantity=self.Status.errored_transcodes_quantity
 
-        # print status again
-        self.Status.print_status_file()
+        if current_errored_transcodes_quantity > previously_errored_transcode_quantity:
+            # Call Refresh
+            self.refresh()
 
-        self.post_refresh()
+            # Set status to refreshed
+            self.Status.change_state("Refreshed")
+
+            # print status again
+            self.Status.print_status_file()
+
+            self.post_refresh()
 
     def post_refresh(self):
         self.update_classes()
@@ -252,7 +257,6 @@ class Workhorse:
 
             quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
 
-
             if quantity_of_work == 0:
                 print("INFO: Quantity of work is zero, continuing to normal workflow")
 
@@ -262,6 +266,8 @@ class Workhorse:
 
                 current_time = time.time()
                 refreshed_time = self.Status.refreshed_time
+                current_errored_transcodes=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+                previously_errored_transcodes_quantity=self.Status.errored_transcodes_quantity
 
                 # check if refreshed time is less then 60 minutes ago
                 if refreshed_time is not None:
@@ -270,6 +276,9 @@ class Workhorse:
                         print(
                             "INFO: Refreshed time is less than 60 minutes ago, doing nothing"
                         )
+                    elif current_errored_transcodes == previously_errored_transcodes_quantity:
+                        # do nothing as errored transcodes are the same as before
+                        print("INFO: Errored transcodes Quantity are the same as before, doing nothing"")
                     else:
                         # change status to normal
                         self.Status.change_state("Normal")
@@ -277,6 +286,10 @@ class Workhorse:
 
                 else:
                     self.Status.add_refreshed_time(time.time())
+
+                    number_of_errored_transcodes =self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+
+                    self.Status.add_number_of_errored_transcodes(number_of_errored_transcodes)
 
                 # remove all files in the cache directory
                 print("Clearing Cache")
@@ -637,3 +650,11 @@ class NormalHelpers:
         node_interactions.HostLogic.start_node(
             self.Configuration, self.node_dictionary, node, self.Status
         )
+
+    def number_of_errored_transcodes(self, server):
+        # find number of errored transcodes
+        returned_item = tdarr.Tdarr_Logic.search_for_failed_transcodes(server)
+
+        number_of_errored_transcodes = len(returned_item)
+
+        return number_of_errored_transcodes
