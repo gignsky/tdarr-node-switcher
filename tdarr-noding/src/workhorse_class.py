@@ -56,6 +56,7 @@ class Workhorse:
         update_nodes_output updates self.get_nodes_output to most current pull from tdarr server
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'update_nodes_output'")
         self.get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
 
         self.Configuration.startup_update_nodes_with_tdarr_info(
@@ -84,6 +85,7 @@ class Workhorse:
         update_nodes General update nodes
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'update_nodes'")
         self.update_nodes_output()
 
         # refresh tdarr node classes
@@ -106,6 +108,7 @@ class Workhorse:
                 Class.update_node("Offline")
 
     def refresh(self, refresh_type=None):
+        print(f"SECTION INFO: Starting workhorse 'refresh' with type {refresh_type}")
         if refresh_type is None:
             Logic.refresh_all(self.Server)
         elif refresh_type == "succesful":
@@ -125,6 +128,7 @@ class Workhorse:
             5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'startup'"")
         # initiate start up - and configure node master initally
         self.Status.startup_configure_node_master(self.node_dictionary)
 
@@ -321,9 +325,9 @@ class Workhorse:
                     4.b.2. update worker counts on all living nodes
             5. Check if all work is finished
         """
+        print("SECTION INFO: Normal Workflow Starting...")
 
         # update nodes
-        print("INFO: Updating nodes...")
         self.update_classes()
 
         print("INFO: Gathering General Information...")
