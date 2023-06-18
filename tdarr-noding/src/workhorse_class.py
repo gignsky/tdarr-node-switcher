@@ -202,6 +202,8 @@ class Workhorse:
         verify_primary_running verifies that primary node is running and modifies the status file accordingly
         """
 
+        print("SECTION INFO: Starting workhorse 'verify_primary_running'")
+
         self.update_classes()
 
         # check if primary node is running
@@ -230,6 +232,8 @@ class Workhorse:
         self.post_refresh()
 
     def post_refresh(self):
+        print("SECTION INFO: Starting workhorse 'post_refresh'")
+
         self.update_classes()
 
         # 1. get quantity of work
