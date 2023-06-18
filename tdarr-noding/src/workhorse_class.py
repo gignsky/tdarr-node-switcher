@@ -56,6 +56,7 @@ class Workhorse:
         update_nodes_output updates self.get_nodes_output to most current pull from tdarr server
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'update_nodes_output'")
         self.get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
 
         self.Configuration.startup_update_nodes_with_tdarr_info(
@@ -84,6 +85,7 @@ class Workhorse:
         update_nodes General update nodes
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'update_nodes'")
         self.update_nodes_output()
 
         # refresh tdarr node classes
@@ -106,6 +108,7 @@ class Workhorse:
                 Class.update_node("Offline")
 
     def refresh(self, refresh_type=None):
+        print(f"SECTION INFO: Starting workhorse 'refresh' with type {refresh_type}")
         if refresh_type is None:
             Logic.refresh_all(self.Server)
         elif refresh_type == "succesful":
@@ -125,6 +128,7 @@ class Workhorse:
             5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
         """
+        print("SECTION INFO: Starting workhorse 'startup'"")
         # initiate start up - and configure node master initally
         self.Status.startup_configure_node_master(self.node_dictionary)
 
@@ -198,6 +202,8 @@ class Workhorse:
         verify_primary_running verifies that primary node is running and modifies the status file accordingly
         """
 
+        print("SECTION INFO: Starting workhorse 'verify_primary_running'")
+
         self.update_classes()
 
         # check if primary node is running
@@ -214,18 +220,25 @@ class Workhorse:
         #             self.Status.print_status_file()
 
         # when primary node is online
-        # Call Refresh
-        self.refresh()
 
-        # Set status to refreshed
-        self.Status.change_state("Refreshed")
+        current_errored_transcodes_quantity=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+        previously_errored_transcode_quantity=self.Status.errored_transcodes_quantity
 
-        # print status again
-        self.Status.print_status_file()
+        if current_errored_transcodes_quantity > previously_errored_transcode_quantity:
+            # Call Refresh
+            self.refresh()
 
-        self.post_refresh()
+            # Set status to refreshed
+            self.Status.change_state("Refreshed")
+
+            # print status again
+            self.Status.print_status_file()
+
+            self.post_refresh()
 
     def post_refresh(self):
+        print("SECTION INFO: Starting workhorse 'post_refresh'")
+
         self.update_classes()
 
         # 1. get quantity of work
@@ -252,7 +265,6 @@ class Workhorse:
 
             quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
 
-
             if quantity_of_work == 0:
                 print("INFO: Quantity of work is zero, continuing to normal workflow")
 
@@ -262,6 +274,8 @@ class Workhorse:
 
                 current_time = time.time()
                 refreshed_time = self.Status.refreshed_time
+                current_errored_transcodes=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+                previously_errored_transcodes_quantity=self.Status.errored_transcodes_quantity
 
                 # check if refreshed time is less then 60 minutes ago
                 if refreshed_time is not None:
@@ -270,6 +284,9 @@ class Workhorse:
                         print(
                             "INFO: Refreshed time is less than 60 minutes ago, doing nothing"
                         )
+                    elif current_errored_transcodes == previously_errored_transcodes_quantity:
+                        # do nothing as errored transcodes are the same as before
+                        print("INFO: Errored transcodes Quantity are the same as before, doing nothing"")
                     else:
                         # change status to normal
                         self.Status.change_state("Normal")
@@ -277,6 +294,10 @@ class Workhorse:
 
                 else:
                     self.Status.add_refreshed_time(time.time())
+
+                    number_of_errored_transcodes =self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+
+                    self.Status.add_number_of_errored_transcodes(number_of_errored_transcodes)
 
                 # remove all files in the cache directory
                 print("Clearing Cache")
@@ -321,9 +342,9 @@ class Workhorse:
                     4.b.2. update worker counts on all living nodes
             5. Check if all work is finished
         """
+        print("SECTION INFO: Normal Workflow Starting...")
 
         # update nodes
-        print("INFO: Updating nodes...")
         self.update_classes()
 
         print("INFO: Gathering General Information...")
@@ -637,3 +658,11 @@ class NormalHelpers:
         node_interactions.HostLogic.start_node(
             self.Configuration, self.node_dictionary, node, self.Status
         )
+
+    def number_of_errored_transcodes(self, server):
+        # find number of errored transcodes
+        returned_item = tdarr.Tdarr_Logic.search_for_failed_transcodes(server)
+
+        number_of_errored_transcodes = len(returned_item)
+
+        return number_of_errored_transcodes
