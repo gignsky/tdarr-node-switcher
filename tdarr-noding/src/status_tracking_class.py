@@ -16,8 +16,15 @@ class StatusTracking:
             try:
                 self.refreshed_time = status_file["refreshed_time"]
                 self.status_dict["refreshed_time"] = status_file["refreshed_time"]
+                self.errored_transcodes_quantity = status_file[
+                    "errored_transcodes_quantity"
+                ]
+                self.status_dict[
+                    "errored_transcodes_quantity"
+                ] = self.errored_transcodes_quantity
             except KeyError:
                 self.refreshed_time = None
+                self.errored_transcodes_quantity = None
 
             self.import_server_status()
             self.import_node_status()
@@ -55,6 +62,12 @@ class StatusTracking:
         """
         self.refreshed_time = time
         self.status_dict["refreshed_time"] = time
+
+    def add_number_of_errored_transcodes(self, number):
+        self.errored_transcodes_quantity = number
+        self.status_dict[
+            "errored_transcodes_quantity"
+        ] = self.errored_transcodes_quantity
 
     # importing
     def import_server_status(self):
