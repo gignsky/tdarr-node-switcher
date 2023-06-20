@@ -39,7 +39,7 @@ ansible-lint==6.17.1
     mypy-extensions==1.0.0
     packaging==23.1
     pathspec==0.11.1
-    platformdirs==3.5.3
+    platformdirs==3.6.0
     tomli==2.0.1
   filelock==3.12.2
   jsonschema==4.17.3
@@ -89,7 +89,7 @@ pylint==2.17.4
   dill==0.3.6
   isort==5.12.0
   mccabe==0.7.0
-  platformdirs==3.5.3
+  platformdirs==3.6.0
   tomli==2.0.1
   tomlkit==0.11.8
 pywinrm==0.4.3
