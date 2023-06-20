@@ -128,7 +128,7 @@ class Workhorse:
             5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
         """
-        print("SECTION INFO: Starting workhorse 'startup'"")
+        print("SECTION INFO: Starting workhorse 'startup'")
         # initiate start up - and configure node master initally
         self.Status.startup_configure_node_master(self.node_dictionary)
 
@@ -221,8 +221,10 @@ class Workhorse:
 
         # when primary node is online
 
-        current_errored_transcodes_quantity=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
-        previously_errored_transcode_quantity=self.Status.errored_transcodes_quantity
+        current_errored_transcodes_quantity = (
+            self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+        )
+        previously_errored_transcode_quantity = self.Status.errored_transcodes_quantity
 
         if current_errored_transcodes_quantity > previously_errored_transcode_quantity:
             # Call Refresh
@@ -274,8 +276,12 @@ class Workhorse:
 
                 current_time = time.time()
                 refreshed_time = self.Status.refreshed_time
-                current_errored_transcodes=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
-                previously_errored_transcodes_quantity=self.Status.errored_transcodes_quantity
+                current_errored_transcodes = (
+                    self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+                )
+                previously_errored_transcodes_quantity = (
+                    self.Status.errored_transcodes_quantity
+                )
 
                 # check if refreshed time is less then 60 minutes ago
                 if refreshed_time is not None:
@@ -284,9 +290,14 @@ class Workhorse:
                         print(
                             "INFO: Refreshed time is less than 60 minutes ago, doing nothing"
                         )
-                    elif current_errored_transcodes == previously_errored_transcodes_quantity:
+                    elif (
+                        current_errored_transcodes
+                        == previously_errored_transcodes_quantity
+                    ):
                         # do nothing as errored transcodes are the same as before
-                        print("INFO: Errored transcodes Quantity are the same as before, doing nothing"")
+                        print(
+                            "INFO: Errored transcodes Quantity are the same as before, doing nothing"
+                        )
                     else:
                         # change status to normal
                         self.Status.change_state("Normal")
@@ -295,9 +306,15 @@ class Workhorse:
                 else:
                     self.Status.add_refreshed_time(time.time())
 
-                    number_of_errored_transcodes =self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+                    number_of_errored_transcodes = (
+                        self.NormalHelpersClass.number_of_errored_transcodes(
+                            self.Server
+                        )
+                    )
 
-                    self.Status.add_number_of_errored_transcodes(number_of_errored_transcodes)
+                    self.Status.add_number_of_errored_transcodes(
+                        number_of_errored_transcodes
+                    )
 
                 # remove all files in the cache directory
                 print("Clearing Cache")
