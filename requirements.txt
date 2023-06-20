@@ -30,5 +30,5 @@ pywinrm==0.4.3
       urllib3==2.0.3
   six==1.16.0
   xmltodict==0.13.0
-setuptools==67.8.0
+setuptools==68.0.0
 wheel==0.40.0
