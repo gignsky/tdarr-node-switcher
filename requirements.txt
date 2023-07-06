@@ -1,5 +1,5 @@
 ansible==8.1.0
-  ansible-core==2.15.0
+  ansible-core==2.15.1
     cryptography==41.0.1
       cffi==1.15.1
         pycparser==2.21
