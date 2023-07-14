@@ -220,23 +220,62 @@ class Workhorse:
         #             self.Status.print_status_file()
 
         # when primary node is online
+        # update nodes and check if primary node is online
+        self.update_classes()
 
-        current_errored_transcodes_quantity = (
-            self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
-        )
-        previously_errored_transcode_quantity = self.Status.errored_transcodes_quantity
+        if self.node_dictionary[primary_node].online:
+            current_errored_transcodes_quantity = (
+                self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+            )
+            previously_errored_transcode_quantity = (
+                self.Status.errored_transcodes_quantity
+            )
 
-        if current_errored_transcodes_quantity > previously_errored_transcode_quantity:
-            # Call Refresh
-            self.refresh()
+            if previously_errored_transcode_quantity is not None:
+                if (
+                    current_errored_transcodes_quantity
+                    > previously_errored_transcode_quantity
+                ):
+                    # Call Refresh
+                    self.refresh()
 
-            # Set status to refreshed
-            self.Status.change_state("Refreshed")
+                    # Set status to refreshed
+                    self.Status.change_state("Refreshed")
 
-            # print status again
+                    # print status again
+                    self.Status.print_status_file()
+
+                    self.post_refresh()
+            else:
+                # check quantity of work
+                quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
+
+                # check if quantity of work is greater than zero
+                if quantity_of_work > 0:
+                    # change status to normal
+                    self.Status.change_state("Normal")
+
+                    # print status again
+                    self.Status.print_status_file()
+
+                else:
+                    # Call Refresh
+                    self.refresh()
+
+                    # Set status to refreshed
+                    self.Status.change_state("Refreshed")
+
+                    # print status again
+                    self.Status.print_status_file()
+
+                    self.post_refresh()
+
+        else:
+            # change status to normal
+            self.Status.change_state("Normal")
+
+            # print status file again
             self.Status.print_status_file()
-
-            self.post_refresh()
 
     def post_refresh(self):
         print("SECTION INFO: Starting workhorse 'post_refresh'")
