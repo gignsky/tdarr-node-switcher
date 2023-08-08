@@ -63,7 +63,7 @@ ansible-lint==6.17.2
   pathspec==0.11.1
   PyYAML==6.0
   requests==2.31.0
-    certifi==2023.5.7
+    certifi==2023.7.22
     charset-normalizer==3.2.0
     idna==3.4
     urllib3==2.0.3
@@ -108,7 +108,7 @@ pylint==2.17.4
   tomlkit==0.11.8
 pywinrm==0.4.3
   requests==2.31.0
-    certifi==2023.5.7
+    certifi==2023.7.22
     charset-normalizer==3.2.0
     idna==3.4
     urllib3==2.0.3
@@ -121,7 +121,7 @@ pywinrm==0.4.3
         cffi==1.15.1
           pycparser==2.21
     requests==2.31.0
-      certifi==2023.5.7
+      certifi==2023.7.22
       charset-normalizer==3.2.0
       idna==3.4
       urllib3==2.0.3
