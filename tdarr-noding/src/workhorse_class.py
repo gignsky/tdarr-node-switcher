@@ -209,6 +209,41 @@ class Workhorse:
         # check if primary node is running
         primary_node = self.Server.primary_node
 
+        # check if non-primary nodes are running
+        online_nodes = []
+        for node_name, node_class in self.node_dictionary.items():
+            if node_class.online:
+                online_nodes.append(node_name)
+
+        # pop primary node from online nodes list
+        online_nodes.pop(online_nodes.index(primary_node))
+
+        # find nodes with and without work
+        nodes_with_work, nodes_without_work = tdarr.Tdarr_Logic.find_nodes_with_work(
+            self.Server
+        )
+
+        for node_name in online_nodes:
+            if node_name in nodes_with_work:
+                # set node to going down
+                self.Status.NodeStatusMaster.update_directive(node_name, "Going Down")
+
+            elif node_name in nodes_without_work:
+                # shutdown node
+                # set workers to zero
+                tdarr.Tdarr_Orders.reset_workers_to_zero(
+                    self.Server, node_name, self.node_dictionary
+                )
+                # order shutdown
+                node_interactions.HostLogic.kill_node(
+                    self.Configuration, self.node_dictionary, node_name, self.Status
+                )
+                # set node status to offline
+                self.node_dictionary[node_name].line_state("Offline")
+
+                # set node directive to sleep
+                self.Status.NodeStatusMaster.update_directive(node_name, "Sleeping")
+
         # check if primary node is offline
         if not self.node_dictionary[primary_node].online:
             self.NormalHelpersClass.activate_node(primary_node)
@@ -248,7 +283,7 @@ class Workhorse:
                     self.post_refresh()
             else:
                 # check quantity of work
-                quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
+                quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
 
                 # check if quantity of work is greater than zero
                 if quantity_of_work > 0:
