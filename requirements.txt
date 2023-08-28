@@ -1,6 +1,6 @@
 ansible==8.1.0
   ansible-core==2.15.1
-    cryptography==41.0.2
+    cryptography==41.0.1
       cffi==1.15.1
         pycparser==2.21
     Jinja2==3.1.2
@@ -8,23 +8,23 @@ ansible==8.1.0
     packaging==23.1
     PyYAML==6.0
     resolvelib==1.0.1
-pip==23.1.2
+pip==23.2.1
 pywinrm==0.4.3
   requests==2.31.0
-    certifi==2023.7.22
+    certifi==2023.5.7
     charset-normalizer==3.2.0
     idna==3.4
     urllib3==2.0.3
   requests-ntlm==1.2.0
-    cryptography==41.0.2
+    cryptography==41.0.1
       cffi==1.15.1
         pycparser==2.21
     pyspnego==0.9.1
-      cryptography==41.0.2
+      cryptography==41.0.1
         cffi==1.15.1
           pycparser==2.21
     requests==2.31.0
-      certifi==2023.7.22
+      certifi==2023.5.7
       charset-normalizer==3.2.0
       idna==3.4
       urllib3==2.0.3
