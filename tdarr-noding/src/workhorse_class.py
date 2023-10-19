@@ -539,6 +539,10 @@ class Workhorse:
         # 4.a
         # update values
 
+        # 4.a.0
+        # update nodes to check if all nodes that needed to be activated actually got activated.
+        self.update_nodes()
+
         # 4.a.1
         # update list_of_nodes_going_down
         list_of_nodes_going_down = []
