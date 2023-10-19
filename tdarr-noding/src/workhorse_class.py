@@ -128,7 +128,7 @@ class Workhorse:
             5. run workhorse update function to update config with most current information
         < Document Guardian | Protect >
         """
-        print("SECTION INFO: Starting workhorse 'startup'"")
+        print("SECTION INFO: Starting workhorse 'startup'")
         # initiate start up - and configure node master initally
         self.Status.startup_configure_node_master(self.node_dictionary)
 
@@ -209,6 +209,45 @@ class Workhorse:
         # check if primary node is running
         primary_node = self.Server.primary_node
 
+        # check if non-primary nodes are running
+        online_nodes = []
+        for node_name, node_class in self.node_dictionary.items():
+            if node_class.online:
+                online_nodes.append(node_name)
+
+        # try to pop primary node from online nodes list
+        try:
+            online_nodes.pop(online_nodes.index(primary_node))
+        except ValueError:
+            online_nodes = online_nodes
+            print("VALUE_ERROR: Primary node not online")
+
+        # find nodes with and without work
+        nodes_with_work, nodes_without_work = tdarr.Tdarr_Logic.find_nodes_with_work(
+            self.Server
+        )
+
+        for node_name in online_nodes:
+            if node_name in nodes_with_work:
+                # set node to going down
+                self.Status.NodeStatusMaster.update_directive(node_name, "Going Down")
+
+            elif node_name in nodes_without_work:
+                # shutdown node
+                # set workers to zero
+                tdarr.Tdarr_Orders.reset_workers_to_zero(
+                    self.Server, node_name, self.node_dictionary
+                )
+                # order shutdown
+                node_interactions.HostLogic.kill_node(
+                    self.Configuration, self.node_dictionary, node_name, self.Status
+                )
+                # set node status to offline
+                self.node_dictionary[node_name].line_state("Offline")
+
+                # set node directive to sleep
+                self.Status.NodeStatusMaster.update_directive(node_name, "Sleeping")
+
         # check if primary node is offline
         if not self.node_dictionary[primary_node].online:
             self.NormalHelpersClass.activate_node(primary_node)
@@ -220,21 +259,62 @@ class Workhorse:
         #             self.Status.print_status_file()
 
         # when primary node is online
+        # update nodes and check if primary node is online
+        self.update_classes()
 
-        current_errored_transcodes_quantity=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
-        previously_errored_transcode_quantity=self.Status.errored_transcodes_quantity
+        if self.node_dictionary[primary_node].online:
+            current_errored_transcodes_quantity = (
+                self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+            )
+            previously_errored_transcode_quantity = (
+                self.Status.errored_transcodes_quantity
+            )
 
-        if current_errored_transcodes_quantity > previously_errored_transcode_quantity:
-            # Call Refresh
-            self.refresh()
+            if previously_errored_transcode_quantity is not None:
+                if (
+                    current_errored_transcodes_quantity
+                    > previously_errored_transcode_quantity
+                ):
+                    # Call Refresh
+                    self.refresh()
 
-            # Set status to refreshed
-            self.Status.change_state("Refreshed")
+                    # Set status to refreshed
+                    self.Status.change_state("Refreshed")
 
-            # print status again
+                    # print status again
+                    self.Status.print_status_file()
+
+                    self.post_refresh()
+            else:
+                # check quantity of work
+                quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
+
+                # check if quantity of work is greater than zero
+                if quantity_of_work > 0:
+                    # change status to normal
+                    self.Status.change_state("Normal")
+
+                    # print status again
+                    self.Status.print_status_file()
+
+                else:
+                    # Call Refresh
+                    self.refresh()
+
+                    # Set status to refreshed
+                    self.Status.change_state("Refreshed")
+
+                    # print status again
+                    self.Status.print_status_file()
+
+                    self.post_refresh()
+
+        else:
+            # change status to normal
+            self.Status.change_state("Normal")
+
+            # print status file again
             self.Status.print_status_file()
-
-            self.post_refresh()
 
     def post_refresh(self):
         print("SECTION INFO: Starting workhorse 'post_refresh'")
@@ -274,8 +354,12 @@ class Workhorse:
 
                 current_time = time.time()
                 refreshed_time = self.Status.refreshed_time
-                current_errored_transcodes=self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
-                previously_errored_transcodes_quantity=self.Status.errored_transcodes_quantity
+                current_errored_transcodes = (
+                    self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+                )
+                previously_errored_transcodes_quantity = (
+                    self.Status.errored_transcodes_quantity
+                )
 
                 # check if refreshed time is less then 60 minutes ago
                 if refreshed_time is not None:
@@ -284,9 +368,14 @@ class Workhorse:
                         print(
                             "INFO: Refreshed time is less than 60 minutes ago, doing nothing"
                         )
-                    elif current_errored_transcodes == previously_errored_transcodes_quantity:
+                    elif (
+                        current_errored_transcodes
+                        == previously_errored_transcodes_quantity
+                    ):
                         # do nothing as errored transcodes are the same as before
-                        print("INFO: Errored transcodes Quantity are the same as before, doing nothing"")
+                        print(
+                            "INFO: Errored transcodes Quantity are the same as before, doing nothing"
+                        )
                     else:
                         # change status to normal
                         self.Status.change_state("Normal")
@@ -295,9 +384,15 @@ class Workhorse:
                 else:
                     self.Status.add_refreshed_time(time.time())
 
-                    number_of_errored_transcodes =self.NormalHelpersClass.number_of_errored_transcodes(self.Server)
+                    number_of_errored_transcodes = (
+                        self.NormalHelpersClass.number_of_errored_transcodes(
+                            self.Server
+                        )
+                    )
 
-                    self.Status.add_number_of_errored_transcodes(number_of_errored_transcodes)
+                    self.Status.add_number_of_errored_transcodes(
+                        number_of_errored_transcodes
+                    )
 
                 # remove all files in the cache directory
                 print("Clearing Cache")
