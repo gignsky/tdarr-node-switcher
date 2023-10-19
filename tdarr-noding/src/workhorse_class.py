@@ -89,12 +89,8 @@ class Workhorse:
         self.update_nodes_output()
 
         # refresh tdarr node classes
-        list_of_alive_tdarr_nodes = []
 
-        for node_id in self.get_nodes_output:
-            inner_tdarr_dictionary = self.get_nodes_output[node_id]
-            node_name = inner_tdarr_dictionary["nodeName"]
-            list_of_alive_tdarr_nodes.append(node_name)
+        list_of_alive_tdarr_nodes=Logic.find_alive_nodes_list(self.get_nodes_output)
 
         for name, Class in self.node_dictionary.items():
             # run update in node class

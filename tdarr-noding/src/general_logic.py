@@ -219,3 +219,14 @@ class Logic:
                 list_of_nodes_still_going_down.append(node)
 
         return list_of_nodes_still_going_down
+
+    @staticmethod
+    def find_alive_nodes_list(get_nodes_output):
+        list_of_alive_tdarr_nodes = []
+
+        for node_id in get_nodes_output:
+            inner_tdarr_dictionary = get_nodes_output[node_id]
+            node_name = inner_tdarr_dictionary["nodeName"]
+            list_of_alive_tdarr_nodes.append(node_name)
+
+        return list_of_alive_tdarr_nodes
