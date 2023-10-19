@@ -60,7 +60,7 @@ ansible-lint==6.16.2
     pathspec==0.11.1
     PyYAML==6.0
 bandit==1.7.5
-  GitPython==3.1.37
+  GitPython==3.1.40
     gitdb==4.0.10
       smmap==5.0.0
   PyYAML==6.0
