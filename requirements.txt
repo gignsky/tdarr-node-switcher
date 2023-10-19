@@ -1,6 +1,6 @@
 ansible==7.6.0
   ansible-core==2.14.6
-    cryptography==41.0.3
+    cryptography==41.0.4
       cffi==1.15.1
         pycparser==2.21
     Jinja2==3.1.2
@@ -9,7 +9,7 @@ ansible==7.6.0
     PyYAML==6.0
     resolvelib==0.8.1
 lightrun==1.12.0
-  cryptography==41.0.3
+  cryptography==41.0.4
     cffi==1.15.1
       pycparser==2.21
   httplib2==0.20.4
@@ -17,12 +17,12 @@ lightrun==1.12.0
   psutil==5.9.5
   PyYAML==6.0
   six==1.16.0
-pip==23.1.2
+pip==23.3
 requests==2.31.0
   certifi==2023.7.22
   charset-normalizer==3.1.0
   idna==3.4
-  urllib3==2.0.2
+  urllib3==2.0.7
 setuptools==67.8.0
 touch==2020.12.3
   values==2020.12.3
