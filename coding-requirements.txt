@@ -1,6 +1,6 @@
 ansible==8.1.0
   ansible-core==2.15.1
-    cryptography==41.0.3
+    cryptography==41.0.4
       cffi==1.15.1
         pycparser==2.21
     Jinja2==3.1.2
@@ -11,7 +11,7 @@ ansible==8.1.0
 ansible-lint==6.17.2
   ansible-compat==4.1.10
     ansible-core==2.15.1
-      cryptography==41.0.3
+      cryptography==41.0.4
         cffi==1.15.1
           pycparser==2.21
       Jinja2==3.1.2
@@ -33,7 +33,7 @@ ansible-lint==6.17.2
     PyYAML==6.0.1
     subprocess-tee==0.4.1
   ansible-core==2.15.1
-    cryptography==41.0.3
+    cryptography==41.0.4
       cffi==1.15.1
         pycparser==2.21
     Jinja2==3.1.2
@@ -92,7 +92,7 @@ bandit==1.7.5
     pbr==5.11.1
 graphviz==0.20.1
 pip-autoremove==0.10.0
-  pip==23.2.1
+  pip==23.3
   setuptools==68.0.0
 pipdeptree==2.12.0
 pylint==2.17.4
@@ -113,11 +113,11 @@ pywinrm==0.4.3
     idna==3.4
     urllib3==2.0.3
   requests-ntlm==1.2.0
-    cryptography==41.0.3
+    cryptography==41.0.4
       cffi==1.15.1
         pycparser==2.21
     pyspnego==0.9.1
-      cryptography==41.0.3
+      cryptography==41.0.4
         cffi==1.15.1
           pycparser==2.21
     requests==2.31.0
