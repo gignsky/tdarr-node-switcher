@@ -31,4 +31,4 @@ pywinrm==0.4.3
   xmltodict==0.13.0
 pip==23.3
 setuptools==68.0.0
-wheel==0.40.0
+wheel==0.41.2
