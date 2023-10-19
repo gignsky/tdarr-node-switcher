@@ -215,8 +215,12 @@ class Workhorse:
             if node_class.online:
                 online_nodes.append(node_name)
 
-        # pop primary node from online nodes list
-        online_nodes.pop(online_nodes.index(primary_node))
+        # try to pop primary node from online nodes list
+        try:
+            online_nodes.pop(online_nodes.index(primary_node))
+        except ValueError:
+            online_nodes = online_nodes
+            print("VALUE_ERROR: Primary node not online")
 
         # find nodes with and without work
         nodes_with_work, nodes_without_work = tdarr.Tdarr_Logic.find_nodes_with_work(
