@@ -21,13 +21,16 @@ class Logic:
 
     @staticmethod
     def server_status_check(Server):
-        var = requests.get(Server.status)
-
-        if var.status_code != 200:
+        try:
+            var = requests.get(Server.status, timeout=15)
+            if var.status_code != 200:
+                return "stop"
+            else:
+                print("INFO: Server is ALIVE!")
+                return "alive"
+        except requests.exceptions.Timeout:
+            print("ERROR: Request timed out")
             return "stop"
-        else:
-            print("INFO: Server is ALIVE!")
-            return "alive"
 
     @staticmethod
     def script_status(path_str):
