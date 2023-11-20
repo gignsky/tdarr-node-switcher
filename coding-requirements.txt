@@ -75,7 +75,7 @@ ansible-lint==6.22.0
     ruamel.yaml.clib==0.2.7
   subprocess-tee==0.4.1
   wcmatch==8.4.1
-    bracex==2.3.post1
+    bracex==2.4
   yamllint==1.32.0
     pathspec==0.11.1
     PyYAML==6.0.1
