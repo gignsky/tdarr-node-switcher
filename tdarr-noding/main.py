@@ -26,6 +26,17 @@ def main():
     # # debug line
     # current_directory = f"{current_directory}/tdarr-noding"
 
+    # check if status file is empty but exists then remove it if thats the case
+    def check_and_delete_empty_file(current_directory):
+        file_path = os.path.join(current_directory, "status.yml")
+        if os.path.isfile(file_path):
+            with open(file_path, 'r') as file:
+                contents = file.read()
+            if not contents:
+                os.remove(file_path)
+
+    check_and_delete_empty_file(current_directory)
+
     Workhorse = src.Workhorse(current_directory)
 
     # check if server is online
