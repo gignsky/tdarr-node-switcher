@@ -533,6 +533,16 @@ class Workhorse:
                 print(f"INFO: Activating node: {node}")
                 self.NormalHelpersClass.activate_node(node)
 
+        # 3.c
+        # check if nodes that are "going_down" are actually needed for completion of queued work
+        for node in list_of_nodes_going_down:
+            if self.node_dictionary[node].priority <= current_priority_level:
+                print(
+                    f"INFO: {node} is marked as 'Going_down' but is still needed for queued work. Setting node to 'Active'..."
+                )
+                self.Status.NodeStatusMaster.update_directive(node, "Active")
+                list_of_nodes_going_down.remove(node)
+
         # 4
         # ensure all nodes are at correct worker count
 
