@@ -90,7 +90,7 @@ class Workhorse:
 
         # refresh tdarr node classes
 
-        list_of_alive_tdarr_nodes=Logic.find_alive_nodes_list(self.get_nodes_output)
+        list_of_alive_tdarr_nodes = Logic.find_alive_nodes_list(self.get_nodes_output)
 
         for name, Class in self.node_dictionary.items():
             # run update in node class
@@ -643,14 +643,21 @@ class NormalHelpers:
             self.Server
         )
         queued_transcode_quantity = len(queued_transcode_ids)
-        print(f"INFO: Quantity of Queued Work: {queued_transcode_quantity}")
+        queued_healthcheck_ids = tdarr.Tdarr_Logic.search_for_queued_healthchecks(
+            self.Server
+        )
+        queued_healthcheck_quantity = len(queued_healthcheck_ids)
+
+        used_quantity = max(queued_healthcheck_quantity, queued_transcode_quantity)
+
+        print(f"INFO: Quantity of Queued Work: {used_quantity}")
 
         # 2.b - find total amount of work able to be done by all transcode nodes at once
         max_quantity_of_work = Logic.find_quantity_of_transcode_workers(
             self.node_dictionary, self.Server.max_nodes
         )
 
-        return queued_transcode_quantity, max_quantity_of_work
+        return used_quantity, max_quantity_of_work
 
     def find_current_priority_level(self):
         """
