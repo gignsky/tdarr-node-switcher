@@ -204,6 +204,36 @@ class Tdarr_Logic:
         return transcode_queued
 
     @staticmethod
+    def search_for_queued_healthchecks(Server):
+        """
+        search_for_queued_transcodes search for transcodes still queued
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            transcodes_queued (list)
+        < Document Guardian | Protect >
+        """
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Queued")
+
+        response = requests.post(
+            Server.search, json=payload, headers=headers, timeout=30
+        )
+
+        response = json.loads(response.text)
+
+        # print(len(response))
+        transcode_queued = []
+        for i in response:
+            node_id = i.get("_id")
+            if i.get("HealthCheck") == "Queued":
+                transcode_queued.append(node_id)
+        # print(transcode_queued)
+
+        return transcode_queued
+
+    @staticmethod
     def payload_and_headers_file_modification(string):
         """
         payload_and_headers_file_modification modify payloads and headers for most requests.post
