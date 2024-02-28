@@ -651,6 +651,9 @@ class NormalHelpers:
         # TODO: This is a temporary fix to ensure that the healthcheck queue is not ignored
         if queued_transcode_quantity == 0:
             if queued_healthcheck_quantity < 5:
+                print(
+                    f"INFO: Quantity of Healthcheck Queued Work: {queued_healthcheck_quantity}"
+                )
                 used_quantity = 0
             else:
                 used_quantity = queued_healthcheck_quantity
