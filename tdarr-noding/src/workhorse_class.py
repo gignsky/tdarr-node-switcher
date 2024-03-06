@@ -648,7 +648,17 @@ class NormalHelpers:
         )
         queued_healthcheck_quantity = len(queued_healthcheck_ids)
 
-        used_quantity = max(queued_healthcheck_quantity, queued_transcode_quantity)
+        # TODO: This is a temporary fix to ensure that the healthcheck queue is not ignored
+        if queued_transcode_quantity == 0:
+            if queued_healthcheck_quantity < 5:
+                print(
+                    f"INFO: Quantity of Healthcheck Queued Work: {queued_healthcheck_quantity}"
+                )
+                used_quantity = 0
+            else:
+                used_quantity = queued_healthcheck_quantity
+        else:
+            used_quantity = max(queued_healthcheck_quantity, queued_transcode_quantity)
 
         print(f"INFO: Quantity of Queued Work: {used_quantity}")
 

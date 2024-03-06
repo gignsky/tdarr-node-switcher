@@ -24,11 +24,11 @@ ansible-lint==6.22.0
       jsonschema-specifications==2023.7.1
         referencing==0.30.2
           attrs==23.1.0
-          rpds-py==0.8.10
+          rpds-py==0.18.0
       referencing==0.30.2
         attrs==23.1.0
-        rpds-py==0.8.10
-      rpds-py==0.8.10
+        rpds-py==0.18.0
+      rpds-py==0.18.0
     packaging==23.1
     PyYAML==6.0.1
     subprocess-tee==0.4.1
@@ -54,11 +54,11 @@ ansible-lint==6.22.0
     jsonschema-specifications==2023.7.1
       referencing==0.30.2
         attrs==23.1.0
-        rpds-py==0.8.10
+        rpds-py==0.18.0
     referencing==0.30.2
       attrs==23.1.0
-      rpds-py==0.8.10
-    rpds-py==0.8.10
+      rpds-py==0.18.0
+    rpds-py==0.18.0
   packaging==23.1
   pathspec==0.11.1
   PyYAML==6.0.1
