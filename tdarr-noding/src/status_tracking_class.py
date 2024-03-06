@@ -5,6 +5,7 @@ class StatusTracking:
     def __init__(self, status_file, path):
         self.status_dict = {"state": "Initalizing"}
         self.path = path
+        self.NodeStatusMaster = None
         if status_file is None:
             self.status_file = None
             self.configure_server_status()
@@ -234,6 +235,7 @@ class NodeStatus:
             self.directive = "Initalizing"
 
             self.check_for_sleeping()
+        self.node_status_dict = None
 
     def check_for_sleeping(self):
         """
