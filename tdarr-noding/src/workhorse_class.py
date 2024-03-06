@@ -271,16 +271,18 @@ class Workhorse:
                     current_errored_transcodes_quantity
                     > previously_errored_transcode_quantity
                 ):
-                    # Call Refresh
-                    self.refresh()
-
-                    # Set status to refreshed
-                    self.Status.change_state("Refreshed")
-
-                    # print status again
-                    self.Status.print_status_file()
-
-                    self.post_refresh()
+                    print("Would REFRESH HERE BUT THIS FUNCTIONALITY IS DISABLED")
+            #!TODO Uncomment these lines when the refresh function is implemented
+            #                     # Call Refresh
+            #                     self.refresh()
+            #
+            #                     # Set status to refreshed
+            #                     self.Status.change_state("Refreshed")
+            #
+            #                     # print status again
+            #                     self.Status.print_status_file()
+            #
+            #                     self.post_refresh()
             else:
                 # check quantity of work
                 quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
