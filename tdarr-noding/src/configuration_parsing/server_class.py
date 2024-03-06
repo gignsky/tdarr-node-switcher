@@ -17,15 +17,15 @@ class Server:
         """
         self.config_server_inner_dict = config_server_inner_dict
 
-        # configure default server information
-        self.default_server_configuration()
-
         self.primary_node = None
         self.get_nodes = None
         self.status = None
         self.mod_worker_limit = None
         self.search = None
         self.update_url = None
+
+        # configure default server information
+        self.default_server_configuration()
 
     def add_primary_node(self, node_name):
         """
