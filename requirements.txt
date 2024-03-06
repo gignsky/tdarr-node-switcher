@@ -1,29 +1,34 @@
-ansible==7.6.0
-  ansible-core==2.14.6
-    cryptography==42.0.4
-      cffi==1.15.1
+ansible==9.1.0
+  ansible-core==2.16.2
+    cryptography==42.0.5
+      cffi==1.16.0
         pycparser==2.21
     Jinja2==3.1.2
-      MarkupSafe==2.1.2
+      MarkupSafe==2.1.3
     packaging==23.1
-    PyYAML==6.0
-    resolvelib==0.8.1
-lightrun==1.12.0
-  cryptography==42.0.4
-    cffi==1.15.1
-      pycparser==2.21
-  httplib2==0.20.4
-    pyparsing==3.0.9
-  psutil==5.9.5
-  PyYAML==6.0
+    PyYAML==6.0.1
+    resolvelib==1.0.1
+pip==24.0
+pywinrm==0.4.3
+  requests==2.31.0
+    certifi==2023.11.17
+    charset-normalizer==3.3.2
+    idna==3.6
+    urllib3==2.0.3
+  requests-ntlm==1.2.0
+    cryptography==42.0.5
+      cffi==1.16.0
+        pycparser==2.21
+    pyspnego==0.9.1
+      cryptography==42.0.5
+        cffi==1.16.0
+          pycparser==2.21
+    requests==2.31.0
+      certifi==2023.11.17
+      charset-normalizer==3.3.2
+      idna==3.6
+      urllib3==2.0.3
   six==1.16.0
-pip==23.3
-requests==2.31.0
-  certifi==2023.7.22
-  charset-normalizer==3.1.0
-  idna==3.4
-  urllib3==2.0.7
-setuptools==67.8.0
-touch==2020.12.3
-  values==2020.12.3
-wheel==0.40.0
+  xmltodict==0.13.0
+setuptools==68.0.0
+wheel==0.41.2

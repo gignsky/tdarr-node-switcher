@@ -5,12 +5,28 @@ class StatusTracking:
     def __init__(self, status_file, path):
         self.status_dict = {"state": "Initalizing"}
         self.path = path
+        self.NodeStatusMaster = None
         if status_file is None:
             self.status_file = None
             self.configure_server_status()
         else:
             self.status_file = status_file
             self.state = status_file["state"]
+            self.status_dict["state"] = status_file["state"]
+
+            try:
+                self.refreshed_time = status_file["refreshed_time"]
+                self.status_dict["refreshed_time"] = status_file["refreshed_time"]
+                self.errored_transcodes_quantity = status_file[
+                    "errored_transcodes_quantity"
+                ]
+                self.status_dict[
+                    "errored_transcodes_quantity"
+                ] = self.errored_transcodes_quantity
+            except KeyError:
+                self.refreshed_time = None
+                self.errored_transcodes_quantity = None
+
             self.import_server_status()
             self.import_node_status()
 
@@ -36,6 +52,23 @@ class StatusTracking:
         """
         self.state = state
         self.status_dict["state"] = state
+
+    def add_refreshed_time(self, time):
+        """
+        add_refreshed_time adds time to status file
+
+        Args:
+            time (str): time
+        < Document Guardian | Protect >
+        """
+        self.refreshed_time = time
+        self.status_dict["refreshed_time"] = time
+
+    def add_number_of_errored_transcodes(self, number):
+        self.errored_transcodes_quantity = number
+        self.status_dict[
+            "errored_transcodes_quantity"
+        ] = self.errored_transcodes_quantity
 
     # importing
     def import_server_status(self):
@@ -202,6 +235,7 @@ class NodeStatus:
             self.directive = "Initalizing"
 
             self.check_for_sleeping()
+        self.node_status_dict = None
 
     def check_for_sleeping(self):
         """

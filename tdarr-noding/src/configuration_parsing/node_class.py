@@ -40,6 +40,15 @@ class Node:
         self.startup = None
         self.shutdown = None
 
+        self.current_cpu_transcode = None
+        self.current_gpu_transcode = None
+        self.current_cpu_healthcheck = None
+        self.current_gpu_healthcheck = None
+
+        self.tdarr_node_inner_dictionary = None
+
+        self.id_string = None
+
         # expected determination
         self.expected_or_not(expected_or_not)
 
@@ -67,8 +76,8 @@ class Node:
         if shutdown_command is not None:
             shutdown_command = shutdown_command.split()
 
-        print(f"Startup CMD:{startup_command}")
-        print(f"Shutdown CMD:{shutdown_command}")
+        # print(f"Startup CMD:{startup_command}")
+        # print(f"Shutdown CMD:{shutdown_command}")
         self.startup = startup_command
         self.shutdown = shutdown_command
 
@@ -110,9 +119,9 @@ class Node:
         """
         if online_or_offline == "Online":
             self.online = True
-            print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Online")
+            # print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Online")
         elif online_or_offline == "Offline":
-            print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Offline")
+            # print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Offline")
             self.online = False
 
     def set_current_worker_levels(
@@ -216,7 +225,7 @@ class Node:
         """
         if expected_or_not == "Expected":
             self.expected = True
-            print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Expected")
+            # print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Expected")
         elif expected_or_not == "Unexpected":
             self.expected = False
-            print(f"WARN: FROM NODE CLASS: `{self.node_name}` is Unexpected")
+            # print(f"WARN: FROM NODE CLASS: `{self.node_name}` is Unexpected")

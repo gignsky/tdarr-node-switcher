@@ -19,6 +19,11 @@ class ConstantsSetup:
         self.configuration_file = configuration_file
         self.program_folder_path = configuration_file["program"]["folder_path"]
         self.ansible_folder_path = configuration_file["program"]["ansible_path"]
+        self.cache_folder_path = configuration_file["program"]["cache_path"]
+
+        self.Server = None
+
+        self.expected_nodes_dictionary = None
 
     def setup_server_class(self):
         """
@@ -31,7 +36,9 @@ class ConstantsSetup:
 
         return self.Server
 
-    def setup_node_class(self, get_nodes_output):
+    def setup_node_class(
+        self, get_nodes_output
+    ):  # Ignoring error with unused "get_nodes_output"
         """
         setup_node_class setup node classes and return dictionary of said classes with names in the keys
 

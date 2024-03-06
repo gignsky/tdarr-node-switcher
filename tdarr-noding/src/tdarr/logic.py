@@ -15,62 +15,12 @@ class Tdarr_Logic:
             json_response: from requests.get
         < Document Guardian | Protect >
         """
-        response = requests.get(Server.get_nodes)
+        response = requests.get(Server.get_nodes, timeout=15)
 
         # loads response into json beautifier
         json_response = json.loads(response.text)
 
         return json_response
-
-    # find alive nodes
-    #     @staticmethod
-    #     def alive_node_search(constants):
-    #         """gets current nodes on tdarr
-    #
-    #         Returns:
-    #             thing: unformatted json
-    # < Document Guardian | Protect >
-    #         """
-    #         json_response = Tdarr_Logic.generic_get_nodes(constants)
-    #
-    #         # find node dict ids
-    #         node_ids = []
-    #         for id in json_response:
-    #             node_ids.append(id)
-    #
-    #         # find node names per id
-    #         all_alive_node_names = []
-    #         all_alive_node_dicts = []
-    #         expected_node_status = {}
-    #         for id in node_ids:
-    #             inner_dictionary = json_response[id]
-    #             name = inner_dictionary["nodeName"]
-    #             all_alive_node_names.append(name)
-    #             all_alive_node_dicts.append(inner_dictionary) #TODO START HERE WHEN GETTING BACK AT IT - OLD
-    #             if name in Constants.all_tdarr_nodes:
-    #                 expected_node_status[name] = "Online"
-    #             else:
-    #                 expected_node_status[name] = "Unexpected"
-    #                 # WARN UNEXPECTED NODE
-    #                 print(
-    #                     f"WARNING: Node named: `{name}` was not expected in the configuration file!"
-    #                 )
-    #
-    #         for name in constants.list_of_tdarr_node_names:
-    #             if name not in all_alive_node_names:
-    #                 expected_node_status[name] = "Offline"
-    #
-    #         return expected_node_status
-
-    #     @staticmethod
-    #     def nodeTest(node_name, dictionary):
-    #         node_names_list = Logic.list_of_node_names(dictionary)
-    #         if node_name in node_names_list:
-    #             tdarr_node_online_status = "Online"
-    #         else:
-    #             tdarr_node_online_status = "Offline"
-    #
-    #         return tdarr_node_online_status
 
     # find nodes with ongoing work
     @staticmethod
@@ -120,7 +70,7 @@ class Tdarr_Logic:
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification("error")
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=10
+            Server.search, json=payload, headers=headers, timeout=30
         )
 
         response = json.loads(response.text)
@@ -139,6 +89,27 @@ class Tdarr_Logic:
         return fails
 
     @staticmethod
+    def search_for_skipped_transcodes(Server, container_type):
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("")
+
+        response = requests.post(
+            Server.search, json=payload, headers=headers, timeout=30
+        )
+
+        response = json.loads(response.text)
+
+        skipped_transcodes = []
+        for i in response:
+            container = i.get("container")
+
+            if container_type != container:
+                if i.get("TranscodeDecisionMaker") != "Queued":
+                    node_id = i.get("_id")
+                    skipped_transcodes.append(node_id)
+
+        return skipped_transcodes
+
+    @staticmethod
     def search_for_failed_transcodes(Server):
         """
         search_for_failed_transcodes search for failed health checks
@@ -155,7 +126,7 @@ class Tdarr_Logic:
         )
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=10
+            Server.search, json=payload, headers=headers, timeout=30
         )
 
         response = json.loads(response.text)
@@ -187,7 +158,7 @@ class Tdarr_Logic:
         )
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=10
+            Server.search, json=payload, headers=headers, timeout=30
         )
 
         response = json.loads(response.text)
@@ -217,7 +188,7 @@ class Tdarr_Logic:
         payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Queued")
 
         response = requests.post(
-            Server.search, json=payload, headers=headers, timeout=10
+            Server.search, json=payload, headers=headers, timeout=30
         )
 
         response = json.loads(response.text)
@@ -227,6 +198,36 @@ class Tdarr_Logic:
         for i in response:
             node_id = i.get("_id")
             if i.get("TranscodeDecisionMaker") == "Queued":
+                transcode_queued.append(node_id)
+        # print(transcode_queued)
+
+        return transcode_queued
+
+    @staticmethod
+    def search_for_queued_healthchecks(Server):
+        """
+        search_for_queued_transcodes search for transcodes still queued
+
+        Args:
+            Server (Class): basic server class
+
+        Returns:
+            transcodes_queued (list)
+        < Document Guardian | Protect >
+        """
+        payload, headers = Tdarr_Logic.payload_and_headers_file_modification("Queued")
+
+        response = requests.post(
+            Server.search, json=payload, headers=headers, timeout=30
+        )
+
+        response = json.loads(response.text)
+
+        # print(len(response))
+        transcode_queued = []
+        for i in response:
+            node_id = i.get("_id")
+            if i.get("HealthCheck") == "Queued":
                 transcode_queued.append(node_id)
         # print(transcode_queued)
 

@@ -20,6 +20,13 @@ class Server:
         # configure default server information
         self.default_server_configuration()
 
+        self.primary_node = None
+        self.get_nodes = None
+        self.status = None
+        self.mod_worker_limit = None
+        self.search = None
+        self.update_url = None
+
     def add_primary_node(self, node_name):
         """
         add_primary_node add primary node name to server config
@@ -57,6 +64,8 @@ class Server:
         self.set_up_urls()
 
         self.max_nodes = self.config_server_inner_dict["max_nodes"]
+
+        self.container_type = self.config_server_inner_dict["container_type"]
 
         #! commented out as this appears unused
         # self.priority_level = self.config_server_inner_dict["default_priority_level"]

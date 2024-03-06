@@ -8,7 +8,7 @@ import time
 
 class Logic:
     @staticmethod
-    def refresh_all(constants):
+    def refresh_all(constants, refresh_type=None):
         """
         refresh_all health checks and transcodes
 
@@ -17,17 +17,20 @@ class Logic:
         """
         print("Refreshing...")
         tdarr.Tdarr_Orders.refresh_health_checks(constants)
-        tdarr.Tdarr_Orders.update_transcodes(constants)
+        tdarr.Tdarr_Orders.update_transcodes(constants, refresh_type)
 
     @staticmethod
     def server_status_check(Server):
-        var = requests.get(Server.status)
-
-        if var.status_code != 200:
+        try:
+            var = requests.get(Server.status, timeout=15)
+            if var.status_code != 200:
+                return "stop"
+            else:
+                print("INFO: Server is ALIVE!")
+                return "alive"
+        except requests.exceptions.Timeout:
+            print("ERROR: Request timed out")
             return "stop"
-        else:
-            print("INFO: Server is ALIVE!")
-            return "alive"
 
     @staticmethod
     def script_status(path_str):
@@ -91,7 +94,7 @@ class Logic:
         max_transcode_workers,
         node_dictionary,
         max_nodes,
-    ):
+    ):  # ignoring error where max_transcode_workers is unused
         # create two arrays with priority number and total transcode workers
         priority_array = {}
         cap = max_nodes
@@ -124,7 +127,6 @@ class Logic:
                     target_priority = priority_level
 
         return target_priority
-
 
     @staticmethod
     def activate_node_to_priority_level(node_dictionary, priority_target):
@@ -219,3 +221,14 @@ class Logic:
                 list_of_nodes_still_going_down.append(node)
 
         return list_of_nodes_still_going_down
+
+    @staticmethod
+    def find_alive_nodes_list(get_nodes_output):
+        list_of_alive_tdarr_nodes = []
+
+        for node_id in get_nodes_output:
+            inner_tdarr_dictionary = get_nodes_output[node_id]
+            node_name = inner_tdarr_dictionary["nodeName"]
+            list_of_alive_tdarr_nodes.append(node_name)
+
+        return list_of_alive_tdarr_nodes
