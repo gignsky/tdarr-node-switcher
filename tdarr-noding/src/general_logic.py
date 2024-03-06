@@ -94,7 +94,7 @@ class Logic:
         max_transcode_workers,
         node_dictionary,
         max_nodes,
-    ):
+    ):  # ignoring error where max_transcode_workers is unused
         # create two arrays with priority number and total transcode workers
         priority_array = {}
         cap = max_nodes
@@ -127,7 +127,6 @@ class Logic:
                     target_priority = priority_level
 
         return target_priority
-
 
     @staticmethod
     def activate_node_to_priority_level(node_dictionary, priority_target):

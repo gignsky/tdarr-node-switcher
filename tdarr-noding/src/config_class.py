@@ -37,6 +37,11 @@ class Configuration:
 
         self.Constants = config_setup_folder.ConstantsSetup(self.configuration_file)
 
+        self.Server = None
+        self.expected_node_dictionary = None
+        self.script_status_file = None
+        self.status_file = None
+
     def setup_server_class(self):
         """
         setup_server_class configure server class

@@ -1,5 +1,4 @@
 import time
-import os
 from . import Configuration as ConfigurationClass
 from . import StatusTracking
 from . import tdarr
@@ -30,6 +29,8 @@ class Workhorse:
         self.cache_folder_path = self.Configuration.Constants.cache_folder_path
 
         self.Server = self.Configuration.setup_server_class()
+
+        self.get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
 
         # check if configuration file exists
         (
@@ -215,7 +216,6 @@ class Workhorse:
         try:
             online_nodes.pop(online_nodes.index(primary_node))
         except ValueError:
-            online_nodes = online_nodes
             print("VALUE_ERROR: Primary node not online")
 
         # find nodes with and without work
@@ -320,7 +320,7 @@ class Workhorse:
         self.update_classes()
 
         # 1. get quantity of work
-        quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
+        quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
 
         primary_node = self.Server.primary_node
 
@@ -341,7 +341,7 @@ class Workhorse:
 
             self.refresh("succesful")
 
-            quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
+            quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
 
             if quantity_of_work == 0:
                 print("INFO: Quantity of work is zero, continuing to normal workflow")
@@ -391,21 +391,21 @@ class Workhorse:
                     self.Status.add_number_of_errored_transcodes(
                         number_of_errored_transcodes
                     )
-
-                # remove all files in the cache directory
-                print("Clearing Cache")
-                for filename in os.listdir(self.cache_folder_path):
-                    file_path = os.path.join(self.cache_folder_path, filename)
-
-                    try:
-                        if os.path.isfile(file_path) or os.path.islink(file_path):
-                            os.unlink(file_path)
-                        elif os.path.isdir(file_path):
-                            shutil.rmtree(file_path)
-
-                        print(f"Removed {filename} from Cache")
-                    except Exception as e:
-                        print(f"Failed to delete {file_path}. Reason: {e}")
+                # TODO Look into if this is still neccecary with tdarr's cache functionality, probobly still will be but is more of a 2.0 issue ref #231
+                #                 # remove all files in the cache directory
+                #                 print("Clearing Cache")
+                #                 for filename in os.listdir(self.cache_folder_path):
+                #                     file_path = os.path.join(self.cache_folder_path, filename)
+                #
+                #                     try:
+                #                         if os.path.isfile(file_path) or os.path.islink(file_path):
+                #                             os.unlink(file_path)
+                #                         elif os.path.isdir(file_path):
+                #                             shutil.rmtree(file_path)
+                #
+                #                         print(f"Removed {filename} from Cache")
+                #                     except Exception as e:
+                #                         print(f"Failed to delete {file_path}. Reason: {e}")
 
                 # print status again
                 self.Status.print_status_file()
@@ -537,7 +537,11 @@ class Workhorse:
 
         # 3.c
         # check if nodes that are "going_down" are actually needed for completion of queued work
-        for node in list_of_nodes_going_down:
+        copy_list_of_nodes_going_down = (
+            list_of_nodes_going_down  # copied to resolve iteration error
+        )
+
+        for node in copy_list_of_nodes_going_down:
             if self.node_dictionary[node].priority <= current_priority_level:
                 print(
                     f"INFO: {node} is marked as 'Going_down' but is still needed for queued work. Setting node to 'Active'..."

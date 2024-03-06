@@ -40,6 +40,15 @@ class Node:
         self.startup = None
         self.shutdown = None
 
+        self.current_cpu_transcode = None
+        self.current_gpu_transcode = None
+        self.current_cpu_healthcheck = None
+        self.current_gpu_healthcheck = None
+
+        self.tdarr_node_inner_dictionary = None
+
+        self.id_string = None
+
         # expected determination
         self.expected_or_not(expected_or_not)
 
