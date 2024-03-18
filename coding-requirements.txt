@@ -41,7 +41,7 @@ ansible-lint==6.22.0
     packaging==23.1
     PyYAML==6.0.1
     resolvelib==1.0.1
-  black==23.7.0
+  black==24.3.0
     click==8.1.7
     mypy-extensions==1.0.0
     packaging==23.1
