@@ -220,6 +220,14 @@ class NodeStatusMaster:
                     f"INFO: FROM NODE CLASS: '{name}' directive changed to '{directive}'"
                 )
 
+    def update_just_started(self, name, just_started):
+        for node_name, NodeClass in self.node_status_dictionary.items():
+            if name == node_name:
+                NodeClass.just_started = just_started
+                print(
+                    f"INFO: FROM NODE CLASS: '{name}' just_started changed to '{just_started}'"
+                )
+
 
 class NodeStatus:
     def __init__(self, name, node_status_section):
@@ -228,6 +236,7 @@ class NodeStatus:
             self.node_status_section = node_status_section
             self.state = self.node_status_section["state"]
             self.directive = self.node_status_section["directive"]
+            self.just_started = self.node_status_section["just_started"]
         else:
             self.NodeClass = node_status_section
             self.node_status_section = None
@@ -271,6 +280,10 @@ class NodeStatus:
         """
         self.directive = new_directive
 
+    def update_just_started(self, just_started):
+        self.just_started = just_started
+        print("TEMP TEST LINE")
+
     def update_status_dict(self, line_state):
         """
         update_status_dict general update status file
@@ -281,4 +294,8 @@ class NodeStatus:
         """
         self.update_line_state(line_state)
         self.check_for_sleeping()
-        self.node_status_dict = {"state": self.state, "directive": self.directive}
+        self.node_status_dict = {
+            "state": self.state,
+            "directive": self.directive,
+            "just_started": self.just_started,
+        }
