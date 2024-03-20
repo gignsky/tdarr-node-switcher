@@ -112,5 +112,9 @@ class HostLogic:
                             name
                         ].update_directive("Active")
 
+                        Status.NodeStatusMaster.node_status_dictionary[
+                            name
+                        ].update_just_started(True)
+
                         ##change state to online
                         node_dictionary[node].line_state("Online")

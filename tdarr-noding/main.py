@@ -30,7 +30,7 @@ def main():
     def check_and_delete_empty_file(current_directory):
         file_path = os.path.join(current_directory, "status.yml")
         if os.path.isfile(file_path):
-            with open(file_path, 'r') as file:
+            with open(file_path, "r") as file:
                 contents = file.read()
             if not contents:
                 os.remove(file_path)
@@ -50,8 +50,9 @@ def main():
         if Workhorse.status_exists:
             if "Normal_Finished" in Workhorse.Status.state:
                 Workhorse.verify_primary_running()
-            elif "Refreshed" in Workhorse.Status.state:
-                Workhorse.post_refresh()
+            #!TODO Uncomment these lines when the refresh function is implemented
+            # elif "Refreshed" in Workhorse.Status.state:
+            #     Workhorse.post_refresh()
             elif "Started" or "Normal" in Workhorse.Status.state:
                 Workhorse.normal()
         else:
