@@ -128,4 +128,4 @@ pywinrm==0.4.3
   six==1.16.0
   xmltodict==0.13.0
 wheel==0.41.2
-wrapt==1.15.0
+wrapt==1.16.0
