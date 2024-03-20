@@ -49,6 +49,8 @@ class Node:
 
         self.id_string = None
 
+        self.just_started = None
+
         # expected determination
         self.expected_or_not(expected_or_not)
 
@@ -81,7 +83,7 @@ class Node:
         self.startup = startup_command
         self.shutdown = shutdown_command
 
-    def update_node(self, line_state, tdarr_inner_dictionary=None):
+    def update_node(self, line_state, just_started, tdarr_inner_dictionary=None):
         """
         update_node updates a node with more current information
 
@@ -91,6 +93,7 @@ class Node:
         < Document Guardian | Protect >
         """
         self.line_state(line_state)
+        self.update_just_started(just_started)
         self.update_with_tdarr_dictionary(tdarr_inner_dictionary, "Expected")
 
         # update current workers amounts
@@ -123,6 +126,9 @@ class Node:
         elif online_or_offline == "Offline":
             # print(f"INFO: FROM NODE CLASS: `{self.node_name}` is Offline")
             self.online = False
+
+    def update_just_started(self, just_started):
+        self.just_started = just_started
 
     def set_current_worker_levels(
         self,
