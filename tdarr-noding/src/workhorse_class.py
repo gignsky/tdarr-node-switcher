@@ -1,5 +1,4 @@
 import time
-import os
 from . import Configuration as ConfigurationClass
 from . import StatusTracking
 from . import tdarr
@@ -30,6 +29,8 @@ class Workhorse:
         self.cache_folder_path = self.Configuration.Constants.cache_folder_path
 
         self.Server = self.Configuration.setup_server_class()
+
+        self.get_nodes_output = tdarr.Tdarr_Logic.generic_get_nodes(self.Server)
 
         # check if configuration file exists
         (
@@ -99,9 +100,12 @@ class Workhorse:
                     inner_tdarr_dictionary = self.get_nodes_output[node_id]
                     inner_tdarr_dictionary_name = inner_tdarr_dictionary["nodeName"]
                     if inner_tdarr_dictionary_name == name:
-                        Class.update_node("Online", inner_tdarr_dictionary)
+                        if Class.just_started:
+                            Class.update_node("Online", False, inner_tdarr_dictionary)
+                        else:
+                            Class.update_node("Online", True, inner_tdarr_dictionary)
             else:
-                Class.update_node("Offline")
+                Class.update_node("Offline", False)
 
     def refresh(self, refresh_type=None):
         print(f"SECTION INFO: Starting workhorse 'refresh' with type {refresh_type}")
@@ -215,7 +219,6 @@ class Workhorse:
         try:
             online_nodes.pop(online_nodes.index(primary_node))
         except ValueError:
-            online_nodes = online_nodes
             print("VALUE_ERROR: Primary node not online")
 
         # find nodes with and without work
@@ -271,16 +274,18 @@ class Workhorse:
                     current_errored_transcodes_quantity
                     > previously_errored_transcode_quantity
                 ):
-                    # Call Refresh
-                    self.refresh()
-
-                    # Set status to refreshed
-                    self.Status.change_state("Refreshed")
-
-                    # print status again
-                    self.Status.print_status_file()
-
-                    self.post_refresh()
+                    print("Would REFRESH HERE BUT THIS FUNCTIONALITY IS DISABLED")
+            #!TODO Uncomment these lines when the refresh function is implemented
+            #                     # Call Refresh
+            #                     self.refresh()
+            #
+            #                     # Set status to refreshed
+            #                     self.Status.change_state("Refreshed")
+            #
+            #                     # print status again
+            #                     self.Status.print_status_file()
+            #
+            #                     self.post_refresh()
             else:
                 # check quantity of work
                 quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
@@ -318,7 +323,7 @@ class Workhorse:
         self.update_classes()
 
         # 1. get quantity of work
-        quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
+        quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
 
         primary_node = self.Server.primary_node
 
@@ -339,7 +344,7 @@ class Workhorse:
 
             self.refresh("succesful")
 
-            quantity_of_work, _, _ = self.NormalHelpersClass.work_quantity_finder()
+            quantity_of_work, _ = self.NormalHelpersClass.work_quantity_finder()
 
             if quantity_of_work == 0:
                 print("INFO: Quantity of work is zero, continuing to normal workflow")
@@ -389,21 +394,21 @@ class Workhorse:
                     self.Status.add_number_of_errored_transcodes(
                         number_of_errored_transcodes
                     )
-
-                # remove all files in the cache directory
-                print("Clearing Cache")
-                for filename in os.listdir(self.cache_folder_path):
-                    file_path = os.path.join(self.cache_folder_path, filename)
-
-                    try:
-                        if os.path.isfile(file_path) or os.path.islink(file_path):
-                            os.unlink(file_path)
-                        elif os.path.isdir(file_path):
-                            shutil.rmtree(file_path)
-
-                        print(f"Removed {filename} from Cache")
-                    except Exception as e:
-                        print(f"Failed to delete {file_path}. Reason: {e}")
+                # TODO Look into if this is still neccecary with tdarr's cache functionality, probobly still will be but is more of a 2.0 issue ref #231
+                #                 # remove all files in the cache directory
+                #                 print("Clearing Cache")
+                #                 for filename in os.listdir(self.cache_folder_path):
+                #                     file_path = os.path.join(self.cache_folder_path, filename)
+                #
+                #                     try:
+                #                         if os.path.isfile(file_path) or os.path.islink(file_path):
+                #                             os.unlink(file_path)
+                #                         elif os.path.isdir(file_path):
+                #                             shutil.rmtree(file_path)
+                #
+                #                         print(f"Removed {filename} from Cache")
+                #                     except Exception as e:
+                #                         print(f"Failed to delete {file_path}. Reason: {e}")
 
                 # print status again
                 self.Status.print_status_file()
@@ -535,7 +540,11 @@ class Workhorse:
 
         # 3.c
         # check if nodes that are "going_down" are actually needed for completion of queued work
-        for node in list_of_nodes_going_down:
+        copy_list_of_nodes_going_down = (
+            list_of_nodes_going_down  # copied to resolve iteration error
+        )
+
+        for node in copy_list_of_nodes_going_down:
             if self.node_dictionary[node].priority <= current_priority_level:
                 print(
                     f"INFO: {node} is marked as 'Going_down' but is still needed for queued work. Setting node to 'Active'..."
@@ -570,6 +579,10 @@ class Workhorse:
             if Class.online:
                 list_of_living_nodes.append(node)
 
+        list_of_nodes_just_started = []
+        for node, Class in self.node_dictionary.items():
+            if Class.just_started:
+                list_of_nodes_just_started.append(node)
         # 4.b
         # update worker count
 
@@ -582,6 +595,11 @@ class Workhorse:
                 )
 
             # 4.b.2
+            # skip nodes that have just started
+            elif node in list_of_nodes_just_started:
+                print(f"INFO: {node} has just started. Skipping Worker Count Update...")
+
+            # 4.b.3
             # update worker counts on all living nodes
             else:
                 print(f"INFO: Checking worker count on: {node}...")
