@@ -100,9 +100,12 @@ class Workhorse:
                     inner_tdarr_dictionary = self.get_nodes_output[node_id]
                     inner_tdarr_dictionary_name = inner_tdarr_dictionary["nodeName"]
                     if inner_tdarr_dictionary_name == name:
-                        Class.update_node("Online", inner_tdarr_dictionary)
+                        if Class.just_started:
+                            Class.update_node("Online", False, inner_tdarr_dictionary)
+                        else:
+                            Class.update_node("Online", True, inner_tdarr_dictionary)
             else:
-                Class.update_node("Offline")
+                Class.update_node("Offline", False)
 
     def refresh(self, refresh_type=None):
         print(f"SECTION INFO: Starting workhorse 'refresh' with type {refresh_type}")
@@ -576,6 +579,10 @@ class Workhorse:
             if Class.online:
                 list_of_living_nodes.append(node)
 
+        list_of_nodes_just_started = []
+        for node, Class in self.node_dictionary.items():
+            if Class.just_started:
+                list_of_nodes_just_started.append(node)
         # 4.b
         # update worker count
 
@@ -588,6 +595,11 @@ class Workhorse:
                 )
 
             # 4.b.2
+            # skip nodes that have just started
+            elif node in list_of_nodes_just_started:
+                print(f"INFO: {node} has just started. Skipping Worker Count Update...")
+
+            # 4.b.3
             # update worker counts on all living nodes
             else:
                 print(f"INFO: Checking worker count on: {node}...")
