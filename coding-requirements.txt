@@ -98,7 +98,7 @@ pip-autoremove==0.10.0
   setuptools==68.0.0
 pipdeptree==2.13.0
 pylint==3.0.2
-  astroid==3.0.1
+  astroid==3.1.0
     typing_extensions==4.7.1
   dill==0.3.6
   isort==5.12.0
