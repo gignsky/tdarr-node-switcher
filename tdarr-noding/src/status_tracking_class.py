@@ -139,7 +139,10 @@ class ServerStatus:
             self.status_dict["state"] = self.state
 
             # setup basic node info
-            tdarr_nodes_section_dictionary = status_server_section["tdarr_nodes"]
+            try:
+                tdarr_nodes_section_dictionary = status_server_section["tdarr_nodes"]
+            except KeyError:
+                tdarr_nodes_section_dictionary = {}
 
             # initalize var
             self.tdarr_nodes_status_dictionary = {}

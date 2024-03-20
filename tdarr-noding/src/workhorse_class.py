@@ -447,17 +447,18 @@ class Workhorse:
 
         # 1.a
         # find list of nodes going down
-        list_of_nodes_going_down = []
-        for (
-            node,
-            Class,
-        ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
-            if Class.directive == "Going_down":
-                list_of_nodes_going_down.append(node)
+        if self.Status.NodeStatusMaster is not None:
+            list_of_nodes_going_down = []
+            for (
+                node,
+                Class,
+            ) in self.Status.NodeStatusMaster.node_status_dictionary.items():
+                if Class.directive == "Going_down":
+                    list_of_nodes_going_down.append(node)
 
-        print(
-            f"The following nodes are already marked as 'going_down' {list_of_nodes_going_down}"
-        )
+            print(
+                f"The following nodes are already marked as 'going_down' {list_of_nodes_going_down}"
+            )
 
         # 1.b
         # find nodes with current work
