@@ -99,7 +99,7 @@ pip-autoremove==0.10.0
 pipdeptree==2.13.0
 pylint==3.0.2
   astroid==3.1.0
-    typing_extensions==4.7.1
+    typing_extensions==4.10.0
   dill==0.3.8
   isort==5.12.0
   mccabe==0.7.0
