@@ -15,7 +15,7 @@ class Tdarr_Logic:
             json_response: from requests.get
         < Document Guardian | Protect >
         """
-        response = requests.get(Server.get_nodes)
+        response = requests.get(Server.get_nodes, timeout=15)
 
         # loads response into json beautifier
         json_response = json.loads(response.text)

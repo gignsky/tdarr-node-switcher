@@ -1,5 +1,5 @@
 ansible==9.1.0
-  ansible-core==2.16.2
+  ansible-core==2.16.3
     cryptography==42.0.5
       cffi==1.16.0
         pycparser==2.21
@@ -10,7 +10,7 @@ ansible==9.1.0
     resolvelib==1.0.1
 ansible-lint==6.22.0
   ansible-compat==4.1.10
-    ansible-core==2.16.2
+    ansible-core==2.16.3
       cryptography==42.0.5
         cffi==1.16.0
           pycparser==2.21
@@ -32,7 +32,7 @@ ansible-lint==6.22.0
     packaging==23.1
     PyYAML==6.0.1
     subprocess-tee==0.4.1
-  ansible-core==2.16.2
+  ansible-core==2.16.3
     cryptography==42.0.5
       cffi==1.16.0
         pycparser==2.21
@@ -41,7 +41,7 @@ ansible-lint==6.22.0
     packaging==23.1
     PyYAML==6.0.1
     resolvelib==1.0.1
-  black==23.7.0
+  black==24.3.0
     click==8.1.7
     mypy-extensions==1.0.0
     packaging==23.1
@@ -66,7 +66,7 @@ ansible-lint==6.22.0
     certifi==2023.11.17
     charset-normalizer==3.3.2
     idna==3.6
-    urllib3==2.0.3
+    urllib3==2.0.7
   rich==13.6.0
     markdown-it-py==3.0.0
       mdurl==0.1.2
@@ -91,6 +91,7 @@ bandit==1.7.5
   stevedore==5.1.0
     pbr==5.11.1
 graphviz==0.20.1
+
 lazy-object-proxy==1.9.0
 pip-autoremove==0.10.0
   pip==24.0
@@ -110,7 +111,7 @@ pywinrm==0.4.3
     certifi==2023.11.17
     charset-normalizer==3.3.2
     idna==3.6
-    urllib3==2.0.3
+    urllib3==2.0.7
   requests-ntlm==1.2.0
     cryptography==42.0.5
       cffi==1.16.0
@@ -123,7 +124,7 @@ pywinrm==0.4.3
       certifi==2023.11.17
       charset-normalizer==3.3.2
       idna==3.6
-      urllib3==2.0.3
+      urllib3==2.0.7
   six==1.16.0
   xmltodict==0.13.0
 wheel==0.41.2
