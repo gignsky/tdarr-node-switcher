@@ -246,6 +246,8 @@ class NodeStatus:
             self.check_for_sleeping()
         self.node_status_dict = None
 
+        self.just_started = None
+
     def check_for_sleeping(self):
         """
         check_for_sleeping check if node is sleeping based on it's line state
@@ -282,7 +284,6 @@ class NodeStatus:
 
     def update_just_started(self, just_started):
         self.just_started = just_started
-        print("TEMP TEST LINE")
 
     def update_status_dict(self, line_state):
         """
