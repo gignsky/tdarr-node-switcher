@@ -4,7 +4,7 @@ ansible==9.1.0
       cffi==1.16.0
         pycparser==2.21
     Jinja2==3.1.2
-      MarkupSafe==2.1.3
+      MarkupSafe==2.1.5
     packaging==23.1
     PyYAML==6.0.1
     resolvelib==1.0.1
@@ -15,7 +15,7 @@ ansible-lint==6.22.0
         cffi==1.16.0
           pycparser==2.21
       Jinja2==3.1.2
-        MarkupSafe==2.1.3
+        MarkupSafe==2.1.5
       packaging==23.1
       PyYAML==6.0.1
       resolvelib==1.0.1
@@ -37,7 +37,7 @@ ansible-lint==6.22.0
       cffi==1.16.0
         pycparser==2.21
     Jinja2==3.1.2
-      MarkupSafe==2.1.3
+      MarkupSafe==2.1.5
     packaging==23.1
     PyYAML==6.0.1
     resolvelib==1.0.1
