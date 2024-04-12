@@ -66,7 +66,7 @@ ansible-lint==6.22.0
   requests==2.31.0
     certifi==2023.11.17
     charset-normalizer==3.3.2
-    idna==3.6
+    idna==3.7
     urllib3==2.0.7
   rich==13.6.0
     markdown-it-py==3.0.0
@@ -109,7 +109,7 @@ pywinrm==0.4.3
   requests==2.31.0
     certifi==2023.11.17
     charset-normalizer==3.3.2
-    idna==3.6
+    idna==3.7
     urllib3==2.0.7
   requests-ntlm==1.2.0
     cryptography==42.0.5
@@ -122,7 +122,7 @@ pywinrm==0.4.3
     requests==2.31.0
       certifi==2023.11.17
       charset-normalizer==3.3.2
-      idna==3.6
+      idna==3.7
       urllib3==2.0.7
   six==1.16.0
   xmltodict==0.13.0
