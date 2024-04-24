@@ -100,7 +100,7 @@ class Logic:
         cap = max_nodes
 
         current_priority_level = 1
-        while current_priority_level <= cap:
+        while current_priority_level < cap:
             for _, Class in node_dictionary.items():
                 node_priority = Class.priority
                 node_transcode_workers = (
