@@ -115,7 +115,10 @@ class Logic:
 
         cumulative_quantity = 0
         for priority_level, quantity in priority_array.items():
-            if queued_quantity <= quantity:
+            if queued_quantity == 0:
+                target_priority = 0
+                break
+            elif queued_quantity <= quantity:
                 target_priority = priority_level
                 break
             elif queued_quantity >= quantity:
