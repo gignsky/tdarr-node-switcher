@@ -10,7 +10,7 @@ ansible==9.1.0
     resolvelib==1.0.1
 pip==24.0
 pywinrm==0.4.3
-  requests==2.31.0
+  requests==2.32.0
     certifi==2023.11.17
     charset-normalizer==3.3.2
     idna==3.6
@@ -23,7 +23,7 @@ pywinrm==0.4.3
       cryptography==42.0.5
         cffi==1.16.0
           pycparser==2.21
-    requests==2.31.0
+    requests==2.32.0
       certifi==2023.11.17
       charset-normalizer==3.3.2
       idna==3.6
